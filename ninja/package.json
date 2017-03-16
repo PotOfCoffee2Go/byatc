@@ -1,0 +1,32 @@
+{
+  "name": "byatc-ninja",
+  "version": "0.5.0",
+  "description": "Best Yielding Auction Tool Created - Ninja - Run's the auction",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": "https://github.com/PotOfCoffee2Go/byatc.git",
+  "author": "PotOfCoffee2Go",
+  "contributors": [
+    {
+      "name": "Jim Kauffman"
+    },
+    {
+      "name": "Yisheng",
+      "url": "https://github.com/Yishengtang"
+    }
+  ],
+  "license": "Unlicense",
+  "dependencies": {
+    "async": "^2.1.5",
+    "body-parser": "^1.17.0",
+    "express": "^4.14.1",
+    "mysql": "^2.13.0",
+    "node-json-db": "^0.7.3",
+    "phpass": "^0.1.1",
+    "socket.io": "^1.4.6",
+    "socket.io-client": "^1.7.2"
+  }
+}

@@ -1,0 +1,4 @@
+# ignore gh-pages, Logs, flotsam and database
+**/flotsam
+**/node_modules
+**/results.json
