@@ -1,4 +1,17 @@
 {
+    "get.member.id.boards":
+    {
+        "name": "getMemberBoards",
+        "method": "GET",
+        "url": "/members/[id]/boards",
+        "params": [
+            {
+                "name": "id",
+                "required": "Required",
+                "description": "Valid Values: member id or 'me'"
+            }
+        ]
+    },
     "get.tokens.token.webhooks":
     {
         "name": "getWebhooks",

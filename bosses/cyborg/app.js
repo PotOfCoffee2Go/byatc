@@ -1,13 +1,13 @@
 'use strict';
 
-//console.log(process.env.TRELLO_KEY);
-//console.log(process.env.TRELLO_TOKEN);
-
-
+(function () {
 
 const
 // Standard Node stuff
     env = process.env,
+
+// Modules
+    async = require('async'),
 
 // Middleware
     bodyParser = require("body-parser"),
@@ -25,7 +25,8 @@ var resultDB = new JsonDB('results.json', true, true); // true = auto save, true
 var
 express = require('express'),  
     app = express(),  
- server = require('http').Server(app);
+ server = require('http').Server(app),
+    ios = require('socket.io')(server);
 
 /// Frontend(s) html, js, stylesheet, etc
 app.use(express.static(__dirname + '/www'));
@@ -74,17 +75,31 @@ server.listen(
     env.OPENSHIFT_NODEJS_PORT || env.PORT || 3000,
     env.OPENSHIFT_NODEJS_IP || env.IP || 'localhost',
     () => {
+        /// ---------- WebSocket Server ----------
+        // When a socket.io client connects
+        //   initialize it's server-side message handlers
+        ios.on('connection', (socket) => {sio.init(socket);});
+    
         console.log('Hal9000 started... pid: ', process.pid);
-        trello.getWebhooks(resultDB,(err, entry) => {
-            if (err) {}
-            trello.getBoard(resultDB,(err, entry) => {
-                if (err) {}
+        async.series([
+            function(callback) {trello.getMemberBoards(resultDB,(err) => {callback(err);})},
+            function(callback) {trello.getWebhooks(resultDB,(err) => {callback(err);})},
+            function(callback) {trello.getBoard(resultDB,(err) => {callback(err);})},
+            function(callback) {
                 let myWebhooks = resultDB.getData('/webhooks');
                 if (myWebhooks.length === 0) {
                     trello.putWebhooks(resultDB, '/trellocallback');
                 }
-            });
-        });
+                callback(null);
+            }
+        ]);
     }
 );
+
+// If required as a module export the server app
+if (require.main === module) {
+    module.exports = app;
+}
+
+})();
 

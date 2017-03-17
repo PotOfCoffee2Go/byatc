@@ -60,8 +60,24 @@ function getBoardComments(resultDB, idBoard, cb) {
     byatc.send();
 }
 
-
 module.exports = {
+    getMemberBoards:  function(resultDB, cb) {
+        byatc.push('get.member.id.boards', {
+            id:'me',
+            filter: 'open',
+            fields: 'name'
+            }, (err, entry) => {
+                if (err) {
+                    resultDB.push('/boardlist', err);
+                }
+                else {
+                    resultDB.push('/boardlist', entry.response);
+                }
+                if (cb) cb(err, entry);
+            });
+        byatc.send();
+    },
+    
     getWebhooks: function(resultDB, cb) {
         byatc.push('get.tokens.token.webhooks', {
             token: process.env.TRELLO_TOKEN
