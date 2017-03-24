@@ -10,17 +10,17 @@ const
     constable = require('../minions/constable'),
     nurse = require('../minions/nurse');
 
-    function web(web) {
-        angel.web(web);
-        architect.web(web);
-        chef.web(web);
-        clerk.web(web);
-        constable.web(web);
-        nurse.web(web);
+    function gearMinions(web) {
+        angel.gear(web);
+        architect.gear(web);
+        chef.gear(web);
+        clerk.gear(web);
+        constable.gear(web);
+        nurse.gear(web);
     }
 
  module.exports =  {
-    web: web,
+    gearMinions: gearMinions,
     angel: angel,
     architect: architect,
     chef: chef,

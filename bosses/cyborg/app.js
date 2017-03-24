@@ -16,6 +16,7 @@ var asTheQueenCommands = {
     //   are adding app.get/post/etc routes to express, which is touchy
     //   about the order of said routes
     startMachines: function startMachines() {  
+        const architect = web.minion.architect;
     
         if (machineryRunning) {
             return 'Boss ' + boss + ' *bows* sorry my Queen! ' +
@@ -44,9 +45,6 @@ var asTheQueenCommands = {
         /// Error Handling of REST API machinery
         architect.gearRestErrorHandler();
         
-        /// Gear up Web Sites, API docs, html pages, js, css, etc. hosted by this server
-        architect.gearWebSites(bossWebSitesRootPath);
-        
         machineryRunning = true;
     
         var reply = 'Boss ' + boss + ' *bows* starting up machinery My Queen!';
@@ -57,16 +55,15 @@ var asTheQueenCommands = {
 
 
 /// Spark up boss's web server and architect
-const
-    web = require('../#gearing/server')(boss, asTheQueenCommands),
-    architect = web.minion.architect;
+const web = require('../#gearing/server')(boss, asTheQueenCommands);
 
-/// First thing! Tell architect to gear the minions to this express server
-architect.gearMinions(web);
+/// Gear up Web Sites, API docs, html pages, js, css, etc. hosted by this server
+web.minion.architect.gearWebSites(bossWebSitesRootPath);
+        
 
 console.log('Boss %s and minions geared up', boss);
 
-// Listen/wait for requests from Her Majesty
+// Listen for requests from Her Majesty
 web.listen();
 
 })();

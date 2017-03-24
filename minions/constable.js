@@ -36,7 +36,7 @@ function checkBossCredentials() {
 
 module.exports = {
 
-    web: function(myWeb) {web = myWeb; boss = web.boss;},
+    gear: function(myWeb) {web = myWeb; boss = web.boss;},
     
     checkBossCredentials: checkBossCredentials
 };

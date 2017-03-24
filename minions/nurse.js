@@ -14,10 +14,10 @@ var web = null, boss = null;
 
 module.exports = {
 
-    web: function(myWeb) {web = myWeb; boss = web.boss;},
+    gear: function(myWeb) {web = myWeb; boss = web.boss;},
     
     criticalRestCare: function criticalRestCare(err, req, res, next) {
-        console.log('Nurse got the RESTful patient - doa :(');
+        console.log('Nurse got the critical RESTful patient - doa :(');
         if (err.inner) delete err.inner.stack;
         if (!err.inner) delete err.inner;
         delete err.stack;
@@ -26,6 +26,7 @@ module.exports = {
     },
     
     criticalSiteCare: function criticalSiteCare(notFoundPath, req, res, next) {
+        console.log('Nurse got the critical WebSite patient - doa :(');
         if (req.accepts('html')) {
             // Get this boss directory and Web Site root directory
             res.status(404).sendFile(path.resolve(__dirname, '../bosses/www/pages/notfound.html'));

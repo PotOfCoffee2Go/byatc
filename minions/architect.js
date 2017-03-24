@@ -56,27 +56,11 @@ var markdown = function (req, res, next) {
 
 module.exports = {
 
-    web: function(myWeb) {web = myWeb; boss = web.boss;},
+    gear: function(myWeb) {web = myWeb; boss = web.boss;},
     
-    /// Error handling of REST and Websockets is done by the nurse
-    gearRestErrorHandler: function gearRestErrorHandler() {
-        web.app.use(function(err, req, res, next) {
-            if (err) { // Should always be true
-                web.minion.nurse.criticalRestCare(err, req, res, next);
-            }
-        });
-    },
-
-    /// Error handling of REST and Websockets is done by the nurse
-    gearSiteErrorHandler: function gearSiteErrorHandler() {
-        web.app.use(function(req, res, next) {
-            web.minion.nurse.criticalSiteCare(req, res, next);
-        });
-    },
-
     /// Connect the minions to this express web
-    gearMinions: function gearWebSites(web) {
-        web.minion.web(web);
+    gearMinions: function gearMinions(web) {
+        web.minion.gearMinions(web);
     },
 
     /// Frontend sites, API Docs, -  html, js, css, etc
@@ -84,13 +68,11 @@ module.exports = {
         sitedir = bossSitesDir;
         commonSiteDir = path.resolve(sitedir, '../../www');
 
-        web.app.use('/docs', markdown); // give markdown a try first
-        web.app.use('/docs', web.express.static(commonSiteDir + '/docs'));
-        web.app.use(boss, web.express.static(bossSitesDir,{index: 'index.html'}));
+        web.endRouter.use('/docs', markdown); // give markdown a try first
+        web.endRouter.use('/docs', web.express.static(commonSiteDir + '/docs'));
+        web.endRouter.use(boss, web.express.static(bossSitesDir,{index: 'index.html'}));
 
-
-
-        web.app.use(function(req, res, next) {
+        web.endRouter.use(function(req, res, next) {
             web.minion.nurse.criticalSiteCare(bossSitesDir,req, res, next);
         });
    },
@@ -134,7 +116,7 @@ module.exports = {
             web.cfg.trello.db = new JsonDB('./db/' + web.cfg.trello.database, true, true);
         
             //  Process Trello REST requests from frontends
-            web.app.get('/' + web.boss + '/clerk/trello*', (req, res, next) => {
+            web.restRouter.get('/' + web.boss + '/clerk/trello*', (req, res, next) => {
                 web.minion.clerk.onGetDb(req, res, next, function(err, prayer) {
                     if (err) return next(err);
                     web.sendJson(res, null, prayer);
@@ -146,15 +128,15 @@ module.exports = {
                 board.db = web.cfg.trello.db;
         
                 // Trello WebHooks Verification - always send back 200 response code
-                web.app.head(board.callbackURL, (req, res, next) => {res.sendStatus(200);});
+                web.restRouter.head(board.callbackURL, (req, res, next) => {res.sendStatus(200);});
         
                 //  Process trello get request - always send back 200 response code
-                web.app.get(board.callbackURL, (req, res, next) => {
+                web.restRouter.get(board.callbackURL, (req, res, next) => {
                     web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
                 });
                 
                 //  Process trello post request - always send back 200 response code
-                web.app.post(board.callbackURL, (req, res, next) => {
+                web.restRouter.post(board.callbackURL, (req, res, next) => {
                     web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
                 });
             });
@@ -185,7 +167,17 @@ module.exports = {
         }
     },
     
+    /// Error handling of REST and Websockets is done as last REST route by the nurse
+    gearRestErrorHandler: function gearRestErrorHandler() {
+        web.restRouter.use(function(err, req, res, next) {
+            if (err) { // Should always be true
+                web.minion.nurse.criticalRestCare(err, req, res, next);
+            }
+        });
+    },
+
     activateMachinery: function activateMachinery() {
+
         listeners.forEach(function(listen){
             listen();
         });

@@ -17,7 +17,7 @@ var web = null, boss = null;
 
 module.exports = {
 
-web: function(myWeb) {web = myWeb; boss = myWeb.boss;},
+gear: function(myWeb) {web = myWeb; boss = myWeb.boss;},
     
 // Prayer is the payload for REST and/or Websocket responses
 prayer:  function prayer(minionname, resource, data, location, status, error) {

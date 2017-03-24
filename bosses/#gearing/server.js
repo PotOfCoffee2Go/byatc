@@ -50,10 +50,6 @@ module.exports = function (boss, asTheQueenCommands) {
     app.use(bodyParser.json());
 
     /// -- Basic Routes --
-    //  These would be more elegant if express natively implemented a route
-    //    'remove' function - then could add special handling while we wait
-    //    for the queen to command us to 'startMachines'
-    //    At which point would remove the temporary routes used while waiting.
 
     /// Version info
     app.get('/version', (req, res, next) => {sendJson(res, null, {version: '1.0.0'});});
@@ -74,6 +70,23 @@ module.exports = function (boss, asTheQueenCommands) {
         res.send(reply);
     });
 
+
+    /// -- REST Routes --
+    
+    var restRouter = express.Router();
+    // The architect will populate this router with the boss routes
+    //  once the /queen/commands/startMachines (above)
+    app.use(function (req, res, next) {
+      restRouter(req, res, next);
+    });
+
+    // The architect will populate this router with the trailing routes
+    //  to error handlers, docs, websites at end of the route list (below)
+    var endRouter = express.Router();
+    app.use(function (req, res, next) {
+      endRouter(req, res, next);
+    });
+
     // For Cloud9 the port/ip is env.PORT and env.IP
     // For OpenShift the port/ip is env.OPENSHIFT_NODEJS_PORT and env.OPENSHIFT_NODEJS_IP
    function listen() {
@@ -89,20 +102,25 @@ module.exports = function (boss, asTheQueenCommands) {
     // Minions
     const minion = require('../minions');
 
-    var module = {
+    var web = {
         boss: boss,
         cfg: cfg,
         express: express,
         app: app,
         ios: ios,
+        restRouter: restRouter,
+        endRouter: endRouter,
         minion: minion,
         listen: listen,
         webhook: webhook,
         trello: trello,
         sendJson: sendJson
     };
-    
-    return module;
+
+    // Tell architect to gear minions to this server
+    minion.architect.gearMinions(web);
+
+    return web;
 };
 
 

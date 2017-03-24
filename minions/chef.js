@@ -13,7 +13,7 @@ var web = null, boss = null;
 
 module.exports = {
 
-web: function(myWeb) {web = myWeb; boss = web.boss;},
+gear: function(myWeb) {web = myWeb; boss = web.boss;},
     
 };    
     
