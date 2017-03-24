@@ -62,7 +62,7 @@ module.exports = function (boss, asTheQueenCommands) {
     app.get('/health', (req, res, next) => {sendJson(res, null, {'health':'ok'});});
 
     /// Not much else is going to happen until Her Majesty commands it so
-    app.get('/queen/commands/:cmd', (req, res, next) => {
+    app.post('/queen/commands/:cmd', (req, res, next) => {
         res.type('text');
 
         var reply;
