@@ -1,0 +1,30 @@
+{
+  "name": "byatc",
+  "version": "0.5.0",
+  "description": "Best Yielding Auction Tool Created - Launcher",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node installer",
+    "start": "node ./bosses/cyborg/app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PotOfCoffee2Go/byatc.git"
+  },
+  "keywords": [
+    "auction"
+  ],
+  "author": "PotOfCoffee2Go",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PotOfCoffee2Go/byatc/issues"
+  },
+  "homepage": "https://github.com/PotOfCoffee2Go/byatc#readme",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "fs-extra": "^2.1.2",
+    "pkginfo": "^0.4.0",
+    "request": "^2.81.0"
+  }
+}

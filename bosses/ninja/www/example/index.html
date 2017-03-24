@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Auction Server">
+    <meta name="author" content="PotOfCoffee2Go">
+
+    <title>Auction Server</title>
+
+    <link rel="icon" href="favicon.ico?v=1" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico?v=1" type="image/x-icon" />
+    
+    <!-- Latest compiled and minified CSS -->
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/heroic-features.css">
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Auction Server</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a id="about" href="#">About</a>
+                    </li>
+                    <li>
+                        <a id="services" href="#">Services</a>
+                    </li>
+                    <li>
+                        <a id="contact" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Jumbotron Header -->
+        <header class="jumbotron hero-spacer">
+            <h3>Onyx &amp; Breezy Auction Server</h3>
+            <p></p>
+            <!-- <p><a id="call-to-action" class="btn btn-primary btn-large">Call to action!</a></p> -->
+        </header>
+
+        <hr>
+        <!-- User Title -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Users</h3>
+            </div>
+        </div>
+        <!-- /.row -->
+        <div id="users-info" class="row text-center"></div>
+        <script id="users-info-template" type="text/x-handlebars-template">
+            <div id="user-u{{ID}}" class="col-md-3 col-sm-6 hero-feature">
+                <p>{{display_name}}</p>
+            </div>
+        </script>
+        <hr>
+
+
+        <ul id="list"></ul>
+
+        <!-- Title -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Up for bid!</h3>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Page Features -->
+        <div id="auction-items" class="row text-center"></div>
+        
+        <script id="auction-item-template" type="text/x-handlebars-template">
+            <div id="feeder-a{{post.ID}}" class="col-md-3 col-sm-6 hero-feature">
+                <div class="thumbnail">
+                    <img src="{{meta.wdm_auction_thumb}}" style="display:block;max-width:230px;max-height:95px;" alt="">
+                    <div class="caption">
+                        <h3>{{post.post_title}}</h3>
+                        <p>{{post.post_content}}</p>
+                        <p>a{{post.ID}} Status: {{categories.0.name}}</p>
+                        <p>
+                            <a onClick="obapi.auctionClick(\'a{{post.ID}}\');"  href="#" class="btn btn-primary">Auction!</a> 
+                            <a onClick="obapi.moreInfoClick(\'a{{post.ID}}\');" href="#" class="btn btn-default">More Info</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </script>
+
+        <!-- /.row -->
+
+        <hr>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; codescullery.net  2017</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <!-- /.container -->
+
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <!-- Bootstrap Core -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- WebSockets connection to auction server -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <!-- API to Onyx & Breezy auction server -->
+    <script src="/obapi.js"></script>
+
+    <!-- HandleBars -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+    <!-- Page scripts-->
+    <script src="js/index.js"></script>
+
+</body>
+
+</html>

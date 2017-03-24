@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>{{mardownFile.meta.title}}</title>
+  <meta name="description" content="{{mardownFile.meta.title}}">
+  <meta name="author" content="PotOfCoffee2Go">
+
+  <link rel="stylesheet" href="/docs/../css/markdown.css?v=1.0">
+</head>
+
+<body>
+    <div class="container">
+        <h1>{{mardownFile.meta.title}}</h1>
+     
+        {{{markdownFile.parsedContent}}}
+     
+        <footer>
+            <hr />
+            <strong>Created:</strong> {{markdownFile.created}}
+        </footer>
+    </div>
+</body>
+</html>
