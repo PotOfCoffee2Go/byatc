@@ -6,15 +6,16 @@ const
     gearbox = require('./#gearing/gearbox'),
     
     MinionError = gearbox.MinionError,
-    minionName = require('path').basename(__filename).replace('.js', '');
+    minionName = 'chef';
 
 // Express web server and boss for this minion
-var web = null, boss = null;
+var web = null;
 
-module.exports = {
+function Chef (bossWeb) {
+    web = bossWeb;
+}
 
-gear: function(myWeb) {web = myWeb; boss = web.boss;},
-    
-};    
+
+module.exports = Chef;
     
 })();

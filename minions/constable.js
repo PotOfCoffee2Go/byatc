@@ -6,19 +6,24 @@ const
     gearbox = require('./#gearing/gearbox'),
     
     MinionError = gearbox.MinionError,
-    minionName = require('path').basename(__filename).replace('.js', '');
+    minionName = 'constable';
 
 // Express web server and boss for this minion
-var web = null, boss = null;
+var web = null;
 
-function setQueensCredentials(creds) {
+function Constable (bossWeb) {
+    web = bossWeb;
+}
+
+
+Constable.prototype.setQueensCredentials = function setQueensCredentials(creds) {
     if (web.cfg.trello) {
     }
     if (web.cfg.sheets) {
     }
 }
 
-function checkBossCredentials() {
+Constable.prototype.checkBossCredentials = function checkBossCredentials() {
     if (web.cfg.trello) {
         if (!process.env.TRELLO_TOKEN || !process.env.TRELLO_TOKEN) {
             throw (new Error('Trello Key/Token not in environment'));
@@ -31,15 +36,7 @@ function checkBossCredentials() {
     }
 }
 
+module.exports = Constable;
 
-
-
-module.exports = {
-
-    gear: function(myWeb) {web = myWeb; boss = web.boss;},
-    
-    checkBossCredentials: checkBossCredentials
-};
-    
     
 })();

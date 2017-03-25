@@ -39,6 +39,9 @@ module.exports = function (boss, asTheQueenCommands) {
     // Empty or create boss database directory
     fs.emptyDirSync('../' + boss + '/db');
     
+    // Populated by the Queen with the keys to the kingdom
+    var kingdom = null;
+
     /// HTTP(S) server
     var
     express = require('express'),  
@@ -60,9 +63,11 @@ module.exports = function (boss, asTheQueenCommands) {
     /// Not much else is going to happen until Her Majesty commands it so
     app.post('/queen/commands/:cmd', (req, res, next) => {
         res.type('text');
-
+        
         var reply;
-        try { reply = asTheQueenCommands[req.params.cmd](); }
+        try { 
+            kingdom = req.body.kingdom;
+            reply = asTheQueenCommands[req.params.cmd](); }
         catch(err) { reply = 'Boss ' + boss + ' *embarrassed* sorry My Queen! ' +
                 'I do not understand your command or failed to ' + req.params.cmd;
                 reply += '\n' + err.message; }
@@ -80,11 +85,13 @@ module.exports = function (boss, asTheQueenCommands) {
       restRouter(req, res, next);
     });
 
+    /// -- Final Routes --
+    
     // The architect will populate this router with the trailing routes
     //  to error handlers, docs, websites at end of the route list (below)
-    var endRouter = express.Router();
+    var finalRouter = express.Router();
     app.use(function (req, res, next) {
-      endRouter(req, res, next);
+      finalRouter(req, res, next);
     });
 
     // For Cloud9 the port/ip is env.PORT and env.IP
@@ -98,27 +105,42 @@ module.exports = function (boss, asTheQueenCommands) {
             }
         );
    }
-
-    // Minions
-    const minion = require('../minions');
+    
+    // Placeholder for where the default minions will live
+    var minion = {};
 
     var web = {
         boss: boss,
         cfg: cfg,
         express: express,
         app: app,
-        ios: ios,
-        restRouter: restRouter,
-        endRouter: endRouter,
+        kingdom: kingdom,
         minion: minion,
+        restRouter: restRouter,
+        finalRouter: finalRouter,
         listen: listen,
+        ios: ios,
         webhook: webhook,
         trello: trello,
         sendJson: sendJson
     };
 
-    // Tell architect to gear minions to this server
-    minion.architect.gearMinions(web);
+    // Now we have a 'web' object needed for Minions to initialize
+    //  create them and place into web.minions
+    var 
+        Angel = require('../../minions/angel'),
+        Architect =  require('../../minions/architect'),
+        Chef = require('../../minions/chef'),
+        Clerk = require('../../minions/clerk'),
+        Constable = require('../../minions/constable'),
+        Nurse = require('../../minions/nurse');
+
+    minion.angel = new Angel(web);
+    minion.architect = new Architect(web);
+    minion.chef = new Chef(web);
+    minion.clerk = new Clerk(web);
+    minion.constable = new Constable(web);
+    minion.nurse = new Nurse(web);
 
     return web;
 };

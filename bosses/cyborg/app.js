@@ -60,9 +60,8 @@ const web = require('../#gearing/server')(boss, asTheQueenCommands);
 /// Gear up Web Sites, API docs, html pages, js, css, etc. hosted by this server
 web.minion.architect.gearWebSites(bossWebSitesRootPath);
         
-
 console.log('Boss %s and minions geared up', boss);
-
+    
 // Listen for requests from Her Majesty
 web.listen();
 
