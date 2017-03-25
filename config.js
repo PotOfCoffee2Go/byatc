@@ -1,20 +1,21 @@
 module.exports = {
     cyborg: {
-        webAddress:'',  // [Added at runtime] ex: 'https://out.there.somewhere.com' 
         host:'0.0.0.0', // Computer default routes (0.0.0.0 is config by network)
         port: 8080      // Port on computer to run server
     },
     ninja: {
-        webAddress:'',
         host:'0.0.0.0',
         port: 8081
     },
     pirate: {
-        webAddress:'',
         host:'0.0.0.0',
         port: 8082     // Port on computer to run server
     },
+
+    kingdom: {}, // [Added at runtime] Credentials/Keys to the kingdom
+
     websockets: true, // Enable socket.io
+
     trello: { // Enable Trello - change to trelloNotUsed to disable
         me: {
             id: '' // [Added at runtime] Trello member id
@@ -61,5 +62,34 @@ module.exports = {
                 idCard: '[Added at runtime]'
             }
         }
-    }
+    },
+    
+    google: { // Enable google
+        cyborg: {
+            sheets: { // Enable sheets
+                spreadsheetId: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs',
+
+            }
+        },
+        ninja: {
+            sheets: {
+                spreadsheetId: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs',
+            }
+        },
+        pirate: {
+            sheets: {
+                spreadsheetId: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs',
+            }
+        },
+        id: '[Added at runtime]',
+        name:'Onyx and Breezy Auction Templates',
+        customer: {
+            cardName: 'Customer Template',
+            idCard: '[Added at runtime]'
+        },
+        item: {
+            cardName: 'Item Template',
+            idCard: '[Added at runtime]'
+        }
+    },
 };

@@ -10,19 +10,14 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json';
 
-var queenCredentials = null;
+var keys = null;
 
 // First is in local ~/project/GSheet/client_secret.json
 // Second is in ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
-myCredentials(clientSecret, token);
-
-function myCredentials(clientSecret, token) {
-    queenCredentials = {
-        clientSecret: clientSecret,
-        token: token
-    };
+function myCredentials(sheetKeys) {
+    keys = sheetKeys;
     
-    authorize(JSON.parse(queenCredentials.clientSecret), accessWorkbook);
+    authorize(JSON.parse(keys.clientSecret), accessWorkbook);
 
 }
 
@@ -33,9 +28,7 @@ function authorize(credentials, callback) {
     var auth = new googleAuth();
     var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
-    var token = 'ya29.GlsYBDwQT-SZ9vY60f-wrTjAK9CZHkfUFkY4jf7uyv-oYrcMgLQgfZZV-57hUUO0E3yg0J96PMlOxWbbY2u8NYUP6fP7fBvwgJ07pYDJpnsqEzLmRvjouMdWovyX","refresh_token":"1/5hXL2FQvUmvCXR9zuL53Rf7lCvA7Z1Site1vRYjBN_4';
-
-    oauth2Client.credentials = JSON.parse(queenCredentials.token);
+    oauth2Client.credentials = JSON.parse(keys.token);
     callback(oauth2Client);
 }
 
@@ -60,3 +53,6 @@ function accessWorkbook(auth) {
     });
 }
 
+module.exports = {
+    myCredentials: myCredentials
+};

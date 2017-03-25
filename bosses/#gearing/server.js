@@ -12,8 +12,12 @@ const
 
 // Trello
     webhook = require('./trello/webhook'),    // Request handlers for Trello Webhooks
-    trello = require('./trello/trellocommands');
+    trello = require('./trello/trellocommands'),
 
+
+// Google sheets
+    sheets = require('./sheets/api');
+    
 // Configuration
 var appDir = path.dirname(require.main.filename);
 var cfg = require(appDir + '/../../config.js');  
@@ -61,7 +65,7 @@ module.exports = function (boss, asTheQueenCommands) {
         
         var reply;
         try { 
-            web.kingdom = req.body.kingdom;
+            cfg.kingdom = req.body.kingdom;
             reply = asTheQueenCommands[req.params.cmd](); }
         catch(err) { reply = 'Boss ' + boss + ' *embarrassed* sorry My Queen! ' +
                 'I do not understand your command or failed to ' + req.params.cmd;
@@ -109,7 +113,6 @@ module.exports = function (boss, asTheQueenCommands) {
         cfg: cfg,
         express: express,
         app: app,
-        kingdom: kingdom,
         minion: minion,
         restRouter: restRouter,
         finalRouter: finalRouter,
@@ -117,6 +120,7 @@ module.exports = function (boss, asTheQueenCommands) {
         ios: ios,
         webhook: webhook,
         trello: trello,
+        sheets: sheets,
         sendJson: sendJson
     };
 

@@ -107,8 +107,8 @@ Architect.prototype.gearWebsockets = function gearWebsockets() {
 Architect.prototype.gearTrello = function gearTrello() {
     if (web.cfg.trello) {
         
-        web.webhook.setCredentials(web.kingdom.keys.trello);
-        web.trello.setCredentials(web.kingdom.keys.trello);
+        web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
+        web.trello.setCredentials(web.cfg.kingdom.keys.trello);
 
         // dbname, true = auto save, true = pretty
         web.cfg.trello.db = new JsonDB('./db/' + web.cfg.trello.database, true, true);
@@ -161,7 +161,8 @@ Architect.prototype.gearTrello = function gearTrello() {
 };   
     
 Architect.prototype.gearSheets = function gearSheets() {
-    if (web.cfg.sheets) {
+    if (web.cfg.google[web.boss].sheets) {
+        web.sheets.myCredentials(web.cfg.kingdom.keys.sheets);
     }
 };
     
