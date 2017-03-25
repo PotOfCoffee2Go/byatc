@@ -7,6 +7,9 @@ const fs = require('fs'),
       
 const api = JSON.parse(fs.readFileSync(__dirname + '/api.json', "utf8"));
 
+// Trello key and token
+var keys = null;
+
 // FIFO queue of messages that will be sent to Trello
 var trelloEntries = [];
 
@@ -101,8 +104,8 @@ function buildRequest(tapi, data, cb) {
         method: tapi.method,
         uri: 'https://api.trello.com/1' + tapi.url,
         qs: {
-            key: process.env.TRELLO_KEY,
-            token: process.env.TRELLO_TOKEN,
+            key: keys.key,
+            token: keys.token,
         },
         headers: {
             'User-Agent': 'Request-Promise'
@@ -172,6 +175,10 @@ function send(entry) {
         });
 }
 
+
+    module.exports.setCredentials = function(creds) {keys = {key: creds.key, token: creds.token };};
+    // Push request on the FIFO queue
+    module.exports.getToken = function() {return keys.token};
     // Push request on the FIFO queue
     module.exports.push = push;
     // Send requests that are on the FIFO queue

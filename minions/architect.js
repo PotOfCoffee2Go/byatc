@@ -106,7 +106,11 @@ Architect.prototype.gearWebsockets = function gearWebsockets() {
 // Build the Trello interface
 Architect.prototype.gearTrello = function gearTrello() {
     if (web.cfg.trello) {
-         // dbname, true = auto save, true = pretty
+        
+        web.webhook.setCredentials(web.kingdom.keys.trello);
+        web.trello.setCredentials(web.kingdom.keys.trello);
+
+        // dbname, true = auto save, true = pretty
         web.cfg.trello.db = new JsonDB('./db/' + web.cfg.trello.database, true, true);
     
         //  Process Trello REST requests from frontends

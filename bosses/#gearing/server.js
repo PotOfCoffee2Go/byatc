@@ -14,14 +14,9 @@ const
     webhook = require('./trello/webhook'),    // Request handlers for Trello Webhooks
     trello = require('./trello/trellocommands');
 
-// Configuration - (copy the template unless we already did it)
+// Configuration
 var appDir = path.dirname(require.main.filename);
-
-fs.copySync(path.resolve(appDir + '/../../config.js'),
-    path.resolve(appDir + '/../config.js'),
-    {overwrite: false});
-
-var cfg = require('../config.js');  
+var cfg = require(appDir + '/../../config.js');  
 
 /// Helper to send JSON responses
 function sendJson(res, err, data) {
@@ -66,7 +61,7 @@ module.exports = function (boss, asTheQueenCommands) {
         
         var reply;
         try { 
-            kingdom = req.body.kingdom;
+            web.kingdom = req.body.kingdom;
             reply = asTheQueenCommands[req.params.cmd](); }
         catch(err) { reply = 'Boss ' + boss + ' *embarrassed* sorry My Queen! ' +
                 'I do not understand your command or failed to ' + req.params.cmd;

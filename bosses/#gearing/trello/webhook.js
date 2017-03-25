@@ -86,6 +86,7 @@ const
     };
 
     exports = module.exports = {
+        setCredentials: function(creds) { api.setCredentials(creds); },
         trello: function(custCards, req, res, cb) {
             // console.log(util.inspect(req.body, { showHidden: true, depth: null }));
             try {

@@ -1,9 +1,4 @@
 module.exports = {
-    queen: {
-        webAddress:'',  // [Added at runtime] ex: 'http://localhost:8080' 
-        host:'localhost', // Computer default routes (localhost is loopback)
-        port: 8080      // Port on computer to run server
-    },
     cyborg: {
         webAddress:'',  // [Added at runtime] ex: 'https://out.there.somewhere.com' 
         host:'0.0.0.0', // Computer default routes (0.0.0.0 is config by network)
@@ -31,7 +26,7 @@ module.exports = {
                 {
                     id: '', // [Added at runtime] Trello board id
                     name:'Onyx and Breezy Seating Chart', // Name of board on Trello
-                    alias: 'obuser', // Board name used in Database, REST, and Websocket requests
+                    alias: 'guests', // Board name used in Database, REST, and Websocket requests
                     db: null, // [Added at runtime] Object returned when db connect/open
                     // '/cyborg/trello/obuser' Trello webhook callback
                     autoCreateWebhook: false, // Auto create this webhook if not on Trello
@@ -45,7 +40,7 @@ module.exports = {
                 {
                     id: '', // [Added at runtime] Trello board id
                     name:'Onyx and Breezy Categories', // Name of board on Trello
-                    alias: 'obitem', // Board name used in Database, REST, and Websocket requests
+                    alias: 'items', // Board name used in Database, REST, and Websocket requests
                     db: null, // [Added at runtime] Object returned when db connect/open
                     // Trello webhook callback
                     autoCreateWebhook: false, // Auto create this webhook if not on Trello

@@ -25,7 +25,8 @@ Constable.prototype.setQueensCredentials = function setQueensCredentials(creds) 
 
 Constable.prototype.checkBossCredentials = function checkBossCredentials() {
     if (web.cfg.trello) {
-        if (!process.env.TRELLO_TOKEN || !process.env.TRELLO_TOKEN) {
+        if (!web.kingdom.keys || !web.kingdom.keys.trello || 
+            !web.kingdom.keys.trello.key.length > 5 || !web.kingdom.keys.trello.token.length > 5) {
             throw (new Error('Trello Key/Token not in environment'));
         }
     }

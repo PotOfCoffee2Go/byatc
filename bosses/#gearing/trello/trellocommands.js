@@ -57,6 +57,8 @@ var format = {
 }
 
 module.exports = {
+    setCredentials: function(creds) { byatc.setCredentials(creds); },
+    
     getMemberBoards:  function(board, cb) {
         byatc.push('get.member.id.boards',
             telloArguments.getMemberBoards(),
@@ -82,7 +84,7 @@ module.exports = {
     
     getWebhooks: function(board, cb) {
         byatc.push('get.tokens.token.webhooks', {
-            token: process.env.TRELLO_TOKEN
+            token: byatc.getToken()
             }, (err, entry) => {
                 if (err) {
                     board.db.push('/webhooks', err);
