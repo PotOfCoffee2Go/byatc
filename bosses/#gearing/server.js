@@ -10,17 +10,18 @@ const
 // Middleware
     bodyParser = require("body-parser"),
 
-// Trello
-    webhook = require('./trello/webhook'),    // Request handlers for Trello Webhooks
-    trello = require('./trello/trellocommands'),
+// Princess Trello
+
+    webhook = require('../../monarchy/princess/trello/webhook'),    // Request handlers for Trello Webhooks
+    trello = require('../../monarchy/princess/trello/trellocommands'),
 
 
-// Google sheets
-    sheets = require('./sheets/api');
+// Princess Google sheets
+    sheets = require('../../monarchy/princess/sheets/api');
     
 // Configuration
 var appDir = path.dirname(require.main.filename);
-var cfg = require(appDir + '/../../config.js');  
+var cfg = require(appDir + '/../config.js');  
 
 /// Helper to send JSON responses
 function sendJson(res, err, data) {
@@ -33,13 +34,7 @@ function sendJson(res, err, data) {
     }
 }
 
-module.exports = function (boss, asTheQueenCommands) {
-
-    // Empty or create boss database directory
-    fs.emptyDirSync('../' + boss + '/db');
-    
-    // Populated by the Queen with the keys to the kingdom
-    var kingdom = null;
+module.exports = function (asTheQueenCommands) {
 
     /// HTTP(S) server
     var
@@ -60,14 +55,13 @@ module.exports = function (boss, asTheQueenCommands) {
     app.get('/health', (req, res, next) => {sendJson(res, null, {'health':'ok'});});
 
     /// Not much else is going to happen until Her Majesty commands it so
-    app.post('/queen/commands/:cmd', (req, res, next) => {
+    app.post('/queen/commands/:boss/:cmd', (req, res, next) => {
         res.type('text');
-        
         var reply;
         try { 
             cfg.kingdom = req.body.kingdom;
-            reply = asTheQueenCommands[req.params.cmd](); }
-        catch(err) { reply = 'Boss ' + boss + ' *embarrassed* sorry My Queen! ' +
+            reply = asTheQueenCommands[req.params.cmd](req.params.boss); }
+        catch(err) { reply = 'Boss ' + web.boss + ' *embarrassed* sorry My Queen! ' +
                 'I do not understand your command or failed to ' + req.params.cmd;
                 reply += '\n' + err.message; }
 
@@ -100,7 +94,7 @@ module.exports = function (boss, asTheQueenCommands) {
             env.OPENSHIFT_NODEJS_PORT || env.PORT || 3000,
             env.OPENSHIFT_NODEJS_IP || env.IP || 'localhost',
             () => {
-                console.log('Boss ' + boss + ' waiting for commands from Her Majesty');
+                console.log('Boss ' + '???' + ' waiting for commands from Her Majesty');
             }
         );
    }
@@ -109,7 +103,7 @@ module.exports = function (boss, asTheQueenCommands) {
     var minion = {};
 
     var web = {
-        boss: boss,
+        boss: {name:'unassigned'},
         cfg: cfg,
         express: express,
         app: app,

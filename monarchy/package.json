@@ -1,0 +1,36 @@
+{
+  "name": "byatc-monarchy",
+  "version": "0.5.0",
+  "description": "Best Yielding Auction Tool Created - Bosses",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": "https://github.com/PotOfCoffee2Go/byatc.git",
+  "author": "PotOfCoffee2Go",
+  "contributors": [
+    {
+      "name": "Jim Kauffman"
+    },
+    {
+      "name": "Yisheng",
+      "url": "https://github.com/Yishengtang"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "fs-extra": "^2.1.2",
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^18.0.0",
+    "hbs": "^4.0.1",
+    "moment-timezone": "^0.5.11",
+    "node-json-db": "^0.7.3",
+    "phpass": "^0.1.1",
+    "request": "^2.81.0",
+    "request-promise": "^4.1.1",
+    "socket.io": "^1.4.6",
+    "socket.io-client": "^1.7.2"
+  }
+}

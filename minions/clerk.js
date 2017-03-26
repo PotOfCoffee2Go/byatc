@@ -28,7 +28,7 @@ Clerk.prototype.onGetDb = function onGetDb(req, res, next, cb) {
         data =  web.cfg.trello.db.getData(resource);
         prayer = minion.angel.prayer(minionName, fullUrl.pathname, data, fullUrl.href);
     } catch(err) {
-        error = new MinionError(web.boss, minionName, "Can't get data from Db", 101, err);
+        error = new MinionError(web.boss.name, minionName, "Can't get data from Db", 101, err);
         //error.inner = err;
         return next(error);
     }

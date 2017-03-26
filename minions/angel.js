@@ -10,7 +10,7 @@ const
     minionName = 'angel';
 
 // Express web server and boss for this minion
-var web = null, boss = null;
+var web = null;
 
 function Angel (bossWeb) {
     web = bossWeb;
@@ -19,7 +19,7 @@ function Angel (bossWeb) {
 // Prayer is the payload for REST and/or Websocket responses
 Angel.prototype.prayer = function prayer(minionname, resource, data, location, status, error) {
     return {
-        boss: web.boss,
+        boss: web.boss.name,
         minion: minionname,
         resource: resource,
         data: data ? data : null,

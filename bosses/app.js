@@ -4,10 +4,9 @@
 
 var machineryRunning = false;
 
-// Get this boss directory and Web Site root directory
-var bossDir = __dirname.split('/'), boss = bossDir[bossDir.length-1],
-    bossWebSitesRootPath = bossDir.join('/') + '/www';
-    
+// Get Web Site root directory
+var webSitesRootPath = require('path').resolve(__dirname + '/www');
+
 /// Commands from the queen
 var asTheQueenCommands = {
     
@@ -15,14 +14,16 @@ var asTheQueenCommands = {
     //  Note that the order of starting the machines up is important as they
     //   are adding app.get/post/etc routes to express, which is touchy
     //   about the order of said routes
-    startMachines: function startMachines() {  
+    startMachines: function startMachines(boss) {  
         const architect = web.minion.architect;
-    
+
         if (machineryRunning) {
-            return 'Boss ' + boss + ' *bows* sorry my Queen! ' +
+            return 'Boss ' + boss + ' *bows* sorry my Majesty! ' +
                 'already at full steam';
         }
     
+        architect.gearBoss(boss);
+
         // Check enviroment variables for the credential
         //   keys/tokens and such to our friends at Trello and Google Sheet 
         web.minion.constable.checkBossCredentials();
@@ -55,12 +56,12 @@ var asTheQueenCommands = {
 
 
 /// Spark up boss's web server and architect
-const web = require('../#gearing/server')(boss, asTheQueenCommands);
+const web = require('./#gearing/server')(asTheQueenCommands);
 
 /// Gear up Web Sites, API docs, html pages, js, css, etc. hosted by this server
-web.minion.architect.gearWebSites(bossWebSitesRootPath);
+web.minion.architect.gearWebSites(webSitesRootPath);
         
-console.log('Boss %s and minions geared up', boss);
+console.log('Core server loaded');
     
 // Listen for requests from Her Majesty
 web.listen();

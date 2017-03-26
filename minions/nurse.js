@@ -35,7 +35,7 @@ Nurse.prototype.criticalSiteCare = function criticalSiteCare(notFoundPath, req, 
         if (req.accepts('json')) {
             console.log('Nurse got a Web Site patient - doa ;( that accepts JSON - responding');
             console.log('Replying RESTfully in JSON');
-            var err = new MinionError(web.boss, minionName, 'Resource not found', 210, null);
+            var err = new MinionError(web.boss.name, minionName, 'Resource not found', 210, null);
             delete err.stack;
             var unAnseredPrayer = web.minion.angel.prayer(minionName, req.originalUrl, null, null, {code: 418, text: '418 - I\'m a teapot'}, err);
             web.sendJson(res, null, unAnseredPrayer);

@@ -2,24 +2,26 @@
 /*
 DO NOT MODIFY THIS FILE IN THE REPO!
 
-Copy into a directory on your LOCAL MACHINE which has nodejs installed.
-Edit the bosses https:// web addresses and keys into the kingdom object below
-Save and run 'npm install request' from a command prompt
+Copy 'queen.js' into a directory on your LOCAL MACHINE which has node installed
+  (https://nodejs.org/en/)
+
+Place the bosses web addresses and keys into the kingdom object below - save
+Thus, the only place where the keys to the kingdom reside is in
+    your copy of queen.js on your local machine ;)
+
+From a command prompt in the directory you put 'queen.js' - run
 $ npm install request
 
-Just ignore warnings at the end - npm bitching about not seeing a 'package.json'
-
-Run queen.js from command prompt on your local machine which sends a request
-to 'cyborg' to start up - cyborg broadcasts the message to the other
-bosses for them to start up as well.
+Then run from command prompt when ready to start up the bosses (advisors?)
 
 $ node queen
 
-Thus, the only place where the keys to the kingdom reside is in
-    your personal copy of queen.js on your local machine ;)
+You should see a messge indicating the system is running or error message if
+one has occured.
 
-Keep this copy safe from prying eyes and for goodness sake use https on the
-servers. Always!
+Note: If you believe the keys have been compromised - log onto Trello, Google
+  Sheets, Twitter, etc and remove 'byatc auction system' from your 'app'
+  authorization list and re-authenticate with a new set of credentials.
 
 */
 
@@ -35,27 +37,28 @@ var kingdom = {
             token: ''
         },
         sheets: {
-            client_secret: '',
+            clientSecret: '',
             token: ''
         }
-    }
-    
-};
+    } 
+}
 
 const // Modules
     request = require('request');
 
-function startBosses() {
+
+function startAdvisors() {
+
 
     console.log('cyborg is at: %s', kingdom.websites.cyborg);
     console.log('ninja  is at: %s', kingdom.websites.ninja);
     console.log('pirate is at: %s', kingdom.websites.pirate);
 
     request({
-        url:kingdom.websites.cyborg + '/queen/commands/startMachines',
+        url:kingdom.websites.cyborg + '/queen/commands/cyborg/startMachines',
         method: 'POST',
-        json: {kingdom:kingdom}
-        }, (err,httpResponse,body) => { 
+        json: {kingdom:kingdom}},
+        function (err,httpResponse,body) { 
             if (err) {
                 console.log(err);
             }
@@ -66,6 +69,5 @@ function startBosses() {
     );
 }
 
-startBosses();
-
+startAdvisors();
 

@@ -16,12 +16,12 @@ const
 var listeners = [];
 
 // Express web server and boss for this minion
-var web = null, sitedir = null, commonSiteDir = null; // assigned later
+var web = null, siteDir = null; // assigned later
 
 // Given a valid path to .md file - converts it to HTML and sends to requester
 var markdown = function (req, res, next) {
 
-    var mdfile = commonSiteDir + '/docs' + req.url;
+    var mdfile = siteDir + '/docs' + req.url;
     var ext = path.extname(req.url);
     
     // Only interestedfilers with no or .md extension
@@ -57,17 +57,25 @@ function Architect (bossWeb) {
     web = bossWeb;
 }
 
-/// Frontend sites, API Docs, -  html, js, css, etc
-Architect.prototype.gearWebSites = function gearWebSites(bossSitesDir) {
-    sitedir = bossSitesDir;
-    commonSiteDir = path.resolve(sitedir, '../../www');
+Architect.prototype.gearBoss = function gearBoss(bossName) {
+    // Empty or create boss database directory
+    var bossDir = path.join(__dirname,'../bosses/', bossName),
+        bossWww = path.join(__dirname,'../bosses/www');
+        
+    web.boss = {name: bossName, dir: bossDir, www: bossWww} ;
+    
+    // Clear the working database directory
+    fs.emptyDirSync(web.boss.dir + '/db');
+};    
 
+/// Frontend sites, API Docs, -  html, js, css, etc
+Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
+    siteDir = sitedir;
     web.finalRouter.use('/docs', markdown); // give markdown a try first
-    web.finalRouter.use('/docs', web.express.static(commonSiteDir + '/docs'));
-    web.finalRouter.use(web.boss, web.express.static(bossSitesDir,{index: 'index.html'}));
+    web.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
 
     web.finalRouter.use(function(req, res, next) {
-        web.minion.nurse.criticalSiteCare(bossSitesDir,req, res, next);
+        web.minion.nurse.criticalSiteCare(siteDir,req, res, next);
     });
 };
 
@@ -111,10 +119,10 @@ Architect.prototype.gearTrello = function gearTrello() {
         web.trello.setCredentials(web.cfg.kingdom.keys.trello);
 
         // dbname, true = auto save, true = pretty
-        web.cfg.trello.db = new JsonDB('./db/' + web.cfg.trello.database, true, true);
+        web.cfg.trello.db = new JsonDB(web.boss.dir + '/db/' + web.cfg.trello.database, true, true);
     
         //  Process Trello REST requests from frontends
-        web.restRouter.get('/' + web.boss + '/clerk/trello*', (req, res, next) => {
+        web.restRouter.get('/' + web.boss.name + '/clerk/trello*', (req, res, next) => {
             web.minion.clerk.onGetDb(req, res, next, function(err, prayer) {
                 if (err) return next(err);
                 web.sendJson(res, null, prayer);
@@ -122,7 +130,7 @@ Architect.prototype.gearTrello = function gearTrello() {
         });
         
         /// ---------- Requests from Trello WebHook
-        web.cfg.trello[web.boss].boards.forEach((board) => {
+        web.cfg.trello[web.boss.name].boards.forEach((board) => {
             board.db = web.cfg.trello.db;
     
             // Trello WebHooks Verification - always send back 200 response code
@@ -140,7 +148,7 @@ Architect.prototype.gearTrello = function gearTrello() {
         });
 
         listeners.push(function() {
-            web.cfg.trello[web.boss].boards.forEach((board) => {
+            web.cfg.trello[web.boss.name].boards.forEach((board) => {
                async.series([
                     function(callback) {web.trello.getMemberBoards(board, (err) => {callback(err);})},
                     function(callback) {web.trello.getWebhooks(board, (err) => {callback(err);})},
@@ -161,7 +169,7 @@ Architect.prototype.gearTrello = function gearTrello() {
 };   
     
 Architect.prototype.gearSheets = function gearSheets() {
-    if (web.cfg.google[web.boss].sheets) {
+    if (web.cfg.google[web.boss.name].sheets) {
         web.sheets.myCredentials(web.cfg.kingdom.keys.sheets);
     }
 };

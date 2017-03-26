@@ -30,6 +30,7 @@ commanded by Her Majesty :
 -----
 
 ### 'Monarchy' - Her Majesty
+`/monarchy/queen.js`
 
  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/queen.svg" height="110" width="110" align="left">
  <br />The Queen -  has three trusted advisors; cyborg, ninja, and pirate. They live to do just as the queen commands.
@@ -37,6 +38,29 @@ commanded by Her Majesty :
  the machines of the the auction. She also has the keys to the Kingdom - Trello, Google, S3, etc. 
  There are other activites she commands - such as sending out the RSVPs to guests,
  procuring of auction items, guest seating arrangements, etc.<br /><br />
+
+-------
+
+#### Princesses
+
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesstrello.svg" height="64" width="64" align="left"><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesssheets.svg" height="64" width="64" align="left">
+ 
+ <br /> <br /> <br /> Todo: text about princesses
+ 
+-----
+
+#### Princess Trello
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesstrello.svg" height="80" width="80" align="left">
+ <br />Princess Trello -  <br /><br /><br />
+
+`/monarchy/princess/trello directory`
+
+
+#### Princess Google Sheets
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesssheets.svg" height="80" width="80" align="left">
+ <br />Princess Sheets -  <br /><br /><br />
+
+`/monarchy/princess/sheets directory`
 
 -------
 
@@ -54,6 +78,7 @@ Treasurer handles payments and financials for items won by guests.
 -------
 
 ### 'Cyborg' - Auction Administrator
+`/bosses/cyborg directory`
 
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/cyborg.svg" height="80" width="80" align="left">
 On startup - requests all interesting data from cards and comments for boards on Trello. 
@@ -64,6 +89,7 @@ Cyborg commands the minions to request all interesting info for that card from T
 The Minions update the JSON database with the response from Trello.
 
 ### 'Ninja' - Auctioneer
+`/bosses/ninja directory`
 
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ninja.svg" height="80" width="80" align="left">
 Auction specific Frontends, web sites, and/or web pages connect via Websockets (for dynamic 
@@ -71,7 +97,8 @@ updates of auction item bid price updates). Bids can be placed via the RESTful o
 (socket.io) interface. Various item setup options available such as open, reserve, and incremental price.
 <br /><br />
 
-### 'Pirate' - Auction Treasurer
+### 'Pirate' - Auction Accounting
+`/bosses/pirate directory`
 
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/pirate.svg" height="80" width="80" align="left">
 Interfaces to Paypal/Credit Card Processors, Banks, etc. for payment of won auction items. 
@@ -97,30 +124,61 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 
 -------
 
-### The basic functions needed by all three bosses are:
+### The Minions do the tasks required by the auction system
+
 <br />
+
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/angel.svg" height="64" width="64" align="left">
  <p><b>angel</b> - Requests: make a request and pray it gets done.</p>
 
 <br />
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/nurse.svg" height="64" width="64" align="left">
+
+ `/minion/angel.js`
+
+<br />
+
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/nurse.svg" height="64" width="64" align="left">
  <p><b>nurse</b> - System health: handles all errors thrown by system and insures data validation, integrity, and consistancy.</p>
 
 <br />
+
+ `/minion/nurse.js`
+
+<br />
+ 
  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/architect.svg" height="64" width="64" align="left">
  <p><b>architect</b> - Object creation and destruction: creates, initializes, and deletes system objects and elements.</p>
 
 <br />
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/chef.svg" height="64" width="64" align="left">
+
+ `/minion/architect.js`
+ 
+<br />
+
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/chef.svg" height="64" width="64" align="left">
  <p><b>chef</b> - Reporting: performs data query, calculation, and report generation.</p>
 
 <br />
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/clerk.svg" height="64" width="64" align="left">
- <p><b>clerk</b> - Distribution: organizes distribution of information between bosses, guests, and cloud.</p>
+
+ `/minion/chef.js`
 
 <br />
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/constable.svg" height="64" width="64" align="left">
- <p><b>constable</b> - Security: controls and ensures data access rights are enforced.</p>
+
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/clerk.svg" height="64" width="64" align="left">
+ <p><b>clerk</b> - Database Management: store and access information for princesses, bosses, and minions.</p>
+
+<br />
+
+ `/minion/clerk.js`
+ 
+<br />
+
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/constable.svg" height="64" width="64" align="left">
+ <p><b>constable</b> - Security: Verifies guest credentials, controls and ensures data access rights are enforced.</p>
+
+<br />
+
+ `/minion/constable.js`
 
 -------
 
