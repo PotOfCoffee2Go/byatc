@@ -4,40 +4,25 @@
 
 -----
 
-Three servers - one administers and manages guest and item information. 
-An auction server to handle accepting and distribution of item pricing, bids, and winnings. 
-A payment server for guests to pay for won items.
-
-There is a browser side API which handles the lower level stuff allowing frontends to easily implement
-functions to process requests and responses by the servers.
-
-The servers are full blown Nodejs express Web Site/REST/Websocket servers using the expressjs framework. Each server has a 
-RESTFul interface, but IMHO the socket.io Websocket interface is the way to go. 
-The resource name (url path) and resulting data payload response is the same for either REST or Websocket requests.
-
-For the Websocket interface, a JSON object is returned that mimics the content that is normally in the Header of a 
-REST request (status code, content-type, etc). The advantage of a Websocket is that web frontends can 'Watch' 
-resource names. When a resource data changes the server will send (emit) the update via the Websocket. 
-This is especially important for Web Frontends connected to the Ninja Auction Server; 
-since they can Watch auction items and will notified of bid price changes. 
-(Thus eliminating the 'polling' that would be required when using the REST interface.)
-
-
-**Enough of the techie stuff**. Now for some SteamPunk fun! Auctions take place in the Victorian era - the age of steam powered machines 
-made of gears, wheels, sprockets, and such. The architecture of auction operation and code itself is organized As 
-commanded by Her Majesty :
+**No techie stuff!**. Now, for some SteamPunk fun! Auctions take place in the Victorian era - the age when auctions
+were done under the power of steam and minions. It is made of gears, wheels, wires, sprockets, and such. The auction operation
+(and code itself) is organized As commanded by Her Majesty, the Queen :
 
 -----
 
-### 'Monarchy' - Her Majesty
+### 'Monarchy'
+
+#### Her Majesty
 `/monarchy/queen.js`
 
  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/queen.svg" height="110" width="110" align="left">
- <br />The Queen -  has three trusted advisors; cyborg, ninja, and pirate. They live to do just as the queen commands.
- when it comes to the Kingdom's Gala Auction Event she commands her advisors when to gear up, start, suspend, and stop 
- the machines of the the auction. She also has the keys to the Kingdom - Trello, Google, S3, etc. 
- There are other activites she commands - such as sending out the RSVPs to guests,
- procuring of auction items, guest seating arrangements, etc.<br /><br />
+ <br />The Queen - has Princesses and trusted Advisors to run the yearly <b>Kingdom Gala Event</b>, which, along with
+ guests dancing, rubbing elbows, networking, and partying; a live auction of rare and exquisite items are put up for bid.
+ Princesses and advisors live to do as the Queen commands and make available to guests items for auction by cell phone.
+ 
+The Queen also has the keys to the Kingdom - credentials needed by Princesses Trello, Sheets, Twitter, Facebook, etc. to
+do as the Queen commands. The Queen is also intimately involved with sending out the RSVPs to guests, procuring of auction
+items, guest seating arrangements, etc.<br /><br />
 
 -------
 
@@ -45,22 +30,32 @@ commanded by Her Majesty :
 
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesstrello.svg" height="64" width="64" align="left"><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesssheets.svg" height="64" width="64" align="left">
  
- <br /> <br /> <br /> Todo: text about princesses
+ <br /> <br /> <br /> Under the Queen are the Princesses who are given the task of insuring that the yearly 
+ <b>Kingdom's Gala Event</b> runs smoothly. The Princesses gather auction information and send guests updates
+ about the auction as it is running.
  
 -----
 
 #### Princess Trello
  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesstrello.svg" height="80" width="80" align="left">
- <br />Princess Trello -  <br /><br /><br />
+ Princess Trello - monitors the activities of auction guests, if a guest gets on the wrong side of the Queen, they
+ could be excluded from bidding on items up for auction (It is nice to be the Queen). By setting flags on the auction
+ <a href="https://trello.com/">Trello</a> boards one controls guest access to the auction. <br /><br /><br />
 
 `/monarchy/princess/trello directory`
 
 
-#### Princess Google Sheets
+#### Princess Sheets
  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesssheets.svg" height="80" width="80" align="left">
- <br />Princess Sheets -  <br /><br /><br />
+ Princess Sheets - is responsible for all information about guests and items up for bid. When the auction starts
+ Princess Sheets gives the guest and item list to the Advisors' - who register guests and puts 
+ items on the auction block. She also updates the financial reports for items won at auction.
+ <br /><br /><br />
 
 `/monarchy/princess/sheets directory`
+
+
+<b> ToDo: Prince SMS, Facebook and Twitter </b>
 
 -------
 
@@ -69,11 +64,11 @@ commanded by Her Majesty :
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/cyborg.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ninja.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/pirate.svg" height="64" width="64" />
 
 Her Majesty calls them "Advisors" thus maintaining a resemblance of royality - but the minions and rest of the kingdom 
-call them "bosses", so we shall too.
+call them <b>bosses</b>, so we shall too.
 
-Auction Administrator setup, create, monitor, and manage auction guests and items.<br />
-Auctioneer handles the auction itself including auction items, bids, buy-now, and bidder-to-bidder messaging.<br />
-Treasurer handles payments and financials for items won by guests.
+<b>Administrator</b> sets up, creates, monitors, and manages auction guests and items.<br />
+<b>Auctioneer</b> handles the auction itself. Auction items, bids, buy-now, and bidder-to-bidder messaging.<br />
+<b>Accountant</b> handles online payments and financials for items won by guests.
 
 -------
 
@@ -81,28 +76,29 @@ Treasurer handles payments and financials for items won by guests.
 `/bosses/cyborg directory`
 
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/cyborg.svg" height="80" width="80" align="left">
-On startup - requests all interesting data from cards and comments for boards on Trello. 
-The minions use the data to create a JSON database representing the cards and comments on the boards. 
-If not already created, board level webhooks are created on Trello. Trello sends update events of user 
-interaction with the Trello boards via the webhooks. Using the board and card ids given by the webhooks,
-Cyborg commands the minions to request all interesting info for that card from Trello. 
-The Minions update the JSON database with the response from Trello.
+When the Queen commands for the auction to begin, Cyborg kicks Ninja and Pirate in the butt - get ready for work! Gear the 
+machinery and fire up the steam engines! Princess Sheets provides the data about auction guests and items.
+Princess Trello creates the boards used to monitor the auction. Cyborg's architect sets up the intercom system
+between the bosses. A flury of activity occurs among each boss's minions preparing for the auction. The big day has arrived!
 
 ### 'Ninja' - Auctioneer
 `/bosses/ninja directory`
 
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ninja.svg" height="80" width="80" align="left">
-Auction specific Frontends, web sites, and/or web pages connect via Websockets (for dynamic 
-updates of auction item bid price updates). Bids can be placed via the RESTful or the WebSocket 
-(socket.io) interface. Various item setup options available such as open, reserve, and incremental price.
+The Auctioneer gargles and clears his throat - readying for auction. His minions run around gathering and writing on
+blackboards each item's status; starting, incremental, and buy-now prices. Ready to take the bids from guests of the
+Queen's Gala Event.
+
 <br /><br />
 
-### 'Pirate' - Auction Accounting
+### 'Pirate' - Auction Accountant
 `/bosses/pirate directory`
 
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/pirate.svg" height="80" width="80" align="left">
-Interfaces to Paypal/Credit Card Processors, Banks, etc. for payment of won auction items. 
- Produces invoices, receipts, statements, and financials for non-profit or for-profit organizations.
+Although is of questionable character, the Queen commands via cyborg that 'Pirate' is to handle the Checkout
+process for items purchased during the event. The Pirate insures he can communicate to Paypal, Credit Card Processors, Banks, etc.
+to process payment of items won on auction. He prepares minions to produce invoices, receipts, statements, and financial
+reports for distribution to Princess Sheets... Then goes back to bed.
 <br /><br /><br />
 
 -------
