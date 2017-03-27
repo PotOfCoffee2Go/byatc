@@ -21,8 +21,19 @@ Nurse.prototype.criticalRestCare = function criticalRestCare(err, req, res, next
         if (err.inner) delete err.inner.stack;
         if (!err.inner) delete err.inner;
         delete err.stack;
-        var unAnseredPrayer = web.minion.angel.prayer(minionName, req.originalUrl, null, null, {code: 418, text: '418 - I\'m a teapot'}, err);
-        web.sendJson(res, null, unAnseredPrayer);
+
+        if (err.prayer) {
+            var denied = err.prayer;
+            denied.resource = req.originalUrl;
+            denied.data = denied.location = null;
+            denied.status = {code: 418, text: '418 - I\'m a teapot'};
+            delete err.prayer;
+            denied.error = err;
+            web.sendJson(res, null, denied);
+        }
+        else {
+            web.sendJson(res, null, err);
+        }
     }
     
 Nurse.prototype.criticalSiteCare = function criticalSiteCare(notFoundPath, req, res, next) {

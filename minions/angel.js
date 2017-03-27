@@ -17,16 +17,22 @@ function Angel (bossWeb) {
 }
 
 // Prayer is the payload for REST and/or Websocket responses
-Angel.prototype.prayer = function prayer(minionname, resource, data, location, status, error) {
+Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
+    var fullUrl = web.minion.angel.getNodejsURL(req, res, next);
+    var path = fullUrl.pathname.split('/');
+    // Remove the '/boss/minion/' part - what is left references the object in the DB
+    var resource = '/' + fullUrl.pathname.split('/').slice(4).join('/');
+    // Send the prayer to the requester
     return {
-        boss: web.boss.name,
-        minion: minionname,
+        bossName: path[1],
+        minionName: path[2],
         resource: resource,
-        data: data ? data : null,
-        location: decodeURI(location),
-        status: status ? status : {code: 200, text: '200 - OK'},
-        error: error ? error : null };
-    },
+        data: null,
+        location: decodeURI(fullUrl.href),
+        status: {code: 200, text: '200 - OK'},
+        error: null
+    };
+},
 
 /// Get the absolute url of the request
 ///    ie: https://host/path?querystring#hash part from the url

@@ -101,6 +101,7 @@ module.exports = function (asTheQueenCommands) {
     
     var web = {
         boss: {name:'unassigned'},
+        bosses: {},
         cfg: cfg,
         express: express,
         app: app,

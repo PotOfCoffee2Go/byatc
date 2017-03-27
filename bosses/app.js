@@ -14,8 +14,8 @@ var boss = function(bossName) {
         
     return {name: bossName, dir: bossDir, www: bossWww};
 };
-            
-var bosses = {};
+
+
 
 // Get Web Site root directory
 var webSitesRootPath = require('path').resolve(__dirname + '/www');
@@ -30,14 +30,14 @@ var asTheQueenCommands = {
     startMachines: function startMachines(bossName) {  
         const architect = web.minion.architect;
 
-        if (bosses[bossName]) {
+        if (web.bosses[bossName]) {
             return 'Boss ' + bossName + ' *bows* sorry my Majesty! ' +
                 'already at full steam';
         }
 
-        bosses[boss] = boss(bossName);
+        web.bosses[boss] = boss(bossName);
         
-        architect.gearBoss(bosses[boss]);
+        architect.gearBoss(web.bosses[boss]);
 
         var reply = 'Boss ' + boss + ' *bows* starting up machinery My Queen!';
         console.log(reply);

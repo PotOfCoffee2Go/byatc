@@ -146,8 +146,12 @@ Architect.prototype.gearTrello = function gearTrello(boss) {
     
         //  Process Trello REST requests from frontends
         web.restRouter.get('/' + boss.name + '/clerk/trello*', (req, res, next) => {
-            web.minion.clerk.onGetDb(req, res, next, function(err, prayer) {
-                if (err) return next(err);
+            var prayer = web.minion.angel.invokePrayer(req, res, next);
+            web.minion.clerk.onGetDb(req, res, next, prayer, function(err, prayer) {
+                if (err) {
+                    err.prayer = prayer;
+                    return next(err);
+                }
                 web.sendJson(res, null, prayer);
             });
         });
