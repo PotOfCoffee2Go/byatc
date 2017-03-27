@@ -2,7 +2,20 @@
 
 (function () {
 
-var machineryRunning = false;
+const
+    path = require('path')
+
+
+var boss = function(bossName) {
+    // Empty or create boss database directory
+    var 
+        bossDir = path.join(__dirname,'../bosses/', bossName),
+        bossWww = path.join(__dirname,'../bosses/www');
+        
+    return {name: bossName, dir: bossDir, www: bossWww};
+};
+            
+var bosses = {};
 
 // Get Web Site root directory
 var webSitesRootPath = require('path').resolve(__dirname + '/www');
@@ -14,40 +27,18 @@ var asTheQueenCommands = {
     //  Note that the order of starting the machines up is important as they
     //   are adding app.get/post/etc routes to express, which is touchy
     //   about the order of said routes
-    startMachines: function startMachines(boss) {  
+    startMachines: function startMachines(bossName) {  
         const architect = web.minion.architect;
 
-        if (machineryRunning) {
-            return 'Boss ' + boss + ' *bows* sorry my Majesty! ' +
+        if (bosses[bossName]) {
+            return 'Boss ' + bossName + ' *bows* sorry my Majesty! ' +
                 'already at full steam';
         }
-    
-        architect.gearBoss(boss);
 
-        // Check enviroment variables for the credential
-        //   keys/tokens and such to our friends at Trello and Google Sheet 
-        web.minion.constable.checkBossCredentials();
+        bosses[boss] = boss(bossName);
         
-        /// WebSocket Interface
-        architect.gearWebsockets();
-        
-        /// Intercom communication between bosses
-        architect.gearIntercom();
-        
-        /// Interface to Trello boards
-        architect.gearTrello();
-        
-        /// Interface to Google sheets
-        architect.gearSheets();
-        
-        // Have architect start up the mechanisms created
-        architect.activateMachinery();
-    
-        /// Error Handling of REST API machinery
-        architect.gearRestErrorHandler();
-        
-        machineryRunning = true;
-    
+        architect.gearBoss(bosses[boss]);
+
         var reply = 'Boss ' + boss + ' *bows* starting up machinery My Queen!';
         console.log(reply);
         return reply; 
@@ -60,7 +51,7 @@ const web = require('./#gearing/server')(asTheQueenCommands);
 
 /// Gear up Web Sites, API docs, html pages, js, css, etc. hosted by this server
 web.minion.architect.gearWebSites(webSitesRootPath);
-        
+
 console.log('Core server loaded');
     
 // Listen for requests from Her Majesty

@@ -61,7 +61,7 @@ module.exports = function (asTheQueenCommands) {
         try { 
             cfg.kingdom = req.body.kingdom;
             reply = asTheQueenCommands[req.params.cmd](req.params.boss); }
-        catch(err) { reply = 'Boss ' + web.boss + ' *embarrassed* sorry My Queen! ' +
+        catch(err) { reply = 'Boss ' + req.params.boss + ' *embarrassed* sorry My Queen! ' +
                 'I do not understand your command or failed to ' + req.params.cmd;
                 reply += '\n' + err.message; }
 
@@ -99,15 +99,12 @@ module.exports = function (asTheQueenCommands) {
         );
    }
     
-    // Placeholder for where the default minions will live
-    var minion = {};
-
     var web = {
         boss: {name:'unassigned'},
         cfg: cfg,
         express: express,
         app: app,
-        minion: minion,
+        minion: null,
         restRouter: restRouter,
         finalRouter: finalRouter,
         listen: listen,
@@ -118,25 +115,17 @@ module.exports = function (asTheQueenCommands) {
         sendJson: sendJson
     };
 
-    // Now we have a 'web' object needed for Minions to initialize
-    //  create them and place into web.minions
-    var 
-        Angel = require('../../minions/angel'),
-        Architect =  require('../../minions/architect'),
-        Chef = require('../../minions/chef'),
-        Clerk = require('../../minions/clerk'),
-        Constable = require('../../minions/constable'),
-        Nurse = require('../../minions/nurse');
-
-    minion.angel = new Angel(web);
-    minion.architect = new Architect(web);
-    minion.chef = new Chef(web);
-    minion.clerk = new Clerk(web);
-    minion.constable = new Constable(web);
-    minion.nurse = new Nurse(web);
+    // Minions live here
+    web.minion = {
+        angel: new (require('../../minions/angel'))(web),
+        architect:  new (require('../../minions/architect'))(web),
+        chef: new (require('../../minions/chef'))(web),
+        clerk: new (require('../../minions/clerk'))(web),
+        constable: new (require('../../minions/constable'))(web),
+        nurse: new (require('../../minions/nurse'))(web)
+    };
 
     return web;
 };
-
 
 })();

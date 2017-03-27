@@ -53,19 +53,41 @@ var markdown = function (req, res, next) {
     });
 };
 
-function Architect (bossWeb) {
-    web = bossWeb;
+function Architect (expressjs) {
+    web = expressjs;
 }
 
-Architect.prototype.gearBoss = function gearBoss(bossName) {
-    // Empty or create boss database directory
-    var bossDir = path.join(__dirname,'../bosses/', bossName),
-        bossWww = path.join(__dirname,'../bosses/www');
+Architect.prototype.gearBoss = function gearBoss(boss) {
+    const architect = web.minion.architect;
+
+    if (boss.name === 'cyborg') {
+        // Clear the working database directory
+        fs.emptyDirSync(boss.dir + '/db');
+
+        // Check enviroment variables for the credential
+        //   keys/tokens and such to our friends at Trello and Google Sheet 
+        web.minion.constable.checkBossCredentials(boss);
         
-    web.boss = {name: bossName, dir: bossDir, www: bossWww} ;
+        /// WebSocket Interface
+//        architect.gearWebsockets(boss);
+        
+        /// Intercom communication between bosses
+        architect.gearIntercom(boss);
+
+        /// Interface to Trello boards
+        architect.gearTrello(boss);
+        
+        /// Interface to Google sheets
+//        architect.gearSheets.call(boss);
+        
+        // Have architect start up the mechanisms created
+        architect.activateMachinery(boss);
     
-    // Clear the working database directory
-    fs.emptyDirSync(web.boss.dir + '/db');
+        /// Error Handling of REST API machinery
+        architect.gearRestErrorHandler(boss);
+        
+    }
+    
 };    
 
 /// Frontend sites, API Docs, -  html, js, css, etc
@@ -80,11 +102,12 @@ Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
 };
 
 /// Intercom communication between bosses
-Architect.prototype.gearIntercom = function gearIntercom(bossDir) {
+Architect.prototype.gearIntercom = function gearIntercom(boss) {
+    console.log(boss);
     // Todo: Intercom system
 };
 
-Architect.prototype.gearWebsockets = function gearWebsockets() {
+Architect.prototype.gearWebsockets = function gearWebsockets(boss) {
     if (web.cfg.websockets) {
         listeners.push(function() {
             web.ios.on('connection', (socket) => {
@@ -112,17 +135,17 @@ Architect.prototype.gearWebsockets = function gearWebsockets() {
 };
     
 // Build the Trello interface
-Architect.prototype.gearTrello = function gearTrello() {
+Architect.prototype.gearTrello = function gearTrello(boss) {
     if (web.cfg.trello) {
         
         web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
         web.trello.setCredentials(web.cfg.kingdom.keys.trello);
 
         // dbname, true = auto save, true = pretty
-        web.cfg.trello.db = new JsonDB(web.boss.dir + '/db/' + web.cfg.trello.database, true, true);
+        web.cfg.trello.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database, true, true);
     
         //  Process Trello REST requests from frontends
-        web.restRouter.get('/' + web.boss.name + '/clerk/trello*', (req, res, next) => {
+        web.restRouter.get('/' + boss.name + '/clerk/trello*', (req, res, next) => {
             web.minion.clerk.onGetDb(req, res, next, function(err, prayer) {
                 if (err) return next(err);
                 web.sendJson(res, null, prayer);
@@ -130,7 +153,7 @@ Architect.prototype.gearTrello = function gearTrello() {
         });
         
         /// ---------- Requests from Trello WebHook
-        web.cfg.trello[web.boss.name].boards.forEach((board) => {
+        web.cfg.trello[boss.name].boards.forEach((board) => {
             board.db = web.cfg.trello.db;
     
             // Trello WebHooks Verification - always send back 200 response code
@@ -147,8 +170,8 @@ Architect.prototype.gearTrello = function gearTrello() {
             });
         });
 
-        listeners.push(function() {
-            web.cfg.trello[web.boss.name].boards.forEach((board) => {
+        listeners.push(function(boss) {
+            web.cfg.trello[boss.name].boards.forEach((board) => {
                async.series([
                     function(callback) {web.trello.getMemberBoards(board, (err) => {callback(err);})},
                     function(callback) {web.trello.getWebhooks(board, (err) => {callback(err);})},
@@ -168,14 +191,14 @@ Architect.prototype.gearTrello = function gearTrello() {
     }
 };   
     
-Architect.prototype.gearSheets = function gearSheets() {
-    if (web.cfg.google[web.boss.name].sheets) {
+Architect.prototype.gearSheets = function gearSheets(boss) {
+    if (web.cfg.google[boss.name].sheets) {
         web.sheets.myCredentials(web.cfg.kingdom.keys.sheets);
     }
 };
     
 /// Error handling of REST and Websockets is done as last REST route by the nurse
-Architect.prototype.gearRestErrorHandler = function gearRestErrorHandler() {
+Architect.prototype.gearRestErrorHandler = function gearRestErrorHandler(boss) {
     web.restRouter.use(function(err, req, res, next) {
         if (err) { // Should always be true
             web.minion.nurse.criticalRestCare(err, req, res, next);
@@ -183,9 +206,9 @@ Architect.prototype.gearRestErrorHandler = function gearRestErrorHandler() {
     });
 };
 
-Architect.prototype.activateMachinery = function activateMachinery() {
+Architect.prototype.activateMachinery = function activateMachinery(boss) {
     listeners.forEach(function(listen){
-        listen();
+        listen(boss);
     });
 };
 
