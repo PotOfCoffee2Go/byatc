@@ -100,7 +100,6 @@ Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
 
 /// Intercom communication between bosses
 Architect.prototype.gearIntercom = function gearIntercom(boss) {
-    console.log(boss);
     // Todo: Intercom system
 };
 

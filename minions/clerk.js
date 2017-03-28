@@ -17,7 +17,7 @@ function Clerk (bossWeb) {
 }
 
 
-Clerk.prototype.onGetDb = function onGetTrelloDb(req, res, next, prayer, cb) {
+Clerk.prototype.onGetTrelloDb = function onGetTrelloDb(req, res, next, prayer, cb) {
     var data = {}, error = null;
     try { // Remove the '/boss/clerk/dbname' from resource to get the path
         var dataPath = prayer.resource.split('/').slice(3).join('/');

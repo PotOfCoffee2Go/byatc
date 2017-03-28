@@ -18,7 +18,7 @@ const
             return {
             id: idBoard,
             fields:'name,idOrganization,url',
-            members: 'all', labels:'all', cards:'open', card_checklists: 'all',
+            members: 'all', labels:'all', cards:'open', card_fields:'name,labels', card_checklists: 'all',
             member_fields: 'fullName,username,confirmed,memberType',
             card_attachments: true,
             card_attachment_fields: 'bytes,date,edgeColor,idMember,isUpload,mimeType,name,url'

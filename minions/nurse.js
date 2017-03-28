@@ -16,28 +16,11 @@ function Nurse (bossWeb) {
     web = bossWeb;
 }
 
-Nurse.prototype.criticalRestCare = function criticalRestCare(err, req, res, next) {
-        console.log('Nurse got the critical RESTful patient - doa :(');
-        if (err.inner) delete err.inner.stack;
-        if (!err.inner) delete err.inner;
-        delete err.stack;
-
-        if (err.prayer) {
-            var denied = err.prayer;
-            denied.resource = req.originalUrl;
-            denied.data = denied.location = null;
-            denied.status = {code: 418, text: '418 - I\'m a teapot'};
-            delete err.prayer;
-            denied.error = err;
-            web.sendJson(res, null, denied);
-        }
-        else {
-            web.sendJson(res, null, err);
-        }
-    }
-    
 Nurse.prototype.criticalSiteCare = function criticalSiteCare(notFoundPath, req, res, next) {
         console.log('Nurse got the critical WebSite patient - doa :(');
+        var fullUrl = web.minion.angel.getNodejsURL(req, res, next);
+        console.log(fullUrl.pathname);
+        
         if (req.accepts('html')) {
             // Get this boss directory and Web Site root directory
             res.status(404).sendFile(path.resolve(__dirname, '../bosses/www/pages/notfound.html'));
