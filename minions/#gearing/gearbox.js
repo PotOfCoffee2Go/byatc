@@ -9,9 +9,8 @@
         var tmp = Error.apply(this, arguments);
         tmp.name = this.name = 'NestedError';
 
-        this.boss = '';
-        this.minion = '';
-        this.stack = tmp.stack;
+        //this.stack = tmp.stack;
+        if (nested && nested.stack) delete nested.stack;
         this.message = tmp.message;
         this.inner = nested;
         this.id = id;
@@ -29,19 +28,18 @@
     };
 
 
-    function MinionError(boss, minion, msg, id, nested) {
+    function MinionError(msg, id, nested) {
         var error = NestedError.call(this, msg, id, nested);
         error.name = 'MinionError';
-        error.boss = boss;
-        error.minion = minion;
         return error;
     }
 
     util.inherits(MinionError, NestedError);
 
 
+
     module.exports = {
-        MinionError: MinionError,
+        MinionError: MinionError
     };
     
 })();

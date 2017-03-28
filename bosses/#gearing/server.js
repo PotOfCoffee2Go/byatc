@@ -69,19 +69,19 @@ module.exports = function (asTheQueenCommands) {
     });
 
 
-    /// -- REST Routes --
+    /// -- Main REST Routes --
     
     var restRouter = express.Router();
     // The architect will populate this router with the boss routes
     //  once the /queen/commands/startMachines (above)
-    app.use(function (req, res, next) {
+    app.use(function mRestRouter(req, res, next) {
       restRouter(req, res, next);
     });
 
     /// -- Final Routes --
-    
+
     // The architect will populate this router with the trailing routes
-    //  to error handlers, docs, websites at end of the route list (below)
+    //  to final error handlers, docs, websites at end of the route list (below)
     var finalRouter = express.Router();
     app.use(function (req, res, next) {
       finalRouter(req, res, next);
@@ -106,8 +106,10 @@ module.exports = function (asTheQueenCommands) {
         express: express,
         app: app,
         minion: null,
-        restRouter: restRouter,
-        finalRouter: finalRouter,
+        routes: {
+            restRouter: restRouter,
+            finalRouter: finalRouter,
+        },
         listen: listen,
         ios: ios,
         webhook: webhook,

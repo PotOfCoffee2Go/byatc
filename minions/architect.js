@@ -82,10 +82,7 @@ Architect.prototype.gearBoss = function gearBoss(boss) {
         
         // Have architect start up the mechanisms created
         architect.activateMachinery(boss);
-    
-        /// Error Handling of REST API machinery
-        architect.gearRestErrorHandler(boss);
-        
+
     }
     
 };    
@@ -93,10 +90,10 @@ Architect.prototype.gearBoss = function gearBoss(boss) {
 /// Frontend sites, API Docs, -  html, js, css, etc
 Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
     siteDir = sitedir;
-    web.finalRouter.use('/docs', markdown); // give markdown a try first
-    web.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
+    web.routes.finalRouter.use('/docs', markdown); // give markdown a try first
+    web.routes.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
 
-    web.finalRouter.use(function(req, res, next) {
+    web.routes.finalRouter.use(function(req, res, next) {
         web.minion.nurse.criticalSiteCare(siteDir,req, res, next);
     });
 };
@@ -137,7 +134,7 @@ Architect.prototype.gearWebsockets = function gearWebsockets(boss) {
 // Build the Trello interface
 Architect.prototype.gearTrello = function gearTrello(boss) {
     if (web.cfg.trello) {
-        
+
         web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
         web.trello.setCredentials(web.cfg.kingdom.keys.trello);
 
@@ -145,31 +142,25 @@ Architect.prototype.gearTrello = function gearTrello(boss) {
         web.cfg.trello.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database, true, true);
     
         //  Process Trello REST requests from frontends
-        web.restRouter.get('/' + boss.name + '/clerk/trello*', (req, res, next) => {
+        web.routes.restRouter.get('/' + boss.name + '/clerk/trello*', (req, res, next) => {
             var prayer = web.minion.angel.invokePrayer(req, res, next);
-            web.minion.clerk.onGetDb(req, res, next, prayer, function(err, prayer) {
-                if (err) {
-                    err.prayer = prayer;
-                    return next(err);
-                }
-                web.sendJson(res, null, prayer);
-            });
+            web.minion.clerk.onGetTrelloDb(req, res, next, prayer);
         });
         
         /// ---------- Requests from Trello WebHook
         web.cfg.trello[boss.name].boards.forEach((board) => {
             board.db = web.cfg.trello.db;
-    
+
             // Trello WebHooks Verification - always send back 200 response code
-            web.restRouter.head(board.callbackURL, (req, res, next) => {res.sendStatus(200);});
-    
+            web.routes.restRouter.head(board.callbackURL, (req, res, next) => {res.sendStatus(200);});
+
             //  Process trello get request - always send back 200 response code
-            web.restRouter.get(board.callbackURL, (req, res, next) => {
+            web.routes.restRouter.get(board.callbackURL, (req, res, next) => {
                 web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
             });
-            
+
             //  Process trello post request - always send back 200 response code
-            web.restRouter.post(board.callbackURL, (req, res, next) => {
+            web.routes.restRouter.post(board.callbackURL, (req, res, next) => {
                 web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
             });
         });
@@ -201,15 +192,6 @@ Architect.prototype.gearSheets = function gearSheets(boss) {
     }
 };
     
-/// Error handling of REST and Websockets is done as last REST route by the nurse
-Architect.prototype.gearRestErrorHandler = function gearRestErrorHandler(boss) {
-    web.restRouter.use(function(err, req, res, next) {
-        if (err) { // Should always be true
-            web.minion.nurse.criticalRestCare(err, req, res, next);
-        }
-    });
-};
-
 Architect.prototype.activateMachinery = function activateMachinery(boss) {
     listeners.forEach(function(listen){
         listen(boss);

@@ -26,11 +26,24 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
     return {
         bossName: path[1],
         minionName: path[2],
-        resource: resource,
+        resource: fullUrl.pathname,
         data: null,
         location: decodeURI(fullUrl.href),
         status: {code: 200, text: '200 - OK'},
         error: null
+    };
+},
+
+// Prayer is the payload for REST and/or Websocket responses
+Angel.prototype.errorPrayer = function errorPrayer(prayer, err) {
+    return {
+        bossName: prayer.bossName,
+        minionName: prayer.minionName,
+        resource: prayer.resource,
+        data: null,
+        location: null,
+        status: {code: 418, text: '418 - I\'m a teapot'},
+        error: err
     };
 },
 

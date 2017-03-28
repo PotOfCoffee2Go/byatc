@@ -17,19 +17,20 @@ function Clerk (bossWeb) {
 }
 
 
-Clerk.prototype.onGetDb = function onGetDb(req, res, next, prayer, cb) {
+Clerk.prototype.onGetDb = function onGetTrelloDb(req, res, next, prayer, cb) {
     var data = {}, error = null;
-    try {
-        data =  web.cfg.trello.db.getData(prayer.resource);
+    try { // Remove the '/boss/clerk/dbname' from resource to get the path
+        var dataPath = prayer.resource.split('/').slice(3).join('/');
+        prayer.data = web.cfg.trello.db.getData(dataPath);
     } catch(err) {
-        error = new MinionError(prayer.bossName, prayer.minionName, "Can't get data from Db", 101, err);
-        error.prayer = prayer;
-        //error.inner = err;
-        return next(error);
+        error = new MinionError('Can\'t get data from Db', 101, err);
+        web.sendJson(res, null, web.minion.angel.errorPrayer(prayer, error));
+        return;
     }
-    prayer.data = data;
-    if (cb) cb(error, prayer);
-    else return prayer;
+    if (cb)
+        cb(error, prayer);
+    else
+        web.sendJson(res, null, prayer);
 };
 
 module.exports = Clerk;
