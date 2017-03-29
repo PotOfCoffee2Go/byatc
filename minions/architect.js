@@ -4,7 +4,6 @@
 
 const
     fs = require('fs-extra'),
-    path = require('path'),
     async = require('async'),
     JsonDB = require('node-json-db'),
     gearbox = require('./#gearing/gearbox'),
