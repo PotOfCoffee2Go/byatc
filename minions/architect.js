@@ -90,7 +90,8 @@ Architect.prototype.gearBoss = function gearBoss(boss) {
 /// Frontend sites, API Docs, -  html, js, css, etc
 Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
     siteDir = sitedir;
-    web.routes.finalRouter.use('/docs', markdown); // give markdown a try first
+    web.routes.finalRouter.use('/', markdown); // give markdown a try first
+    web.routes.finalRouter.use('/docs', markdown);
     web.routes.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
 
     web.routes.finalRouter.use(function(req, res, next) {
