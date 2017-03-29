@@ -6,7 +6,6 @@ const
     fs = require('fs-extra'),
     path = require('path'),
     async = require('async'),
-    marked = require('marked'),
     JsonDB = require('node-json-db'),
     gearbox = require('./#gearing/gearbox'),
     
@@ -18,40 +17,6 @@ var listeners = [];
 // Express web server and boss for this minion
 var web = null, siteDir = null; // assigned later
 
-// Given a valid path to .md file - converts it to HTML and sends to requester
-var markdown = function (req, res, next) {
-
-    var mdfile = siteDir + '/docs' + req.url;
-    var ext = path.extname(req.url);
-    
-    // Only interestedfilers with no or .md extension
-    if (!(ext === '' || ext === '.md')) return next();
-    
-    // If .md and found - sweet!
-    // If found by adding .md extension - sweet!
-    // If found the default .md file - sweet!
-    // Otherwize - we are outta here - call next express route
-    if (ext === '.md' && fs.existsSync(mdfile)) () => {}; // noop
-    else if (fs.existsSync(mdfile + '.md'))  mdfile += '.md';
-    else if (fs.existsSync(mdfile + '/index.md')) mdfile += '/index.md';
-    else return next();
-
-    // Sweet! Markup the file
-    fs.readFile(mdfile, 'utf8', (err, data) => {
-        if (err) return next(err);
-    
-        var markedup = marked(data);
-        var page = 
-            '<!doctype html><html lang="en"><head><meta charset="utf-8">' + // <title>The HTML5 Herald</title>
-            '<link href="https://fonts.googleapis.com/css?family=Tangerine" rel="stylesheet">' +
-            '<link rel="stylesheet" type="text/css" href="/docs/css/markdown.css?v=1.0">' +
-            '</head><body>' +
-            markedup +
-            '</body></html>';
-    
-            res.send(page);
-    });
-};
 
 function Architect (expressjs) {
     web = expressjs;
@@ -90,10 +55,11 @@ Architect.prototype.gearBoss = function gearBoss(boss) {
 /// Frontend sites, API Docs, -  html, js, css, etc
 Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
     siteDir = sitedir;
-    web.routes.finalRouter.use('/', markdown); // give markdown a try first
-    web.routes.finalRouter.use('/docs', markdown);
+    web.routes.finalRouter.use('/', gearbox.markdown); // give markdown a try first
+    web.routes.finalRouter.use('/docs', gearbox.markdown);
     web.routes.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
 
+    // Error handler
     web.routes.finalRouter.use(function(req, res, next) {
         web.minion.nurse.criticalSiteCare(siteDir,req, res, next);
     });
