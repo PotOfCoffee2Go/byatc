@@ -13,7 +13,7 @@ const
 // Princess Trello
 
     webhook = require('../../monarchy/princess/trello/webhook'),    // Request handlers for Trello Webhooks
-    trello = require('../../monarchy/princess/trello/trellocommands'),
+    trello = require('../../monarchy/princess/trello/app'),
 
 
 // Princess Google sheets
@@ -24,7 +24,7 @@ var appDir = path.dirname(require.main.filename);
 var cfg = require(appDir + '/../config.js');  
 
 /// Helper to send JSON responses
-function sendJson(res, err, data) {
+function sendJson(err, res, data) {
     res.setHeader('Cache-Control', 'no-cache, no-store');
     if (err) {
         res.json({error: err});
@@ -49,21 +49,21 @@ module.exports = function (asTheQueenCommands) {
     /// -- Basic Routes --
 
     /// Version info
-    app.get('/version', (req, res, next) => {sendJson(res, null, {version: '1.0.0'});});
+    app.get('/version', (req, res, next) => {sendJson(null, res, {version: '1.0.0'});});
     
     /// Health required by OpenShift or whoever wants to check if server listening
-    app.get('/health', (req, res, next) => {sendJson(res, null, {'health':'ok'});});
+    app.get('/health', (req, res, next) => {sendJson(null, res, {'health':'ok'});});
 
     /// Not much else is going to happen until Her Majesty commands it so
     app.post('/queen/commands/:boss/:cmd', (req, res, next) => {
         res.type('text');
         var reply;
-        try { 
+        //try { 
             cfg.kingdom = req.body.kingdom;
-            reply = asTheQueenCommands[req.params.cmd](req.params.boss); }
-        catch(err) { reply = 'Boss ' + req.params.boss + ' *embarrassed* sorry My Queen! ' +
-                'I do not understand your command or failed to ' + req.params.cmd;
-                reply += '\n' + err.message; }
+            reply = asTheQueenCommands[req.params.cmd](req.params.boss); //}
+        //catch(err) { reply = 'Boss ' + req.params.boss + ' *embarrassed* sorry My Queen! ' +
+        //        'I do not understand your command or failed to ' + req.params.cmd;
+        //        reply += '\n' + err.message; }
 
         res.send(reply);
     });
@@ -94,7 +94,7 @@ module.exports = function (asTheQueenCommands) {
             env.OPENSHIFT_NODEJS_PORT || env.PORT || 3000,
             env.OPENSHIFT_NODEJS_IP || env.IP || 'localhost',
             () => {
-                console.log('Boss ' + '???' + ' waiting for commands from Her Majesty');
+                console.log('Core Boss server waiting for commands from Her Majesty');
             }
         );
    }

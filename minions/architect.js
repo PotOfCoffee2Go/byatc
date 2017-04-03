@@ -4,7 +4,6 @@
 
 const
     fs = require('fs-extra'),
-    async = require('async'),
     JsonDB = require('node-json-db'),
     gearbox = require('./#gearing/gearbox'),
     
@@ -17,38 +16,30 @@ var listeners = [];
 var web = null, siteDir = null; // assigned later
 
 
-function Architect (expressjs) {
-    web = expressjs;
+function Architect (Web) {
+    web = Web;
 }
 
 Architect.prototype.gearBoss = function gearBoss(boss) {
     const architect = web.minion.architect;
 
-    if (boss.name === 'cyborg') {
-        // Clear the working database directory
+        // Clear the boss working database directory
         fs.emptyDirSync(boss.dir + '/db');
 
-        // Check enviroment variables for the credential
-        //   keys/tokens and such to our friends at Trello and Google Sheet 
+        // Check enviroment variables for the credential keys/tokens and such
         web.minion.constable.checkBossCredentials(boss);
         
         /// WebSocket Interface
-//        architect.gearWebsockets(boss);
+        // architect.gearWebsockets(boss);
         
-        /// Intercom communication between bosses
-        architect.gearIntercom(boss);
-
-        /// Interface to Trello boards
-        architect.gearTrello(boss);
-        
-        /// Interface to Google sheets
-//        architect.gearSheets.call(boss);
+        /// Gear the interfaces to remote resources for boss
+        architect.gearIntercom(boss);       // Intercom communication between bosses
+        architect.gearTrello(boss);         // Interface to Trello boards
+        //architect.gearSheets.call(boss);    // Interface to Google sheets
         
         // Have architect start up the mechanisms created
         architect.activateMachinery(boss);
 
-    }
-    
 };    
 
 /// Frontend sites, API Docs, -  html, js, css, etc
@@ -103,19 +94,17 @@ Architect.prototype.gearTrello = function gearTrello(boss) {
         web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
         web.trello.setCredentials(web.cfg.kingdom.keys.trello);
 
-        // dbname, true = auto save, true = pretty
-        web.cfg.trello.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database, true, true);
-    
-        //  Process Trello REST requests from frontends
-        web.routes.restRouter.get('/' + boss.name + '/clerk/trello*', (req, res, next) => {
-            var prayer = web.minion.angel.invokePrayer(req, res, next);
-            web.minion.clerk.onGetTrelloDb(req, res, next, prayer);
-        });
-        
         /// ---------- Requests from Trello WebHook
-        web.cfg.trello[boss.name].boards.forEach((board) => {
-            board.db = web.cfg.trello.db;
-
+        web.cfg.trello.boards.forEach((board) => {
+            // dbname, true = auto save, true = pretty
+            board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database, true, true);
+    
+            //  Process Trello REST requests from frontends
+            web.routes.restRouter.get('/' + boss.name + '/clerk/trello/*', (req, res, next) => {
+                var prayer = web.minion.angel.invokePrayer(req, res, next);
+                web.minion.clerk.onGetTrelloDb(req, res, next, prayer);
+            });
+        
             // Trello WebHooks Verification - always send back 200 response code
             web.routes.restRouter.head(board.callbackURL, (req, res, next) => {res.sendStatus(200);});
 
@@ -128,26 +117,18 @@ Architect.prototype.gearTrello = function gearTrello(boss) {
             web.routes.restRouter.post(board.callbackURL, (req, res, next) => {
                 web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
             });
+            
+            web.trello.gearTrelloBoard(board, (err) => {
+                if (err) {
+                    console.log('Problem with trello board - %s', board.name);
+                }
+                else {
+                    console.log('Trello board in DB - %s', board.name);
+                }
+            });
+            
         });
 
-        listeners.push(function(boss) {
-            web.cfg.trello[boss.name].boards.forEach((board) => {
-               async.series([
-                    function(callback) {web.trello.getMemberBoards(board, (err) => {callback(err);})},
-                    function(callback) {web.trello.getWebhooks(board, (err) => {callback(err);})},
-                    function(callback) {web.trello.getBoard(board, (err) => {callback(err);})},
-                    function(callback) {web.trello.getBoardComments(board, (err) => {callback(err);})},
-    /*             function(callback) {
-                        let myWebhooks = board.webhook;
-                        if (myWebhooks.length === 0) {
-                            web.trello.putWebhooks(board.db, 'Onyx and Breezy Seating Chart', board.callbackURL);
-                        }
-                        callback(null);
-                    } */
-                ]);
-            });
-        });
-        
     }
 };   
     

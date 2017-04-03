@@ -12,8 +12,8 @@ const
 // Express web server and boss for this minion
 var web = null;
     
-function Nurse (bossWeb) {
-    web = bossWeb;
+function Nurse (Web) {
+    web = Web;
 }
 
 Nurse.prototype.criticalSiteCare = function criticalSiteCare(notFoundPath, req, res, next) {
@@ -27,11 +27,11 @@ Nurse.prototype.criticalSiteCare = function criticalSiteCare(notFoundPath, req, 
             return;
         }
         if (req.accepts('json')) {
-            console.log('Nurse got a Web Site patient - doa ;( that accepts JSON - responding');
+            console.log('Nurse got a Web Site patient - doa ;( that accepts JSON');
             console.log('Replying RESTfully in JSON');
             var prayer = web.minion.angel.invokePrayer(req, res, next);
             var error = new MinionError('Resource not found', 210, null);
-            web.sendJson(res, null, web.minion.angel.errorPrayer(prayer, error));
+            web.sendJson(null, res, web.minion.angel.errorPrayer(prayer, error));
             return;
         }
         else {

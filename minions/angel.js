@@ -12,8 +12,8 @@ const
 // Express web server and boss for this minion
 var web = null;
 
-function Angel (bossWeb) {
-    web = bossWeb;
+function Angel (Web) {
+    web = Web;
 }
 
 // Prayer is the payload for REST and/or Websocket responses

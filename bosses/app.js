@@ -7,7 +7,6 @@ const
 
 
 var boss = function(bossName) {
-    // Empty or create boss database directory
     var 
         bossDir = path.join(__dirname,'../bosses/', bossName),
         bossWww = path.join(__dirname,'../bosses/www');
@@ -17,7 +16,7 @@ var boss = function(bossName) {
 
 
 
-// Get Web Site root directory
+// Get root Web Site directory
 var webSitesRootPath = require('path').resolve(__dirname + '/www');
 
 /// Commands from the queen
@@ -50,9 +49,9 @@ var asTheQueenCommands = {
 const web = require('./#gearing/server')(asTheQueenCommands);
 
 /// Gear up Web Sites, API docs, html pages, js, css, etc. hosted by this server
-web.minion.architect.gearWebSites(webSitesRootPath);
+web.minion.architect.gearWebSites(require('path').resolve(__dirname + '/www'));
 
-console.log('Core server loaded');
+console.log('Core Boss server loaded');
     
 // Listen for requests from Her Majesty
 web.listen();

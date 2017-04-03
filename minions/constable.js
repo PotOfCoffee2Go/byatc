@@ -11,8 +11,8 @@ const
 // Express web server and boss for this minion
 var web = null;
 
-function Constable (bossWeb) {
-    web = bossWeb;
+function Constable (Web) {
+    web = Web;
 }
 
 
@@ -30,11 +30,13 @@ Constable.prototype.checkBossCredentials = function checkBossCredentials() {
             throw (new Error('Trello Key/Token not in environment'));
         }
     }
+    /*
     if (web.cfg.sheets) {
         if (!process.env.SHEETS_CLIENT_SECRET || !process.env.SHEETS_TOKEN) {
             throw (new Error('Sheets clientSecret/Token not in environment'));
         }
     }
+    */
 }
 
 module.exports = Constable;

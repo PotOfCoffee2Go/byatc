@@ -4,6 +4,7 @@
 
 const
     byatc = require('./api'),
+    async = require('async'),
     moment = require('moment-timezone');
 
     var telloArguments = {
@@ -56,7 +57,7 @@ var format = {
     },
 }
 
-module.exports = {
+exports = module.exports = {
     setCredentials: function(creds) { byatc.setCredentials(creds); },
     
     getMemberBoards:  function(board, cb) {
@@ -170,6 +171,25 @@ module.exports = {
             if (cb) cb(err, entry);
         });
         byatc.send();
+    },
+
+    gearTrelloBoard: function(board, cb) {
+        async.series([
+            function(callback) {exports.getMemberBoards(board, (err) => {callback(err);})},
+            function(callback) {exports.getWebhooks(board, (err) => {callback(err);})},
+            function(callback) {exports.getBoard(board, (err) => {callback(err);})},
+            function(callback) {exports.getBoardComments(board, (err) => {callback(err);})},
+            /* function(callback) {
+                let myWebhooks = board.webhook;
+                if (myWebhooks.length === 0) {
+                    web.trello.putWebhooks(board.db, 'Onyx and Breezy Seating Chart', board.callbackURL);
+                }
+                callback(null);
+            } */
+        ],
+        function(error) {
+            if (cb) cb(error);
+        });
     }
 };
     

@@ -11,8 +11,8 @@ const
 // Express web server and boss for this minion
 var web = null;
 
-function Chef (bossWeb) {
-    web = bossWeb;
+function Chef (Web) {
+    web = Web;
 }
 
 
