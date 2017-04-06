@@ -34,7 +34,7 @@ Architect.prototype.gearBoss = function gearBoss(boss, cb) {
         function(callback) {architect.gearIntercom(boss, (err) => {callback(err);})},
         //function(callback) {architect.gearWebsockets(boss, (err) => {callback(err);})},
         function(callback) {architect.gearTrello(boss, (err) => {callback(err);})},
-        //function(callback) {architect.gearSheets(boss, (err) => {callback(err);})},
+        function(callback) {architect.gearSheets(boss, (err) => {callback(err);})},
     ],
     function(err) {
         if (err) { cb(err); return;}
@@ -147,10 +147,48 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
 };   
     
 Architect.prototype.gearSheets = function gearSheets(boss, cb) {
-    if (web.cfg.google[boss.name].sheets) {
-        web.sheets.myCredentials(web.cfg.kingdom.keys.sheets);
+
+    if (web.cfg.spreadsheets) {
+
+        web.spreadsheets.setCredentials(web.cfg.kingdom.keys.sheets);
+
+        web.cfg.spreadsheets.sheets.forEach((sheet) => {
+            // dbname, true = auto save, true = pretty
+            sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
+    
+            //  Process Sheet REST requests from frontends
+            web.routes.restRouter.get('/' + boss.name + '/clerk/sheet/*', (req, res, next) => {
+                var prayer = web.minion.angel.invokePrayer(req, res, next);
+                web.minion.clerk.onGetSheetDb(req, res, next, prayer);
+            });
+
+/*
+            // Trello WebHook
+            sheet.callbackURL = '/' + boss.name + '/webhook/sheet/' + sheet.alias;
+
+            //  Process sheet get request - always send back 200 response code
+            web.routes.restRouter.get(sheet.callbackURL, (req, res, next) => {
+                web.webhook.trello(sheet.db, req, res, (req, res) => {res.sendStatus(200);});
+            });
+
+            //  Process sheet post request - always send back 200 response code
+            web.routes.restRouter.post(sheet.callbackURL, (req, res, next) => {
+                web.webhook.trello(sheet.db, req, res, (req, res) => {res.sendStatus(200);});
+            });
+*/
+            web.spreadsheets.gearSheet(sheet, (err) => {
+                if (err) {
+                    console.log('Problem with spreadsheets sheet - %s', sheet.name, err);
+                }
+                else {
+                    console.log('Spreadsheets sheet in DB - %s', sheet.name);
+                }
+            });
+            
+        });
+        
     }
-    if (cb) cb(null);
+
 };
     
 Architect.prototype.activateMachinery = function activateMachinery(boss) {

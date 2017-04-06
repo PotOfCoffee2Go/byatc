@@ -17,7 +17,7 @@ const
 
 
 // Princess Google sheets
-    sheets = require('../../monarchy/princess/sheets/api');
+    spreadsheets = require('../../monarchy/princess/sheets/app');
     
 // Configuration
 var appDir = path.dirname(require.main.filename);
@@ -114,7 +114,7 @@ module.exports = function (asTheQueenCommands) {
         ios: ios,
         webhook: webhook,
         trello: trello,
-        sheets: sheets,
+        spreadsheets: spreadsheets,
         sendJson: sendJson
     };
 
