@@ -41,7 +41,7 @@ const
                     }
                     else {
                         entry.api.log += ('adding ' + entry.response.name);
-                        custCards.push('/boards/' + body.action.data.board.name + '/cards[]', entry.response);
+                        custCards.push('/cards[]', entry.response);
                     }
                 });
             
@@ -71,7 +71,7 @@ const
                         for (let i = 0; i < cards.length; i++) {
                             if (cards[i].id === body.action.data.card.id) {
                                 entry.api.log += (body.action.type +' updating ' + cards[i].name);
-                                custCards.push('/boards/' + body.action.data.board.name + '/cards[' + i +']',
+                                custCards.push('/cards[' + i +']',
                                     entry.response, true);
                                 break;
                             }

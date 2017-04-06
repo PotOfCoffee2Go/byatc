@@ -20,28 +20,28 @@ module.exports = {
         me: {
             id: '' // [Added at runtime] Trello member id
         },
-        database: 'trello.json', // Database filename
+        database: 'trello', // Database filename
         boards: [
             {
-                id: '', // [Added at runtime] Trello board id
                 name:'Onyx and Breezy Seating Chart', // Name of board on Trello
                 alias: 'guests', // Board name used in Database, REST, and Websocket requests
-                db: null, // [Added at runtime] Object returned when db connect/open
-                // '/cyborg/trello/obuser' Trello webhook callback
-                autoCreateWebhook: false, // Auto create this webhook if not on Trello
-                callbackURL:'http://byatc-potofcoffee2go.c9users.io/trellocallback',
-                webhook: [] // [Added at runtime] Trello webhook
-            } /*,
-            {
+                
                 id: '', // [Added at runtime] Trello board id
+                db: null, // [Added at runtime] Object returned when db connect/open
+                // '/cyborg/webhook/trello/guests' Trello webhook callback
+                callbackURL:'', // [Added at runtime] Trello webhook
+                webhook: [] // [Added at runtime] Trello webhook
+            },
+            {
                 name:'Onyx and Breezy Categories', // Name of board on Trello
                 alias: 'items', // Board name used in Database, REST, and Websocket requests
+                
+                id: '', // [Added at runtime] Trello board id
                 db: null, // [Added at runtime] Object returned when db connect/open
-                // Trello webhook callback
-                autoCreateWebhook: false, // Auto create this webhook if not on Trello
-                callbackURL:'http://byatc-potofcoffee2go.c9users.io/ninja/trello/obcat',
+                // '/cyborg/webhook/trello/items' Trello webhook callback
+                callbackURL:'', // [Added at runtime] Trello webhook
                 webhook: [] // [Added at runtime] Trello webhook
-            }*/
+            }
         ]
     },
     

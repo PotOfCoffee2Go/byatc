@@ -18,13 +18,16 @@ function Clerk (Web) {
 
 
 Clerk.prototype.onGetTrelloDb = function onGetTrelloDb(req, res, next, prayer, cb) {
+
     var error = null;
-    try { // Remove the '/boss/clerk/dbname' from resource to get the path
-        var dataPath = prayer.resource.split('/').slice(3).join('/');
-        prayer.data = web.cfg.trello.db.getData(dataPath);
+    var boardAlias = prayer.resource.split('/')[4];
+    var board = web.cfg.trello.boards.find(b => b.alias === boardAlias);
+    try { // Remove the '/boss/clerk/trello/boardalias' from resource to get the path
+        var dataPath = prayer.resource.split('/').slice(5).join('/');
+        prayer.data = board.db.getData('/' + dataPath);
     } catch(err) {
-        error = new MinionError('Can not get data from Db', 101, err);
-        web.sendJson(null, res, web.minion.angel.errorPrayer(prayer, error));
+        error = new MinionError(minionName, 'Can not get data from Db', 101, err);
+        web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
         return;
     }
     if (cb)

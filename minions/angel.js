@@ -24,8 +24,8 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
     var resource = '/' + fullUrl.pathname.split('/').slice(4).join('/');
     // Send the prayer to the requester
     return {
-        bossName: path[1],
-        minionName: path[2],
+        boss: path[1],
+        minion: path[2],
         resource: fullUrl.pathname,
         data: null,
         location: decodeURI(fullUrl.href),
@@ -35,10 +35,10 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
 },
 
 // Prayer is the payload for REST and/or Websocket responses
-Angel.prototype.errorPrayer = function errorPrayer(prayer, err) {
+Angel.prototype.errorPrayer = function errorPrayer(err, prayer) {
     return {
-        bossName: prayer.bossName,
-        minionName: prayer.minionName,
+        boss: prayer.boss,
+        minion: prayer.minion,
         resource: prayer.resource,
         data: null,
         location: null,

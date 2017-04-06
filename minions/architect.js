@@ -4,6 +4,7 @@
 
 const
     fs = require('fs-extra'),
+    async = require('async'),
     JsonDB = require('node-json-db'),
     gearbox = require('./#gearing/gearbox'),
     
@@ -20,25 +21,25 @@ function Architect (Web) {
     web = Web;
 }
 
-Architect.prototype.gearBoss = function gearBoss(boss) {
+Architect.prototype.gearBoss = function gearBoss(boss, cb) {
     const architect = web.minion.architect;
 
-        // Clear the boss working database directory
-        fs.emptyDirSync(boss.dir + '/db');
+    // Clear the boss working database directory
+    fs.emptyDirSync(boss.dir + '/db');
 
-        // Check enviroment variables for the credential keys/tokens and such
-        web.minion.constable.checkBossCredentials(boss);
-        
-        /// WebSocket Interface
-        // architect.gearWebsockets(boss);
-        
-        /// Gear the interfaces to remote resources for boss
-        architect.gearIntercom(boss);       // Intercom communication between bosses
-        architect.gearTrello(boss);         // Interface to Trello boards
-        //architect.gearSheets.call(boss);    // Interface to Google sheets
-        
-        // Have architect start up the mechanisms created
+    // Check enviroment variables for the credential keys/tokens and such
+    web.minion.constable.checkBossCredentials(boss);
+    
+    async.series([
+        function(callback) {architect.gearIntercom(boss, (err) => {callback(err);})},
+        //function(callback) {architect.gearWebsockets(boss, (err) => {callback(err);})},
+        function(callback) {architect.gearTrello(boss, (err) => {callback(err);})},
+        //function(callback) {architect.gearSheets(boss, (err) => {callback(err);})},
+    ],
+    function(err) {
+        if (err) { cb(err); return;}
         architect.activateMachinery(boss);
+    });
 
 };    
 
@@ -48,6 +49,7 @@ Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
     web.routes.finalRouter.use('/', gearbox.markdown); // give markdown a try first
     web.routes.finalRouter.use('/docs', gearbox.markdown);
     web.routes.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
+    web.routes.finalRouter.use('/', web.express.static(siteDir + '/docs'));
 
     // Error handler
     web.routes.finalRouter.use(function(req, res, next) {
@@ -56,11 +58,12 @@ Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
 };
 
 /// Intercom communication between bosses
-Architect.prototype.gearIntercom = function gearIntercom(boss) {
+Architect.prototype.gearIntercom = function gearIntercom(boss, cb) {
     // Todo: Intercom system
+    if (cb) cb(null);
 };
 
-Architect.prototype.gearWebsockets = function gearWebsockets(boss) {
+Architect.prototype.gearWebsockets = function gearWebsockets(boss, cb) {
     if (web.cfg.websockets) {
         listeners.push(function() {
             web.ios.on('connection', (socket) => {
@@ -85,10 +88,11 @@ Architect.prototype.gearWebsockets = function gearWebsockets(boss) {
             });
         });
     }
+    if (cb) cb(null);
 };
     
 // Build the Trello interface
-Architect.prototype.gearTrello = function gearTrello(boss) {
+Architect.prototype.gearTrello = function gearTrello(boss, cb) {
     if (web.cfg.trello) {
 
         web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
@@ -97,14 +101,17 @@ Architect.prototype.gearTrello = function gearTrello(boss) {
         /// ---------- Requests from Trello WebHook
         web.cfg.trello.boards.forEach((board) => {
             // dbname, true = auto save, true = pretty
-            board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database, true, true);
+            board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database + board.alias, true, true);
     
             //  Process Trello REST requests from frontends
             web.routes.restRouter.get('/' + boss.name + '/clerk/trello/*', (req, res, next) => {
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
                 web.minion.clerk.onGetTrelloDb(req, res, next, prayer);
             });
-        
+
+            // Trello WebHook
+            board.callbackURL = '/' + boss.name + '/webhook/trello/' + board.alias;
+
             // Trello WebHooks Verification - always send back 200 response code
             web.routes.restRouter.head(board.callbackURL, (req, res, next) => {res.sendStatus(200);});
 
@@ -118,9 +125,13 @@ Architect.prototype.gearTrello = function gearTrello(boss) {
                 web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
             });
             
+
+            // Trello WebHook Full address
+            board.callbackURL = web.cfg.kingdom.websites.cyborg + board.callbackURL;
+
             web.trello.gearTrelloBoard(board, (err) => {
                 if (err) {
-                    console.log('Problem with trello board - %s', board.name);
+                    console.log('Problem with trello board - %s', board.name, err);
                 }
                 else {
                     console.log('Trello board in DB - %s', board.name);
@@ -128,14 +139,18 @@ Architect.prototype.gearTrello = function gearTrello(boss) {
             });
             
         });
-
+        
     }
+
+    if (cb) cb(null);
+
 };   
     
-Architect.prototype.gearSheets = function gearSheets(boss) {
+Architect.prototype.gearSheets = function gearSheets(boss, cb) {
     if (web.cfg.google[boss.name].sheets) {
         web.sheets.myCredentials(web.cfg.kingdom.keys.sheets);
     }
+    if (cb) cb(null);
 };
     
 Architect.prototype.activateMachinery = function activateMachinery(boss) {

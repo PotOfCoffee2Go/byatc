@@ -57,135 +57,144 @@ var format = {
     },
 }
 
-exports = module.exports = {
-    setCredentials: function(creds) { byatc.setCredentials(creds); },
-    
-    getMemberBoards:  function(board, cb) {
-        byatc.push('get.member.id.boards',
-            telloArguments.getMemberBoards(),
-            (err, entry) => {
-                if (err) {
-                    board.db.push('/boardlist', err);
-                }
-                else {
-                    var boardOnTrello = entry.response.find(x => x.name === board.name);
-                    if (boardOnTrello === undefined) {
-                        cb(new Error( 'You are not a member of board "' + 
-                            board.name + '" or board does not exist on trello'));
-                    }
-                    else {
-                        board.id = boardOnTrello.id;
-                        board.db.push('/boardlist', entry.response);
-                    }
-                }
-                if (cb) cb(err, entry);
-            });
-        byatc.send();
-    },
-    
-    getWebhooks: function(board, cb) {
-        byatc.push('get.tokens.token.webhooks', {
-            token: byatc.getToken()
-            }, (err, entry) => {
-                if (err) {
-                    board.db.push('/webhooks', err);
-                }
-                else {
-                    var webhookOnTrello = entry.response.find(x =>
-                        x.idModel === board.id && x.callbackURL === board.callbackURL);
-                    if (webhookOnTrello === undefined) {
-                        var noWebhookErr = new Error( 'You do not have a trello webhook for board "' + 
-                            board.name + '" with a callbackURL of: ' + board.callbackURL);
-                        console.log(noWebhookErr);
-                        if (cb) {
-                            cb(noWebhookErr);
-                        }
-                        return;
-                    }
-                    board.webhook = webhookOnTrello;
-                    board.db.push('/webhooks', entry.response);
-                }
-                if (cb) cb(err, entry);
-            });
-        byatc.send();
-    },
-    
-    putWebhooks: function(board, cb) {
-        byatc.push('put.webhooks', {
-            callbackURL: board.callbackURL,
-            idModel: board.id,
-            description: board.name
-            }, (err, entry) => {
-                if (err) {
-                    board.db.push('/putwebhooks', err);
-                }
-                else {
-                     board.db.push('/putwebhooks', entry.response);
-                }
-                if (cb) cb(err, entry);
-            });
-        byatc.send();
-        },
-        
-    getBoard: function(board, cb) {
-        /*
-        var board = board.getData('/boardlist').find(x => x.name === boardName);
-        if (board === undefined) {
-            cb(new Error(boardName + ' does not exist for this members key/token'));
-            return;
-        }
-        */
-        var idBoard = board.id;
-        byatc.push('get.boards.id',
-            telloArguments.getBoard(idBoard),
-            (err, entry) => {
-                if (err) {
-                    board.db.push('/boards/' + board.alias, err);
-                }
-                else {
-                    entry.response.alias = board.alias;
-                    board.db.push('/boards/' + board.alias, format.board(entry.response));
-                }
-                if (cb) cb(err, entry);
-            });
-        byatc.send();
-    },
-    
-    getBoardComments: function(board, cb) {
-        var idBoard = board.id;
-        byatc.push('get.boards.id.actions', {
-            id: idBoard,
-            filter: 'commentCard'
-        }, (err, entry) => {
+function getMemberBoards(board, cb) {
+    byatc.push('get.member.id.boards',
+        telloArguments.getMemberBoards(),
+        (err, entry) => {
             if (err) {
-                console.log(err);
+                board.db.push('/boardlist', err);
             }
             else {
-                let comments = [];
-                entry.response.forEach((comment) => {
-                    comments.push(format.comment(comment));
-                });
-                // false = merge into existing board
-                board.db.push('/boards/' + board.alias + '/comments', {comments: comments});
+                var boardOnTrello = entry.response.find(x => x.name === board.name);
+                if (boardOnTrello === undefined) {
+                    if (cb) cb(new Error( 'You are not a member of board "' + 
+                        board.name + '" or board does not exist on trello'));
+                    return;
+                }
+                else {
+                    board.id = boardOnTrello.id;
+                    board.db.push('/boardlist', entry.response);
+                }
             }
             if (cb) cb(err, entry);
         });
-        byatc.send();
-    },
+    byatc.send();
+}
 
+function getWebhooks(board, cb) {
+    byatc.push('get.tokens.token.webhooks', {
+        token: byatc.getToken()
+        }, (err, entry) => {
+            if (err) board.db.push('/webhooks', err);
+            else board.db.push('/webhooks', entry.response);
+            if (cb) cb(err, entry);
+        });
+    byatc.send();
+}
+
+function gearTrelloBoardandWebhook(board, cb) {
+    var boardList, webHooks;
+    try {
+        boardList = board.db.getData('/boardlist');
+        webHooks = board.db.getData('/webhooks');
+    } catch(e) {
+        if (cb) cb(new Error( 'Unable to gear Trello board ' + board.name + 
+            ' - insure getMemberBoards() and getWebhooks() where successful'));
+        return;
+    }
+    
+    var boardOnTrello = boardList.find(b => b.name === board.name);
+        if (boardOnTrello === undefined) {
+            if (cb) cb(new Error( 'You are not a member of board "' + 
+                board.name + '" or board does not exist on trello'));
+            return;
+        }
+        
+    var webhookTrello = webHooks.find(b => b.idModel === board.id && b.callbackURL === board.callbackURL);
+        if (webhookTrello === undefined) {
+            putWebhooks(board, cb);
+            return;
+        }
+    
+    if (cb) cb(null);
+}
+
+
+
+function putWebhooks(board, cb) {
+    byatc.push('put.webhooks', {
+        callbackURL: board.callbackURL,
+        idModel: board.id,
+        description: board.name
+        }, (err, entry) => {
+            if (err) {
+                board.db.push('/putwebhooks', err);
+            }
+            else {
+                board.db.push('/putwebhooks', entry.response);
+                board.webhook = entry.response;
+            }
+            if (cb) cb(err, entry);
+        });
+    byatc.send();
+    }
+    
+function getBoard(board, cb) {
+    /*
+    var board = board.getData('/boardlist').find(x => x.name === boardName);
+    if (board === undefined) {
+        cb(new Error(boardName + ' does not exist for this members key/token'));
+        return;
+    }
+    */
+    var idBoard = board.id;
+    byatc.push('get.boards.id',
+        telloArguments.getBoard(idBoard),
+        (err, entry) => {
+            if (err) {
+                board.db.push('/', err);
+            }
+            else {
+                entry.response.alias = board.alias;
+                board.db.push('/', format.board(entry.response));
+            }
+            if (cb) cb(err, entry);
+        });
+    byatc.send();
+}
+
+function getBoardComments(board, cb) {
+    var idBoard = board.id;
+    byatc.push('get.boards.id.actions', {
+        id: idBoard,
+        filter: 'commentCard'
+    }, (err, entry) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            let comments = [];
+            entry.response.forEach((comment) => {
+                comments.push(format.comment(comment));
+            });
+            // false = merge into existing board
+            board.db.push('/comments', comments);
+        }
+        if (cb) cb(err, entry);
+    });
+    byatc.send();
+}
+
+exports = module.exports = {
+    setCredentials: function(creds) { byatc.setCredentials(creds); },
+    
     gearTrelloBoard: function(board, cb) {
         async.series([
-            function(callback) {exports.getMemberBoards(board, (err) => {callback(err);})},
-            function(callback) {exports.getWebhooks(board, (err) => {callback(err);})},
-            function(callback) {exports.getBoard(board, (err) => {callback(err);})},
-            function(callback) {exports.getBoardComments(board, (err) => {callback(err);})},
-            /* function(callback) {
-                let myWebhooks = board.webhook;
-                if (myWebhooks.length === 0) {
-                    web.trello.putWebhooks(board.db, 'Onyx and Breezy Seating Chart', board.callbackURL);
-                }
-                callback(null);
-            } */
+            function(callback) {getMemberBoards(board, (err) => {callback(err);})},
+            function(callback) {getWebhooks(board, (err) => {callback(err);})},
+            function(callback) {gearTrelloBoardandWebhook(board, (err) => {callback(err);})},
+            function(callback) {getBoard(board, (err) => {callback(err);})},
+            function(callback) {getBoardComments(board, (err) => {callback(err);})},
         ],
         function(error) {
             if (cb) cb(error);

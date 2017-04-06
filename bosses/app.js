@@ -3,6 +3,7 @@
 (function () {
 
 const
+    util = require('util'),
     path = require('path')
 
 
@@ -38,9 +39,9 @@ var asTheQueenCommands = {
         
         architect.gearBoss(web.bosses[boss]);
 
-        var reply = 'Boss ' + boss + ' *bows* starting up machinery My Queen!';
+        var reply = 'Boss ' + bossName + ' *bows* starting up machinery My Queen!';
         console.log(reply);
-        return reply; 
+        return util.inspect(web.cfg, { showHidden: false, depth: null });
     }
 };
 

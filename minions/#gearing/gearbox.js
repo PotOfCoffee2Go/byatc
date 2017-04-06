@@ -12,6 +12,7 @@
     function NestedError(msg, id, nested) {
         var tmp = Error.apply(this, arguments);
         tmp.name = this.name = 'NestedError';
+        tmp.minion = this.minion = '';
 
         //this.stack = tmp.stack;
         if (nested && nested.stack) delete nested.stack;
@@ -32,9 +33,10 @@
     };
 
 
-    function MinionError(msg, id, nested) {
+    function MinionError(minionName, msg, id, nested) {
         var error = NestedError.call(this, msg, id, nested);
         error.name = 'MinionError';
+        error.minion = minionName;
         return error;
     }
 
@@ -66,6 +68,7 @@ var markdown = function (req, res, next) {
         var markedup = marked(data);
         var page = 
             '<!doctype html><html lang="en"><head><meta charset="utf-8">' + // <title>The HTML5 Herald</title>
+            '<link rel="shortcut icon" href="favicon.ico?v=1.0" type="image/x-icon">' +
             '<link href="https://fonts.googleapis.com/css?family=Tangerine" rel="stylesheet">' +
             '<link rel="stylesheet" type="text/css" href="/docs/css/markdown.css?v=1.0">' +
             '</head><body>' +
