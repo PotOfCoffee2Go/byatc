@@ -16,7 +16,7 @@ function Nurse (Web) {
     web = Web;
 }
 
-Nurse.prototype.criticalSiteCare = function criticalSiteCare(notFoundPath, req, res, next) {
+Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next, notFoundPath) {
         console.log('Nurse got the critical WebSite patient - doa :(');
         var fullUrl = web.minion.angel.getNodejsURL(req, res, next);
         console.log(fullUrl.pathname);

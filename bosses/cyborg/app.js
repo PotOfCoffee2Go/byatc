@@ -10,7 +10,7 @@ const
 
 // Note: this object must be appropriately same in cyborg, ninja, and pirate app.js'
 var boss = {
-    name: 'ninja',
+    name: 'cyborg',
     app: path.join(__dirname,'../'),
     dir: path.join(__dirname, ''),
     www: path.join(__dirname,'www')
@@ -34,6 +34,15 @@ module.exports = {
         // Check enviroment variables for the credential keys/tokens and such
         web.minion.constable.checkBossCredentials(web.bosses[boss]);
         
+        async.series([
+            function(callback) {architect.gearIntercom(boss, callback);},
+            //function(callback) {architect.gearWebsockets(boss, (err) => {callback(err);})},
+            function(callback) {architect.gearSheets(boss, callback);},
+            function(callback) {architect.gearTrello(boss, callback);}
+        ],
+        function(err, results) {
+            if (cb) cb(err, results);
+        });
     }
 };
 

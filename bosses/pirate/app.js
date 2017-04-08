@@ -10,7 +10,7 @@ const
 
 // Note: this object must be appropriately same in cyborg, ninja, and pirate app.js'
 var boss = {
-    name: 'ninja',
+    name: 'pirate',
     app: path.join(__dirname,'../'),
     dir: path.join(__dirname, ''),
     www: path.join(__dirname,'www')

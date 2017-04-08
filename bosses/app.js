@@ -4,21 +4,11 @@
 
 const
     util = require('util'),
-    path = require('path')
+    path = require('path'),
 
-
-var boss = function(bossName) {
-    var 
-        bossDir = path.join(__dirname,'../bosses/', bossName),
-        bossWww = path.join(__dirname,'../bosses/www');
-        
-    return {name: bossName, dir: bossDir, www: bossWww};
-};
-
-
-
-// Get root Web Site directory
-var webSitesRootPath = require('path').resolve(__dirname + '/www');
+    cyborg = require('./cyborg/app'),
+    ninja = require('./ninja/app'),
+    pirate = require('./pirate/app');
 
 /// Commands from the queen
 var asTheQueenCommands = {
@@ -27,32 +17,32 @@ var asTheQueenCommands = {
     //  Note that the order of starting the machines up is important as they
     //   are adding app.get/post/etc routes to express, which is touchy
     //   about the order of said routes
-    startMachines: function startMachines(bossName) {  
-        const architect = web.minion.architect;
+    startMachines: function startMachines(bossName, cb) {  
 
+        // Boss already geared up
         if (web.bosses[bossName]) {
-            return 'Boss ' + bossName + ' *bows* sorry my Majesty! ' +
-                'already at full steam';
+            cb(null, 'Boss ' + bossName + ' *bows* sorry My Majesty! ' +
+                'I am already at full steam');
+            return;
         }
 
-        web.bosses[boss] = boss(bossName);
-        
-        architect.gearBoss(web.bosses[boss]);
-
-        var reply = 'Boss ' + bossName + ' *bows* starting up machinery My Majesty!';
-        console.log(reply);
-        return util.inspect(web.cfg, { showHidden: false, depth: null });
+        switch (bossName) {
+            case 'cyborg': cyborg.gearBoss(web, bossName, cb); break;
+            case 'ninja': ninja.gearBoss(web, bossName, cb); break;
+            case 'pirate': pirate.gearBoss(web, bossName, cb); break;
+            default: cb(null, bossName + ' is not an advisor My Majesty!'); return;
+        }
     }
 };
 
 
-/// Spark up boss's web server and architect
-const web = require('./#gearing/server')(asTheQueenCommands);
+/// Spark up web server
+const web = require('./server')(asTheQueenCommands);
 
-/// Gear up Web Sites, API docs, html pages, js, css, etc. hosted by this server
-web.minion.architect.gearWebSites(require('path').resolve(__dirname + '/www'));
+/// Gear up Default Web Site holding system API docs, html pages, js, css, etc.
+web.minion.architect.gearWebSites(path.resolve(__dirname + '/www'));
 
-console.log('Core Boss server loaded');
+console.log('Web Server created');
     
 // Listen for requests from Her Majesty
 web.listen();

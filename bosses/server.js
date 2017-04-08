@@ -12,12 +12,12 @@ const
 
 // Princess Trello
 
-    webhook = require('../../monarchy/princess/trello/webhook'),    // Request handlers for Trello Webhooks
-    trello = require('../../monarchy/princess/trello/app'),
+    webhook = require('../monarchy/princess/trello/webhook'),    // Request handlers for Trello Webhooks
+    trello = require('../monarchy/princess/trello/app'),
 
 
 // Princess Google sheets
-    spreadsheets = require('../../monarchy/princess/sheets/app');
+    spreadsheets = require('../monarchy/princess/sheets/app');
     
 // Configuration
 var appDir = path.dirname(require.main.filename);
@@ -57,15 +57,22 @@ module.exports = function (asTheQueenCommands) {
     /// Not much else is going to happen until Her Majesty commands it so
     app.post('/queen/commands/:boss/:cmd', (req, res, next) => {
         res.type('text');
-        var reply;
-        //try { 
+        //try {
+
+        
             cfg.kingdom = req.body.kingdom;
-            reply = asTheQueenCommands[req.params.cmd](req.params.boss); //}
+            asTheQueenCommands[req.params.cmd](req.params.boss, function (err, reply) {
+                res.send(reply);
+            });
+            
+            
+            
+            
+        //}
         //catch(err) { reply = 'Boss ' + req.params.boss + ' *embarrassed* sorry My Queen! ' +
         //        'I do not understand your command or failed to ' + req.params.cmd;
         //        reply += '\n' + err.message; }
 
-        res.send(reply);
     });
 
 
@@ -94,7 +101,7 @@ module.exports = function (asTheQueenCommands) {
             env.OPENSHIFT_NODEJS_PORT || env.PORT || 3000,
             env.OPENSHIFT_NODEJS_IP || env.IP || 'localhost',
             () => {
-                console.log('Core Boss server waiting for commands from Her Majesty');
+                console.log('Web Server waiting for commands from Her Majesty');
             }
         );
    }
@@ -120,12 +127,12 @@ module.exports = function (asTheQueenCommands) {
 
     // Minions live here
     web.minion = {
-        angel: new (require('../../minions/angel'))(web),
-        architect:  new (require('../../minions/architect'))(web),
-        chef: new (require('../../minions/chef'))(web),
-        clerk: new (require('../../minions/clerk'))(web),
-        constable: new (require('../../minions/constable'))(web),
-        nurse: new (require('../../minions/nurse'))(web)
+        angel: new (require('../minions/angel'))(web),
+        architect:  new (require('../minions/architect'))(web),
+        chef: new (require('../minions/chef'))(web),
+        clerk: new (require('../minions/clerk'))(web),
+        constable: new (require('../minions/constable'))(web),
+        nurse: new (require('../minions/nurse'))(web)
     };
 
     return web;

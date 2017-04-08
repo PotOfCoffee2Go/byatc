@@ -49,11 +49,12 @@ function gearSheet(sheet, cb) {
         valueRenderOption: 'FORMATTED_VALUE',
         },
         function(err, response) {
-            if (err) cb(err);
+            if (err)
+                cb(err, 'Error ' + sheet.name + ' unable to create DB sheets' + sheet.alias + '.json');
             else {
                 let guestList = csvToObjects(response.values);
                 sheet.db.push('/cards', guestList);
-                cb(err, guestList);
+                cb(err, 'Loaded ' + sheet.name + ' into DB sheets' + sheet.alias + '.json');
             }
     });
 }

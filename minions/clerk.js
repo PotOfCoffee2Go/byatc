@@ -36,6 +36,25 @@ Clerk.prototype.onGetTrelloDb = function onGetTrelloDb(req, res, next, prayer, c
         web.sendJson(null, res, prayer);
 };
 
+Clerk.prototype.onGetSheetDb = function onGetSheetDb(req, res, next, prayer, cb) {
+
+    var error = null;
+    var sheetAlias = prayer.resource.split('/')[4];
+    var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === sheetAlias);
+    try { // Remove the '/boss/clerk/sheet/sheetalias' from resource to get the path
+        var dataPath = prayer.resource.split('/').slice(5).join('/');
+        prayer.data = sheet.db.getData('/' + dataPath);
+    } catch(err) {
+        error = new MinionError(minionName, 'Can not get data from Db', 101, err);
+        web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+        return;
+    }
+    if (cb)
+        cb(error, prayer);
+    else
+        web.sendJson(null, res, prayer);
+};
+
 module.exports = Clerk;
     
 })();

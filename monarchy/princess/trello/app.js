@@ -188,7 +188,7 @@ function getBoardComments(board, cb) {
 exports = module.exports = {
     setCredentials: function(creds) { byatc.setCredentials(creds); },
     
-    gearTrelloBoard: function(board, cb) {
+    gearBoard: function(board, cb) {
         async.series([
             function(callback) {getMemberBoards(board, (err) => {callback(err);})},
             function(callback) {getWebhooks(board, (err) => {callback(err);})},
@@ -196,8 +196,11 @@ exports = module.exports = {
             function(callback) {getBoard(board, (err) => {callback(err);})},
             function(callback) {getBoardComments(board, (err) => {callback(err);})},
         ],
-        function(error) {
-            if (cb) cb(error);
+        function(err) {
+            if (err)
+                cb(err, 'Error ' + board.name + ' unable to create DB trello' + board.alias + '.json');
+            else
+                cb(err, 'Loaded ' + board.name + ' into DB trello' + board.alias + '.json');
         });
     }
 };
