@@ -67,35 +67,5 @@ module.exports = {
                 callbackURL:'' // [Added at runtime] Trello webhook
             }
         ]
-    },
-    
-    
-    google: { // Enable google
-        cyborg: {
-            sheets: { // Enable sheets
-                spreadsheetId: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs',
-
-            }
-        },
-        ninja: {
-            sheets: {
-                spreadsheetId: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs',
-            }
-        },
-        pirate: {
-            sheets: {
-                spreadsheetId: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs',
-            }
-        },
-        id: '[Added at runtime]',
-        name:'Onyx and Breezy Auction Templates',
-        customer: {
-            cardName: 'Customer Template',
-            idCard: '[Added at runtime]'
-        },
-        item: {
-            cardName: 'Item Template',
-            idCard: '[Added at runtime]'
-        }
-    },
+    }
 };

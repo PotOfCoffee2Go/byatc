@@ -39,7 +39,7 @@ var asTheQueenCommands = {
         
         architect.gearBoss(web.bosses[boss]);
 
-        var reply = 'Boss ' + bossName + ' *bows* starting up machinery My Queen!';
+        var reply = 'Boss ' + bossName + ' *bows* starting up machinery My Majesty!';
         console.log(reply);
         return util.inspect(web.cfg, { showHidden: false, depth: null });
     }

@@ -40,7 +40,7 @@ const
                         //custCards.push('/boards', err);
                     }
                     else {
-                        entry.api.log += ('adding ' + entry.response.name);
+                        entry.byatc.log += ('adding ' + entry.response.name);
                         custCards.push('/cards[]', entry.response);
                     }
                 });
@@ -49,11 +49,11 @@ const
         },
         updateCard: function(custCards, body) {
             if (body.action.data.card.closed) {
-                var cards = custCards.getData('/boards/' + body.action.data.board.name + '/cards');
+                var cards = custCards.getData('/cards');
                 for (let i = 0; i < cards.length; i++) {
                     if (cards[i].id === body.action.data.card.id) {
                         console.log(body.action.type + ' deleting ' + cards[i].name);
-                        custCards.delete('/boards/' + body.action.data.board.name + '/cards[' + i +']');
+                        custCards.delete('/cards[' + i +']');
                         break;
                     }
                 }
@@ -67,10 +67,10 @@ const
                         //custCards.push('/boards', err);
                     }
                     else {
-                        var cards = custCards.getData('/boards/' + body.action.data.board.name + '/cards');
+                        var cards = custCards.getData('/cards');
                         for (let i = 0; i < cards.length; i++) {
                             if (cards[i].id === body.action.data.card.id) {
-                                entry.api.log += (body.action.type +' updating ' + cards[i].name);
+                                entry.byatc.log += (body.action.type +' updating ' + cards[i].name);
                                 custCards.push('/cards[' + i +']',
                                     entry.response, true);
                                 break;
