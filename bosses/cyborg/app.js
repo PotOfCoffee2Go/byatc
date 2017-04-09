@@ -38,8 +38,8 @@ module.exports = {
             //function(callback) {architect.gearIntercom(boss, callback);},
             //function(callback) {architect.gearWebsockets(boss, (err) => {callback(err);})},
             function(callback) {architect.getTrelloInfo(boss, callback);},
-            //function(callback) {architect.gearSheets(boss, callback);},
-            //function(callback) {architect.gearTrello(boss, callback);}
+            function(callback) {architect.gearSheets(boss, callback);},
+            function(callback) {architect.gearTrello(boss, callback);}
         ],
         function(err, results) {
             if (cb) cb(err, results);

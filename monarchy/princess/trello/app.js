@@ -98,12 +98,13 @@ function getMemberBoards(cfg, cb) {
             cfg.spreadsheets.sheets.forEach(function (sheet) {
                 let board = boards.find(b => sheet.boardName === b.name);
                 if (board) {
+                    board.alias = sheet.alias;
                     keepers.push(board);
                     boardnames.push(board.name);
                 }
                 else {
-                    keepers.push({name: sheet.boardName, action: 'create'});
-                    boardnames.push(board.name);
+                    keepers.push({name: sheet.boardName, alias: sheet.alias, idTeam: cfg.trello.team.id, action: 'create'});
+                    boardnames.push(sheet.boardName);
                 }
             });
             cfg.trello.boards = keepers;
@@ -126,11 +127,11 @@ function getWebhooks(cfg, cb) {
             cfg.trello.boards.forEach(function (board) {
                 let webhook = webhooks.find(f => f.idModel === board.id);
                 if (webhook) {
-                    board.webhooks = webhook;
+                    board.webhook = webhook;
                     webhookUrls.push({boardname: board.name, callbackURL: webhook.callbackURL});
                  }
                 else {
-                    board.webhooks = {idModel: board.id, callbackURL: 'create'};
+                    board.webhook = {idModel: board.id, action: 'create'};
                     webhookUrls.push({boardname: board.name, callbackURL: 'No Trello Callback'});
                 }
             });
@@ -139,69 +140,46 @@ function getWebhooks(cfg, cb) {
     byatc.send();
 }
 
-function gearTrelloBoardandWebhook(cfg, cb) {
-    cfg.spreadsheets.sheets.forEach(function(sheet){
-        let board = cfg.trello.boards.find(b => b.name === sheet.boardname);
-        if (board === undefined) {
-            // Create Board
-            createBoard(cfg, sheet, (err, entry) => {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    putWebhooks(board, cb);
-                    console.log('Board created');
-                }
 
-            });
-        }
-        else {
-            let webhook = board.webhooks.find(w => w.idModel === board.id && w.callbackURL === board.callbackURL);
-            if (webhook === undefined) {
-                // Todo: Create webhook
-                putWebhooks(board, cb);
-            }
-        }
-    });
-    if (cb) cb(null);
-}
-
-function createBoard(cfg, sheet, cb) {
-    byatc.push('post.board', {
-        name: sheet.boardName,
-        idOrganization: cfg.team.id,
-        defaultLists: false,
-        prefs_permissionLevel: 'org'
-    }, (err, entry) => {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            console.log('Board created');
-        }
-        if (cb) cb(err, entry);
-    });
-    byatc.send();
-}
-
-
-
-function putWebhooks(board, cb) {
-    byatc.push('put.webhooks', {
-        callbackURL: board.callbackURL,
-        idModel: board.id,
-        description: board.name
+function postBoard(board, cb) {
+    if (board.action && board.action === 'create') {
+        byatc.push('post.board', {
+            name: board.name,
+            idOrganization: board.idTeam,
+            defaultLists: false,
+            prefs_permissionLevel: 'org'
         }, (err, entry) => {
-            if (err) {
-                board.db.push('/putwebhooks', err);
+            if (!err) {
+                board.id = entry.response.id;
+                delete board.action;
             }
-            else {
-                board.db.push('/putwebhooks', entry.response);
-                board.webhook = entry.response;
-            }
-            if (cb) cb(err, entry);
-    });
-    byatc.send();
+            if (cb) cb(err, board);
+        });
+        byatc.send();
+    }
+    else {
+        if (cb) cb(null, board);
+    }
+}
+
+
+function putWebhook(board, cb) {
+    if (board.webhook && board.webhook.action === 'create') {
+        byatc.push('put.webhooks', {
+            callbackURL: board.callbackURL,
+            idModel: board.id,
+            description: board.name
+            }, (err, entry) => {
+                if (!err) {
+                    board.webhook = entry.response;
+                }
+                if (cb) cb(err, entry);
+        });
+        byatc.send();
+    }
+    else {
+        if (cb) cb(null, board.webhook);
+    }
 }
     
 function getBoard(board, cb) {
@@ -248,6 +226,7 @@ function getBoardComments(board, cb) {
 
 exports = module.exports = {
     setCredentials: function setCredentials(creds) { byatc.setCredentials(creds); },
+
     getTrelloInfo: function getTrelloInfo(cfg, cb) {
         async.series([
             function(callback) {getMemberTeam(cfg, callback);},
@@ -260,12 +239,12 @@ exports = module.exports = {
     },
 
 
-    createBoard: createBoard,
     gearBoard: function(board, cb) {
         async.series([
-            function(callback) {gearTrelloBoardandWebhook(board, (err) => {callback(err);})},
-            function(callback) {getBoard(board, (err) => {callback(err);})},
-            // function(callback) {getBoardComments(board, (err) => {callback(err);})},
+            function(callback) {postBoard(board, callback);},
+            function(callback) {putWebhook(board, callback);},
+            function(callback) {getBoard(board, callback);},
+            // function(callback) {getBoardComments(board, callback);},
         ],
         function(err) {
             if (err)

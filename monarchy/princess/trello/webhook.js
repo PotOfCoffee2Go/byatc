@@ -93,9 +93,9 @@ const
                 actions[req.body.action.type](custCards, req.body);
             }
             catch (e) {
-                if (req.body.action.data.card.id) {
-                    actions['updateCard'](custCards, req.body);
-                }
+                //if (req.body.action.data.card.id) {
+                //    actions['updateCard'](custCards, req.body);
+                //}
             } 
             cb(req, res);
         }
