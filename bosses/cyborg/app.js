@@ -27,18 +27,19 @@ module.exports = {
         const architect = web.minion.architect;
 
         web.bosses[boss] = boss;
-        
+
         // Clear the boss working database directory
         fs.emptyDirSync(boss.dir + '/db');
-    
+
         // Check enviroment variables for the credential keys/tokens and such
         web.minion.constable.checkBossCredentials(web.bosses[boss]);
-        
+
         async.series([
-            function(callback) {architect.gearIntercom(boss, callback);},
+            //function(callback) {architect.gearIntercom(boss, callback);},
             //function(callback) {architect.gearWebsockets(boss, (err) => {callback(err);})},
-            function(callback) {architect.gearSheets(boss, callback);},
-            function(callback) {architect.gearTrello(boss, callback);}
+            function(callback) {architect.getTrelloInfo(boss, callback);},
+            //function(callback) {architect.gearSheets(boss, callback);},
+            //function(callback) {architect.gearTrello(boss, callback);}
         ],
         function(err, results) {
             if (cb) cb(err, results);

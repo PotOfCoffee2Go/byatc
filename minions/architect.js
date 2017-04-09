@@ -68,13 +68,70 @@ Architect.prototype.gearWebsockets = function gearWebsockets(boss, cb) {
     }
     if (cb) cb(null);
 };
+
+// Get data for auction from google sheets
+Architect.prototype.gearSheets = function gearSheets(boss, cb) {
+
+    if (web.cfg.spreadsheets) {
+
+        web.spreadsheets.setCredentials(web.cfg.kingdom.keys.sheets);
+
+        // Array of sheets to collect data from
+        async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
+            // dbname, true = auto save, true = pretty
+            sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
     
+            // Setup REST route to access data collected from sheet
+            web.routes.restRouter.get('/' + boss.name + '/clerk/sheet/*', (req, res, next) => {
+                var prayer = web.minion.angel.invokePrayer(req, res, next);
+                web.minion.clerk.onGetSheetDb(req, res, next, prayer);
+            });
+
+            web.spreadsheets.gearSheet(sheet, callback);
+            
+        }, function(err, results) {
+            if (cb) cb(err, results);
+        });            
+
+    }
+
+};
+
+// Build the Trello boards based on data from the sheets
+Architect.prototype.setupTrello = function setupTrello(boss, cb) {
+    if (web.cfg.spreadsheets && web.cfg.trello) {
+        web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
+        web.trello.setCredentials(web.cfg.kingdom.keys.trello);
+
+        // Array of sheets to collect data from
+        async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
+            web.trello.getMemberTeam(web.cfg, sheet, function(){
+                web.trello.createBoard(web.cfg, sheet, callback);
+           });
+            
+        }, function(err, results) {
+            if (cb) cb(err, results);
+        });            
+
+    }
+};
+
+
+Architect.prototype.getTrelloInfo = function getTrelloInfo(boss, cb) {
+    if (web.cfg.trello) {
+        web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
+        web.trello.setCredentials(web.cfg.kingdom.keys.trello);
+        
+        web.trello.getTrelloInfo(web.cfg, (err, results) => {
+            if (cb) cb(err, results);
+        });
+    }
+};
+
+
 // Build the Trello interface
 Architect.prototype.gearTrello = function gearTrello(boss, cb) {
     if (web.cfg.trello) {
-
-        web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
-        web.trello.setCredentials(web.cfg.kingdom.keys.trello);
 
         // Array of boards to collect data from
         async.mapSeries(web.cfg.trello.boards, function(board, callback) {
@@ -113,33 +170,6 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
         });            
     }
 };   
-    
-Architect.prototype.gearSheets = function gearSheets(boss, cb) {
-
-    if (web.cfg.spreadsheets) {
-
-        web.spreadsheets.setCredentials(web.cfg.kingdom.keys.sheets);
-
-        // Array of sheets to collect data from
-        async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
-            // dbname, true = auto save, true = pretty
-            sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
-    
-            // Setup REST route to access data collected from sheet
-            web.routes.restRouter.get('/' + boss.name + '/clerk/sheet/*', (req, res, next) => {
-                var prayer = web.minion.angel.invokePrayer(req, res, next);
-                web.minion.clerk.onGetSheetDb(req, res, next, prayer);
-            });
-
-            web.spreadsheets.gearSheet(sheet, callback);
-            
-        }, function(err, results) {
-            if (cb) cb(err, results);
-        });            
-
-    }
-
-};
     
 module.exports = Architect;
 
