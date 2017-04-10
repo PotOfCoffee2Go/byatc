@@ -23,7 +23,7 @@ module.exports = {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Guest List', // Info only - the id is what google uses to open the sheet
                 alias: 'guests', // Name used in Database, REST, and Websocket requests
-                range: 'Auction_Guest_Entry!A1:K1000', // Range of data to collect from sheet
+                range: 'Auction_Guests!A1:K1000', // Range of data to collect from sheet
                 db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: 'Auction Guests', // Name of board on Trello
             },
@@ -31,9 +31,17 @@ module.exports = {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'items', // Name used in Database, REST, and Websocket requests
-                range: 'Assets!A1:G1000', // Range of data to collect
+                range: 'Auction_Items!A1:J1000', // Range of data to collect
                 db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: 'Auction Items', // Name of board on Trello
+            },
+            {
+                id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
+                name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
+                alias: 'category', // Name used in Database, REST, and Websocket requests
+                range: 'Categories!A1:C100', // Range of data to collect
+                db: null, // [Added at runtime] Object returned when db connect/open
+                boardName: '', // Name of board on Trello - '' = do not create
             }
         ]
     },
@@ -42,6 +50,10 @@ module.exports = {
         database: 'trello', // Database name prefix results in ('trello' + sheet.alias + '.json')
         team: {shortname: 'onyxbreezy'}, // Under what team to create the Trello boards
         boards: [], // [Added at runtime] Trello boards - info on each board
+        template: { 
+            name: 'Auction Templates',
+            board: {} // [Added at runtime] cards used as template for new cards
+        },
 /*
         boards: [
             {

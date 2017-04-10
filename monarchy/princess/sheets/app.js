@@ -28,13 +28,14 @@ function csvToObjects(lines) {
     for (let l = 1; l <= lines.length-1; l++) {
         let data = {};
         // builds object based on column headers
-        if (lines[l].length > 2) {
+        if (lines[l].length >= 3) {
+            data.sheet = {};
             for (let c = 0; c < lines[l].length; c++) {
-                data[columns[c]] = lines[l][c];          
+                data.sheet[columns[c]] = lines[l][c];          
             }
-            data.summary = {bid: 0, won: 0, shipping: 0, tax: 0, paid: 0};
+            data.auction = {bid: 0, won: 0, shipping: 0, tax: 0, paid: 0};
             // add object to output
-            records[data.id] = data;
+            records[data.sheet.id] = data;
         }
     }
     return records;

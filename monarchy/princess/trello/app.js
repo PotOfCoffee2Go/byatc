@@ -3,7 +3,7 @@
 (function(){
 
 const
-    byatc = require('./api'),
+    api = require('./api'),
     async = require('async'),
     moment = require('moment-timezone');
 
@@ -24,7 +24,9 @@ const
             return {
             id: idBoard,
             fields:'name,idOrganization,url',
-            members: 'all', labels:'all', cards:'open', card_fields:'name,labels', card_checklists: 'all',
+            members: 'all', labels:'all',
+            cards:'open', card_fields:'name,labels', card_checklists: 'all',
+            lists: 'open', list_fields: 'name',
             member_fields: 'fullName,username,confirmed,memberType',
             card_attachments: true,
             card_attachment_fields: 'bytes,date,edgeColor,idMember,isUpload,mimeType,name,url'
@@ -45,6 +47,7 @@ var format = {
             idOrganization: board.idOrganization,
             members: board.members,
             labels: board.labels,
+            lists:board.lists,
             cards: board.cards
         };
     },
@@ -61,7 +64,7 @@ var format = {
 };
 
 function getMemberTeam(cfg, cb) {
-    byatc.push('get.member.organizations',
+    api.push('get.member.organizations',
         telloArguments.getMemberOrganizations(),
         (err, entry) => {
             if (err) {
@@ -81,12 +84,12 @@ function getMemberTeam(cfg, cb) {
                 }
             }
         });
-    byatc.send();
+    api.send();
 }
 
 function getMemberBoards(cfg, cb) {
     var boards = [], keepers = [], boardnames = [];
-    byatc.push('get.member.id.boards',
+    api.push('get.member.id.boards',
         telloArguments.getMemberBoards(),
         (err, entry) => {
             if (err) {
@@ -95,6 +98,9 @@ function getMemberBoards(cfg, cb) {
             else {
                 boards = entry.response;
             }
+            
+            getTemplateBoard(cfg, boards);
+            
             cfg.spreadsheets.sheets.forEach(function (sheet) {
                 let board = boards.find(b => sheet.boardName === b.name);
                 if (board) {
@@ -103,20 +109,22 @@ function getMemberBoards(cfg, cb) {
                     boardnames.push(board.name);
                 }
                 else {
-                    keepers.push({name: sheet.boardName, alias: sheet.alias, idTeam: cfg.trello.team.id, action: 'create'});
-                    boardnames.push(sheet.boardName);
+                    if (sheet.boardName && sheet.boardName.length > 0) { // Only boards with a name
+                        keepers.push({name: sheet.boardName, alias: sheet.alias, idTeam: cfg.trello.team.id, action: 'create'});
+                        boardnames.push(sheet.boardName);
+                    }
                 }
             });
             cfg.trello.boards = keepers;
             if (cb) cb(err, {trelloBoards: boardnames});
         });
-    byatc.send();
+    api.send();
 }
 
 function getWebhooks(cfg, cb) {
     var webhooks = [], keepers = [], webhookUrls = [];
-    byatc.push('get.tokens.token.webhooks', {
-        token: byatc.getToken()
+    api.push('get.tokens.token.webhooks', {
+        token: api.getToken()
         }, (err, entry) => {
             if (err) {
                 webhooks = [];
@@ -137,13 +145,13 @@ function getWebhooks(cfg, cb) {
             });
             if (cb) cb(err, {webhooks: webhookUrls});
         });
-    byatc.send();
+    api.send();
 }
 
 
 function postBoard(board, cb) {
     if (board.action && board.action === 'create') {
-        byatc.push('post.board', {
+        api.push('post.board', {
             name: board.name,
             idOrganization: board.idTeam,
             defaultLists: false,
@@ -155,7 +163,7 @@ function postBoard(board, cb) {
             }
             if (cb) cb(err, board);
         });
-        byatc.send();
+        api.send();
     }
     else {
         if (cb) cb(null, board);
@@ -165,7 +173,7 @@ function postBoard(board, cb) {
 
 function putWebhook(board, cb) {
     if (board.webhook && board.webhook.action === 'create') {
-        byatc.push('put.webhooks', {
+        api.push('put.webhooks', {
             callbackURL: board.callbackURL,
             idModel: board.id,
             description: board.name
@@ -175,7 +183,7 @@ function putWebhook(board, cb) {
                 }
                 if (cb) cb(err, entry);
         });
-        byatc.send();
+        api.send();
     }
     else {
         if (cb) cb(null, board.webhook);
@@ -184,24 +192,25 @@ function putWebhook(board, cb) {
     
 function getBoard(board, cb) {
     var idBoard = board.id;
-    byatc.push('get.boards.id',
+    api.push('get.boards.id',
         telloArguments.getBoard(idBoard),
         (err, entry) => {
             if (err) {
                 board.db.push('/', err);
             }
             else {
+                board.lists = entry.response.lists;
                 entry.response.alias = board.alias;
                 board.db.push('/', format.board(entry.response));
             }
             if (cb) cb(err, entry);
         });
-    byatc.send();
+    api.send();
 }
 
 function getBoardComments(board, cb) {
     var idBoard = board.id;
-    byatc.push('get.boards.id.actions', {
+    api.push('get.boards.id.actions', {
         id: idBoard,
         filter: 'commentCard'
     }, (err, entry) => {
@@ -218,14 +227,79 @@ function getBoardComments(board, cb) {
         }
         if (cb) cb(err, entry);
     });
-    byatc.send();
+    api.send();
 }
 
+function getTemplateBoard(cfg, boards) {
+    boards.forEach(function(board) {
+        if (board.name === cfg.trello.template.name) {
+            api.push('get.boards.id', {
+                id: board.id,
+                fields:'name,idOrganization,url',
+                members: 'none', labels:'none',
+                cards:'open', card_fields:'name', card_checklists: 'none' },
+                (err, entry) => {
+                    if (err) {
+                        //board.db.push('/', err);
+                    }
+                    else {
+                        cfg.trello.template.board = entry.response;
+                    }
+                });
+            api.send();
+        }
+    });
+}
 
+function getBoardListsFromSheets(cfg, cb) {
+    var sheetcards, boardlists;
+    var sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'guests');
+    var board = cfg.trello.boards.find(b => b.alias === 'guests');
+    try {
+        sheetcards = sheet.db.getData('/cards');
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        if (cb) cb(err, 'Unable to access guest sheet and/or trello board');
+        return;
+    }
+    
+    var cards = Object.keys(sheetcards);
+    cards.forEach(function(idCard) {
+    let table = 'Table ' + sheetcards[idCard].sheet.starting_table;
+        let list = boardlists.find(l => l.name === table);
+        if (!list && sheetcards[idCard].sheet.starting_table.length > 0) {
+            boardlists.push({id: null, name: table});
+        }
+    });
+    board.db.push('/lists', boardlists);
+    if (cb) cb(null, 'Trello board lists are synchronized');
 
+ /*   
+    sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'items');
+    board = cfg.trello.boards.find(b => b.alias === 'items');
+    try {
+        sheetcards = sheet.db.getData('/cards');
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        if (cb) cb(err, 'Unable to access item sheet and/or trello board');
+        return;
+    }
+    
+    var cards = Object.keys(sheetcards);
+    cards.forEach(function(idCard) {
+    let table = 'Table ' + sheetcards[idCard].sheet.starting_table;
+        let list = boardlists.find(l => l.name === table);
+        if (!list && sheetcards[idCard].sheet.starting_table.length > 0) {
+            boardlists.push({id: null, name: table});
+        }
+    });
+    board.db.push('/lists', boardlists);
+*/
+}
 
 exports = module.exports = {
-    setCredentials: function setCredentials(creds) { byatc.setCredentials(creds); },
+    setCredentials: function setCredentials(creds) { api.setCredentials(creds); },
+
 
     getTrelloInfo: function getTrelloInfo(cfg, cb) {
         async.series([
@@ -252,7 +326,18 @@ exports = module.exports = {
             else
                 cb(err, 'Loaded ' + board.name + ' into DB trello' + board.alias + '.json');
         });
-    }
+    },
+    
+    syncTrelloBoards: function syncTrelloBoards(cfg, cb) {
+        async.series([
+            function(callback) {getBoardListsFromSheets(cfg, callback);},
+        ],
+        function(err, results) {
+            if (cb) cb(err, results);
+        });
+    },
+
+
 };
     
     

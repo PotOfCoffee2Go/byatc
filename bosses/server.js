@@ -12,12 +12,12 @@ const
     bodyParser = require("body-parser"),
 
 // Princess Trello
-
-    webhook = require('../monarchy/princess/trello/webhook'),    // Request handlers for Trello Webhooks
+    // Request handlers for Trello Webhooks
+    webhook = require('../monarchy/princess/trello/webhook'),
     trello = require('../monarchy/princess/trello/app'),
 
 
-// Princess Google sheets
+// Princess Sheets
     spreadsheets = require('../monarchy/princess/sheets/app');
     
 // Configuration
@@ -55,25 +55,13 @@ module.exports = function (asTheQueenCommands) {
     /// Health required by OpenShift or whoever wants to check if server listening
     app.get('/health', (req, res, next) => {sendJson(null, res, {'health':'ok'});});
 
-    /// Not much else is going to happen until Her Majesty commands it so
+    /// Not much is going to happen until Her Majesty commands it so
     app.post('/queen/commands/:boss/:cmd', (req, res, next) => {
         res.type('text');
-        //try {
-
-        
             cfg.kingdom = req.body.kingdom;
             asTheQueenCommands[req.params.cmd](req.params.boss, function (err, reply) {
                 res.send(util.inspect(reply, { showHidden: false, depth: null }));
             });
-            
-            
-            
-            
-        //}
-        //catch(err) { reply = 'Boss ' + req.params.boss + ' *embarrassed* sorry My Queen! ' +
-        //        'I do not understand your command or failed to ' + req.params.cmd;
-        //        reply += '\n' + err.message; }
-
     });
 
 
@@ -81,7 +69,7 @@ module.exports = function (asTheQueenCommands) {
     
     var restRouter = express.Router();
     // The architect will populate this router with the boss routes
-    //  once the /queen/commands/startMachines (above)
+    //  once /queen/commands/startMachines (above)
     app.use(function mRestRouter(req, res, next) {
       restRouter(req, res, next);
     });
@@ -89,7 +77,7 @@ module.exports = function (asTheQueenCommands) {
     /// -- Final Routes --
 
     // The architect will populate this router with the trailing routes
-    //  to final error handlers, docs, websites at end of the route list (below)
+    //  to final websites, docs, error handlers at end of the route list
     var finalRouter = express.Router();
     app.use(function (req, res, next) {
       finalRouter(req, res, next);

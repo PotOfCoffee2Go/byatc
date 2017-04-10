@@ -39,7 +39,10 @@ module.exports = {
             //function(callback) {architect.gearWebsockets(boss, (err) => {callback(err);})},
             function(callback) {architect.getTrelloInfo(boss, callback);},
             function(callback) {architect.gearSheets(boss, callback);},
-            function(callback) {architect.gearTrello(boss, callback);}
+            function(callback) {architect.gearTrello(boss, callback);},
+            function(callback) {web.minion.chef.mergeDatabases(boss, callback);},
+            function(callback) {architect.syncTrelloBoards(boss, callback);},
+
         ],
         function(err, results) {
             if (cb) cb(err, results);

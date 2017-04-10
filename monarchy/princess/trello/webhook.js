@@ -10,11 +10,21 @@ const
     var telloArguments= {
         createCard: function(body) {
             return {
+                
+            id: body.model.id,
+            idCard: body.action.data.card.id,
+            fields:'name,idOrganization,url',
+            cards:'open', fields:'name,labels', checklists: 'all',
+            member_fields: 'fullName,username,confirmed,memberType',
+            attachments: true,
+            attachment_fields: 'bytes,date,edgeColor,idMember,isUpload,mimeType,name,url',
+            checkItemStates: false
+                /*
                 id: body.model.id,
                 idCard: body.action.data.card.id,
                 checklists: 'all',
                 attachments: true,
-                attachment_fields: 'bytes,date,edgeColor,idMember,isUpload,mimeType,name,url'
+                attachment_fields: 'bytes,date,edgeColor,idMember,isUpload,mimeType,name,url' */
             };
         },
         updateCard: function(body) {

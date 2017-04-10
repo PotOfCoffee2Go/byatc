@@ -92,30 +92,8 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
         }, function(err, results) {
             if (cb) cb(err, results);
         });            
-
-    }
-
-};
-
-// Build the Trello boards based on data from the sheets
-Architect.prototype.setupTrello = function setupTrello(boss, cb) {
-    if (web.cfg.spreadsheets && web.cfg.trello) {
-        web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
-        web.trello.setCredentials(web.cfg.kingdom.keys.trello);
-
-        // Array of sheets to collect data from
-        async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
-            web.trello.getMemberTeam(web.cfg, sheet, function(){
-                web.trello.createBoard(web.cfg, sheet, callback);
-           });
-            
-        }, function(err, results) {
-            if (cb) cb(err, results);
-        });            
-
     }
 };
-
 
 Architect.prototype.getTrelloInfo = function getTrelloInfo(boss, cb) {
     if (web.cfg.trello) {
@@ -139,7 +117,7 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
             board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database + board.alias, true, true);
     
             //  Process Trello REST requests from frontends
-            web.routes.restRouter.get('/' + boss.name + '/clerk/trello/*', (req, res, next) => {
+            web.routes.restRouter.get('/' + boss.name + '/clerk/trello/' + board.alias + '*', (req, res, next) => {
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
                 web.minion.clerk.onGetTrelloDb(req, res, next, prayer);
             });
@@ -170,7 +148,16 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
         });            
     }
 };   
-    
+
+
+Architect.prototype.syncTrelloBoards = function syncTrelloBoards(boss, cb) {
+    if (web.cfg.trello) {
+        web.trello.syncTrelloBoards(web.cfg, (err, results) => {
+            if (cb) cb(err, results);
+        });
+    }
+};
+
 module.exports = Architect;
 
 })();
