@@ -25,7 +25,8 @@ const
             id: idBoard,
             fields:'name,idOrganization,url',
             members: 'all', labels:'all',
-            cards:'open', card_fields:'name,labels', card_checklists: 'all',
+            cards:'open', card_fields:'name,labels',
+            card_checklists: 'none',
             lists: 'open', list_fields: 'name',
             member_fields: 'fullName,username,confirmed,memberType',
             card_attachments: true,
@@ -252,6 +253,7 @@ function getTemplateBoard(cfg, boards) {
 }
 
 function getBoardListsFromSheets(cfg, cb) {
+    // Scan and add guest lists that are not on board
     var sheetcards, boardlists;
     var sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'guests');
     var board = cfg.trello.boards.find(b => b.alias === 'guests');
@@ -259,42 +261,235 @@ function getBoardListsFromSheets(cfg, cb) {
         sheetcards = sheet.db.getData('/cards');
         boardlists = board.db.getData('/lists');
     } catch(err) {
-        if (cb) cb(err, 'Unable to access guest sheet and/or trello board');
+        if (cb) cb(err, 'Unable to access guest sheet and/or trello board databases');
         return;
     }
     
     var cards = Object.keys(sheetcards);
     cards.forEach(function(idCard) {
-    let table = 'Table ' + sheetcards[idCard].sheet.starting_table;
+        let table = 'Table ' + sheetcards[idCard].sheet.starting_table;
         let list = boardlists.find(l => l.name === table);
         if (!list && sheetcards[idCard].sheet.starting_table.length > 0) {
             boardlists.push({id: null, name: table});
         }
     });
     board.db.push('/lists', boardlists);
-    if (cb) cb(null, 'Trello board lists are synchronized');
 
- /*   
+    // Scan and add item lists that are not on board
     sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'items');
     board = cfg.trello.boards.find(b => b.alias === 'items');
     try {
         sheetcards = sheet.db.getData('/cards');
         boardlists = board.db.getData('/lists');
     } catch(err) {
-        if (cb) cb(err, 'Unable to access item sheet and/or trello board');
+        if (cb) cb(err, 'Unable to access item sheet and/or trello board databases');
         return;
     }
     
     var cards = Object.keys(sheetcards);
     cards.forEach(function(idCard) {
-    let table = 'Table ' + sheetcards[idCard].sheet.starting_table;
-        let list = boardlists.find(l => l.name === table);
-        if (!list && sheetcards[idCard].sheet.starting_table.length > 0) {
-            boardlists.push({id: null, name: table});
+        let category = sheetcards[idCard].category.name;
+        let list = boardlists.find(l => l.name === category);
+        if (!list && sheetcards[idCard].category.name.length > 0) {
+            boardlists.push({id: null, name: category});
         }
     });
     board.db.push('/lists', boardlists);
-*/
+
+    if (cb) cb(null, 'Trello board lists are synchronized');
+}
+
+function addNewGuestBoardLists(cfg, cb) {
+    // Scan and add guest lists that are not on board
+    var boardlists;
+    var board = cfg.trello.boards.find(b => b.alias === 'guests');
+    try {
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        if (cb) cb(err, 'Unable to access Guest trello board database');
+        return;
+    }
+    
+    var listCount = 0;
+    boardlists.forEach(function(list) {
+        if (!list.id) listCount++;
+    });
+    
+    boardlists.forEach(function(list) {
+        if (!list.id) {
+            api.push('post.board.lists',
+                {idBoard: board.id, name: list.name, pos: 'bottom' },
+                (err, entry) => {
+                    if (err) {
+                        if (cb) cb(err, 'Unable to add Guest list');
+                    }
+                    else {
+                        list.id = entry.response.id;
+                        listCount--;
+                        
+                    }
+                    if (cb && listCount === 0) {
+                        board.db.push('/lists', boardlists);
+                        cb(err, 'Guest Trello board lists are synchronized');
+                    }
+                });
+            api.send();
+        }
+    });
+    if (cb && listCount === 0) {
+        cb(null, 'No lists need to be added to Guest Trello board');
+    }
+
+}
+
+function addNewItemBoardLists(cfg, cb) {
+    // Scan and add guest lists that are not on board
+    var boardlists;
+    var board = cfg.trello.boards.find(b => b.alias === 'items');
+    try {
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        if (cb) cb(err, 'Unable to access Item trello board database');
+        return;
+    }
+    
+    var listCount = 0;
+    boardlists.forEach(function(list) {
+        if (!list.id) listCount++;
+    });
+    
+    boardlists.forEach(function(list) {
+        if (!list.id) {
+            api.push('post.board.lists',
+                {idBoard: board.id, name: list.name, pos: 'bottom' },
+                (err, entry) => {
+                    if (err) {
+                        if (cb) cb(err, 'Unable to add Item lists');
+                    }
+                    else {
+                        list.id = entry.response.id;
+                        listCount--;
+                        
+                    }
+                    if (cb && listCount === 0) {
+                        board.db.push('/lists', boardlists);
+                        cb(err, 'Item Trello board lists are synchronized');
+                    }
+                });
+            api.send();
+        }
+    });
+    if (cb && listCount === 0) {
+        cb(null, 'No lists need to be added to Items Trello board');
+    }
+
+}
+
+function addNewGuestBoardCards(cfg, cb) {
+    // Scan and add guest cards that are not on board
+    var sheetcards, boardlists;
+    var sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'guests');
+    var board = cfg.trello.boards.find(b => b.alias === 'guests');
+    try {
+        sheetcards = sheet.db.getData('/cards');
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        if (cb) cb(err, 'Unable to access guest sheet and/or trello board databases');
+        return;
+    }
+    
+    var cardCount = 0;
+    var cards = Object.keys(sheetcards);
+    cards.forEach(function(idCard) {
+        if (!sheetcards[idCard].trello) cardCount++;
+    });
+    
+    cards.forEach(function(idCard) {
+        if (!sheetcards[idCard].trello) {
+            let table = 'Table ' + sheetcards[idCard].sheet.starting_table;
+            let idList = boardlists.find(l => l.name === table).id;
+            if (idList && sheetcards[idCard].sheet.starting_table.length > 0) {
+                api.push('post.cards',
+                    {idList: idList,
+                    name: sheetcards[idCard].sheet.id + ' - ' + 
+                        sheetcards[idCard].sheet.first_name + ' ' + 
+                        sheetcards[idCard].sheet.last_name,
+                    idCardSource: cfg.trello.template.board.cards[0].id,
+                    keepFromSource: 'checklists'},
+                    (err, entry) => {
+                        if (err) {
+                            if (cb) cb(err, 'Unable to add Guest cards');
+                        }
+                        else {
+                            // sheetcards[idCard].trello = entry.response;
+                            cardCount--;
+                            
+                        }
+                        if (cb && cardCount === 0) {
+                            sheet.db.push('/cards', sheetcards);
+                            cb(err, 'Guest Trello board cards are synchronized');
+                        }
+                    });
+                api.send();
+            }
+        }
+    });
+    if (cb && cardCount === 0) {
+        cb(null, 'No cards need to be added to Guest Trello board');
+    }
+}
+
+function addNewItemBoardCards(cfg, cb) {
+    // Scan and add item cards that are not on board
+    var sheetcards, boardlists;
+    var sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'items');
+    var board = cfg.trello.boards.find(b => b.alias === 'items');
+    try {
+        sheetcards = sheet.db.getData('/cards');
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        if (cb) cb(err, 'Unable to access item sheet and/or trello board databases');
+        return;
+    }
+    
+    var cardCount = 0;
+    var cards = Object.keys(sheetcards);
+    cards.forEach(function(idCard) {
+        if (!sheetcards[idCard].trello) cardCount++;
+    });
+    
+    cards.forEach(function(idCard) {
+        if (!sheetcards[idCard].trello) {
+            let category = sheetcards[idCard].category.name;
+            let idList = boardlists.find(l => l.name === category).id;
+            if (idList && sheetcards[idCard].category.name.length > 0) {
+                api.push('post.cards',
+                    {idList: idList,
+                    name: sheetcards[idCard].sheet.id + ' - ' + 
+                        sheetcards[idCard].sheet.Donation,
+                    idCardSource: cfg.trello.template.board.cards[1].id,
+                    keepFromSource: 'checklists'},
+                    (err, entry) => {
+                        if (err) {
+                            if (cb) cb(err, 'Unable to add Item cards');
+                        }
+                        else {
+                            // sheetcards[idCard].trello = entry.response;
+                            cardCount--;
+                            
+                        }
+                        if (cb && cardCount === 0) {
+                            sheet.db.push('/cards', sheetcards);
+                            cb(err, 'Item Trello board cards are synchronized');
+                        }
+                    });
+                api.send();
+            }
+        }
+    });
+    if (cb && cardCount === 0) {
+        cb(null, 'No cards need to be added to Item Trello board');
+    }
 }
 
 exports = module.exports = {
@@ -331,6 +526,10 @@ exports = module.exports = {
     syncTrelloBoards: function syncTrelloBoards(cfg, cb) {
         async.series([
             function(callback) {getBoardListsFromSheets(cfg, callback);},
+            function(callback) {addNewGuestBoardLists(cfg, callback);},
+            function(callback) {addNewItemBoardLists(cfg, callback);},
+            function(callback) {addNewGuestBoardCards(cfg, callback);},
+            function(callback) {addNewItemBoardCards(cfg, callback);},
         ],
         function(err, results) {
             if (cb) cb(err, results);

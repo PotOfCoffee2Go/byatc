@@ -39,7 +39,7 @@ module.exports = {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'category', // Name used in Database, REST, and Websocket requests
-                range: 'Categories!A1:C100', // Range of data to collect
+                range: 'Categories!A1:D100', // Range of data to collect
                 db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: '', // Name of board on Trello - '' = do not create
             }

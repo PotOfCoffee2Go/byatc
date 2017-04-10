@@ -15,13 +15,14 @@ function Chef (Web) {
     web = Web;
 }
 
-// Sync Trello Boards with Spreadsheet Sheets
 Chef.prototype.mergeDatabases = function mergeDatabases(boss, cb) {
+
+    // Merge the trello item information into the item database 
     var alias = 'items', sheetItems, boardItems, error;
 
     var cfgsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
     var cfgboard = web.cfg.trello.boards.find(b => b.alias === alias);
-    try { // Remove the '/boss/clerk/trello/boardalias' from resource to get the path
+    try { 
         sheetItems = cfgsheet.db.getData('/cards');
         boardItems = cfgboard.db.getData('/cards');
     } catch(err) {
@@ -40,12 +41,13 @@ Chef.prototype.mergeDatabases = function mergeDatabases(boss, cb) {
     // Clear the trello board item db
     cfgboard.db.push('/cards', []);
 
+    // Merge the trello guest information into the guest database 
     var sheetGuests, boardGuests;
     alias = 'guests';
     
     cfgsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
     cfgboard = web.cfg.trello.boards.find(b => b.alias === alias);
-    try { // Remove the '/boss/clerk/trello/boardalias' from resource to get the path
+    try { 
         sheetGuests = cfgsheet.db.getData('/cards');
         boardGuests = cfgboard.db.getData('/cards');
     } catch(err) {
@@ -63,6 +65,32 @@ Chef.prototype.mergeDatabases = function mergeDatabases(boss, cb) {
     });
     // Clear the trello board item db
     cfgboard.db.push('/cards', []);
+
+    // Merge the categories into the items database
+    var sheetCategory, itemCards;
+    alias = 'category';
+    
+    cfgsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
+    var cfgitem = web.cfg.spreadsheets.sheets.find(s => s.alias === 'items');
+    try { 
+        sheetCategory = cfgsheet.db.getData('/cards');
+        itemCards = cfgitem.db.getData('/cards');
+    } catch(err) {
+        error = new MinionError(minionName, 'Can not get category sheet and/or items db', 101, err);
+        if (cb) cb(error);
+        return;
+    }
+
+    var icards = Object.keys(itemCards);
+    icards.forEach(function(idCard) {
+        let itemCategory = itemCards[idCard].sheet.Category;
+        itemCards[idCard].category = sheetCategory[itemCategory].sheet;
+    });
+    
+    cfgitem.db.push('/cards', itemCards);
+    // Clear the category database board item db
+    cfgsheet.db.push('/', {});
+
     if (cb) cb(null, {mergeDatabases: 'complete'});
 };
 
