@@ -35,17 +35,17 @@ module.exports = {
         web.minion.constable.checkBossCredentials(web.bosses[boss]);
 
         async.series([
-            //function(callback) {architect.gearIntercom(boss, callback);},
-            //function(callback) {architect.gearWebsockets(boss, (err) => {callback(err);})},
-            function(callback) {architect.getTrelloInfo(boss, callback);},
-            function(callback) {architect.gearSheets(boss, callback);},
-            function(callback) {architect.gearTrello(boss, callback);},
-            function(callback) {web.minion.chef.mergeDatabases(boss, callback);},
-            function(callback) {architect.syncTrelloBoards(boss, callback);},
-            function(callback) {web.minion.angel.assignRoutes(boss, callback);},
+            //(callback) => {architect.gearIntercom(boss, callback);},
+            //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
+            (callback) => {architect.getTrelloInfo(boss, callback);},
+            (callback) => {architect.gearSheets(boss, callback);},
+            (callback) => {architect.gearTrello(boss, callback);},
+            (callback) => {web.minion.chef.mergeDatabases(boss, callback);},
+            (callback) => {architect.syncTrelloBoards(boss, callback);},
+            (callback) => {web.minion.angel.assignRoutes(boss, callback);},
 
         ],
-        function(err, results) {
+        (err, results) => {
             if (cb) cb(err, results);
         });
     }

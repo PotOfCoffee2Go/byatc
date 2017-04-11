@@ -50,8 +50,7 @@ function gearSheet(sheet, cb) {
         spreadsheetId: sheet.id,
         range: sheet.range,
         valueRenderOption: 'FORMATTED_VALUE',
-        },
-        function(err, response) {
+        }, (err, response) => {
             if (err)
                 cb(err, 'Error ' + sheet.name + ' unable to create DB sheets' + sheet.alias + '.json');
             else {
@@ -81,7 +80,7 @@ function accessWorkbook(auth) {
             range: 'Experiment!A8',
             majorDimension: 'ROWS',
             values: [['=\'2016 O&B Item List\'!C17']]}
-        }, function(err, response) {
+        }, (err, response) => {
         if (err) {
             console.log('The API returned an error: ' + err);
             return;

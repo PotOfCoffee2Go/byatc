@@ -3,7 +3,7 @@
 (function(){
 
 const fs = require('fs'),
-      rp = require('request-promise');
+      request = require('request');
       
 const api = JSON.parse(fs.readFileSync(__dirname + '/api.json', "utf8"));
 
@@ -129,7 +129,7 @@ function buildRequest(tapi, data, cb) {
 function push(cmd, data, cb) {
     // Insure that we have minimally empty data and default callback 
     data = data || {};
-    cb = cb || function(err){if (err) console.log(err);};
+    cb = cb || function(err) {if (err) console.log(err);};
     
     // Lookup the layout of this command/request
     var tapi = api[cmd] === undefined ? null : api[cmd];
@@ -158,21 +158,22 @@ function send(entry) {
         options = entry.options,
         cb = entry.cb;
 
-    rp(options)
-        .then((response) => {
-            entry.response = response;
+    request(options, (err, response, body) => {
+        if (!err) {
+            entry.response = body;
             delete options.qs.key;
             delete options.qs.token;
             if (cb) cb(null, entry);
             console.log(entry.byatc.log);
-        })
-        .catch((err) => {
+        }
+        else {
             entry.response = err;
             delete options.qs.key;
             delete options.qs.token;
             if (cb) cb(err, entry);
             console.log(entry.byatc.log);
-        });
+        }
+    });
 }
 
 

@@ -5,6 +5,7 @@
 const
     fs = require('fs-extra'),
     async = require('async'),
+    request = require('request'),
     JsonDB = require('node-json-db'),
     gearbox = require('./#gearing/gearbox'),
     
@@ -14,7 +15,7 @@ const
 var listeners = [];
 
 // Express web server and boss for this minion
-var web = null, siteDir = null; // assigned later
+var web = null; // assigned later
 
 
 function Architect (Web) {
@@ -22,8 +23,7 @@ function Architect (Web) {
 }
 
 /// Frontend sites, API Docs, -  html, js, css, etc
-Architect.prototype.gearWebSites = function gearWebSites(sitedir) {
-    siteDir = sitedir;
+Architect.prototype.gearWebSites = function gearWebSites(siteDir) {
     web.routes.finalRouter.use('/', gearbox.markdown); // give markdown a try first
     web.routes.finalRouter.use('/', web.express.static(siteDir + '/docs'));
     web.routes.finalRouter.use('/docs', gearbox.markdown);
@@ -83,7 +83,7 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
     
             web.spreadsheets.gearSheet(sheet, callback);
             
-        }, function(err, results) {
+        }, (err, results) => {
             if (cb) cb(err, results);
         });            
     }
@@ -131,7 +131,7 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
 
             web.trello.gearBoard(board, callback);
 
-        }, function(err, results) {
+        }, (err, results) => {
             if (cb) cb(err, results);
         });            
     }
@@ -145,6 +145,25 @@ Architect.prototype.syncTrelloBoards = function syncTrelloBoards(boss, cb) {
         });
     }
 };
+
+
+Architect.prototype.getAuctionInfo = function getAuctionInfo(boss, cb) {
+
+    request({
+        url: web.cfg.kingdom.websites.cyborg + '/cyborg/chef/create/auction',
+        method: 'GET' },
+        function (err, response, body) { 
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log(body);
+            }
+        }
+    );
+    
+};
+
 
 module.exports = Architect;
 

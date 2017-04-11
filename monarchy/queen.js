@@ -58,7 +58,7 @@ function startAdvisors() {
         url:kingdom.websites.cyborg + '/queen/commands/cyborg/startMachines',
         method: 'POST',
         json: {kingdom:kingdom}},
-        function (err,httpResponse,body) { 
+        function (err, httpResponse, body) { 
             if (err) {
                 console.log(err);
             }

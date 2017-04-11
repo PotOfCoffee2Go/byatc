@@ -634,11 +634,10 @@ exports = module.exports = {
 
     getTrelloInfo: function getTrelloInfo(cfg, cb) {
         async.series([
-            function(callback) {getMemberTeam(cfg, callback);},
-            function(callback) {getMemberBoards(cfg, callback);},
-            function(callback) {getWebhooks(cfg, callback);},
-        ],
-        function(err, results) {
+            (callback) => {getMemberTeam(cfg, callback);},
+            (callback) => {getMemberBoards(cfg, callback);},
+            (callback) => {getWebhooks(cfg, callback);},
+        ], (err, results) => {
             if (cb) cb(err, results);
         });
     },
@@ -646,12 +645,11 @@ exports = module.exports = {
 
     gearBoard: function(board, cb) {
         async.series([
-            function(callback) {postBoard(board, callback);},
-            function(callback) {putWebhook(board, callback);},
-            function(callback) {getBoard(board, callback);},
-            // function(callback) {getBoardComments(board, callback);},
-        ],
-        function(err) {
+            (callback) => {postBoard(board, callback);},
+            (callback) => {putWebhook(board, callback);},
+            (callback) => {getBoard(board, callback);},
+            // (callback) => {getBoardComments(board, callback);},
+        ], (err, results) => {
             if (err)
                 cb(err, 'Error ' + board.name + ' unable to create DB trello' + board.alias + '.json');
             else
@@ -661,15 +659,14 @@ exports = module.exports = {
     
     syncTrelloBoards: function syncTrelloBoards(cfg, cb) {
         async.series([
-            function(callback) {getBoardListsFromSheets(cfg, callback);},
-            function(callback) {addNewGuestBoardLists(cfg, callback);},
-            function(callback) {addNewItemBoardLists(cfg, callback);},
-            function(callback) {addNewGuestBoardCards(cfg, callback);},
-            function(callback) {addNewItemBoardCards(cfg, callback);},
-            function(callback) {verifyGuestBoardLabels(cfg, callback);},
-            function(callback) {verifyItemBoardLabels(cfg, callback);},
-        ],
-        function(err, results) {
+            (callback) => {getBoardListsFromSheets(cfg, callback);},
+            (callback) => {addNewGuestBoardLists(cfg, callback);},
+            (callback) => {addNewItemBoardLists(cfg, callback);},
+            (callback) => {addNewGuestBoardCards(cfg, callback);},
+            (callback) => {addNewItemBoardCards(cfg, callback);},
+            (callback) => {verifyGuestBoardLabels(cfg, callback);},
+            (callback) => {verifyItemBoardLabels(cfg, callback);},
+        ], (err, results) => {
             if (cb) cb(err, results);
         });
     },

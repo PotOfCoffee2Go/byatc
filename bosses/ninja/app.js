@@ -34,6 +34,13 @@ module.exports = {
         // Check enviroment variables for the credential keys/tokens and such
         web.minion.constable.checkBossCredentials(web.bosses[boss]);
         
+        async.series([
+            //(callback) => {architect.gearIntercom(boss, callback);},
+            //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
+            //(callback) => {architect.getAuctionInfo(boss, callback);},
+        ], (err, results) => {
+            if (cb) cb(err, results);
+        });
     }
 };
 

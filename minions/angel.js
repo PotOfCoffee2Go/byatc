@@ -73,8 +73,7 @@ Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
         });
 
         callback(null,'REST request for data in ' + sheet.alias + ' complete');
-    },
-    function(err, results) {
+    }, (err, results) => {
         if (cb) cb(err, results);
     });
 
