@@ -189,6 +189,49 @@
         ]
     },
 
+    "post.labels":
+    {
+        "name": "postLabels",
+        "method": "POST",
+        "url": "/labels",
+        "params": [
+            {
+                "name": "idBoard",
+                "required": "Required",
+                "description": "Board id to add label"
+            },
+            {
+                "name": "name",
+                "required": "Required",
+                "description": "Name of the label"
+            },
+            {
+                "name": "color",
+                "required": "Required",
+                "description": "Color of label"
+            }
+        ]
+    },
+
+    "put.labels":
+    {
+        "name": "putLabels",
+        "method": "PUT",
+        "url": "/labels/[idLabel]",
+        "params": [
+            {
+                "name": "idLabel",
+                "required": "Required",
+                "description": "Label Id to change name and/or color"
+            },
+            {
+                "name": "name",
+                "required": "Optional",
+                "description": "Name of the label"
+            }
+        ]
+    },
+
     "get.cards.id.actions":
     {
         "name": "getCardActions",

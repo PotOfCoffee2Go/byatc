@@ -81,12 +81,6 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
             // dbname, true = auto save, true = pretty
             sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
     
-            // Setup REST route to access data collected from sheet
-            web.routes.restRouter.get('/' + boss.name + '/clerk/sheet/*', (req, res, next) => {
-                var prayer = web.minion.angel.invokePrayer(req, res, next);
-                web.minion.clerk.onGetSheetDb(req, res, next, prayer);
-            });
-
             web.spreadsheets.gearSheet(sheet, callback);
             
         }, function(err, results) {
@@ -116,12 +110,6 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
             // dbname, true = auto save, true = pretty
             board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database + board.alias, true, true);
     
-            //  Process Trello REST requests from frontends
-            web.routes.restRouter.get('/' + boss.name + '/clerk/trello/' + board.alias + '*', (req, res, next) => {
-                var prayer = web.minion.angel.invokePrayer(req, res, next);
-                web.minion.clerk.onGetTrelloDb(req, res, next, prayer);
-            });
-
             // Trello WebHook
             board.callbackURL = '/' + boss.name + '/webhook/trello/' + board.alias;
 

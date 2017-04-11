@@ -42,6 +42,7 @@ module.exports = {
             function(callback) {architect.gearTrello(boss, callback);},
             function(callback) {web.minion.chef.mergeDatabases(boss, callback);},
             function(callback) {architect.syncTrelloBoards(boss, callback);},
+            function(callback) {web.minion.angel.assignRoutes(boss, callback);},
 
         ],
         function(err, results) {

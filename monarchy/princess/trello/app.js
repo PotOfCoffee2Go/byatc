@@ -258,7 +258,7 @@ function getBoardListsFromSheets(cfg, cb) {
     var sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'guests');
     var board = cfg.trello.boards.find(b => b.alias === 'guests');
     try {
-        sheetcards = sheet.db.getData('/cards');
+        sheetcards = sheet.db.getData('/');
         boardlists = board.db.getData('/lists');
     } catch(err) {
         if (cb) cb(err, 'Unable to access guest sheet and/or trello board databases');
@@ -279,7 +279,7 @@ function getBoardListsFromSheets(cfg, cb) {
     sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'items');
     board = cfg.trello.boards.find(b => b.alias === 'items');
     try {
-        sheetcards = sheet.db.getData('/cards');
+        sheetcards = sheet.db.getData('/');
         boardlists = board.db.getData('/lists');
     } catch(err) {
         if (cb) cb(err, 'Unable to access item sheet and/or trello board databases');
@@ -391,7 +391,7 @@ function addNewGuestBoardCards(cfg, cb) {
     var sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'guests');
     var board = cfg.trello.boards.find(b => b.alias === 'guests');
     try {
-        sheetcards = sheet.db.getData('/cards');
+        sheetcards = sheet.db.getData('/');
         boardlists = board.db.getData('/lists');
     } catch(err) {
         if (cb) cb(err, 'Unable to access guest sheet and/or trello board databases');
@@ -426,7 +426,7 @@ function addNewGuestBoardCards(cfg, cb) {
                             
                         }
                         if (cb && cardCount === 0) {
-                            sheet.db.push('/cards', sheetcards);
+                            sheet.db.push('/', sheetcards);
                             cb(err, 'Guest Trello board cards are synchronized');
                         }
                     });
@@ -445,7 +445,7 @@ function addNewItemBoardCards(cfg, cb) {
     var sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'items');
     var board = cfg.trello.boards.find(b => b.alias === 'items');
     try {
-        sheetcards = sheet.db.getData('/cards');
+        sheetcards = sheet.db.getData('/');
         boardlists = board.db.getData('/lists');
     } catch(err) {
         if (cb) cb(err, 'Unable to access item sheet and/or trello board databases');
@@ -479,7 +479,7 @@ function addNewItemBoardCards(cfg, cb) {
                             
                         }
                         if (cb && cardCount === 0) {
-                            sheet.db.push('/cards', sheetcards);
+                            sheet.db.push('/', sheetcards);
                             cb(err, 'Item Trello board cards are synchronized');
                         }
                     });
@@ -491,6 +491,142 @@ function addNewItemBoardCards(cfg, cb) {
         cb(null, 'No cards need to be added to Item Trello board');
     }
 }
+
+
+function verifyGuestBoardLabels(cfg, cb) {
+    // Scan and add guest lists that are not on board
+    var boardlabels;
+    var board = cfg.trello.boards.find(b => b.alias === 'guests');
+    try {
+        boardlabels = board.db.getData('/labels');
+    } catch(err) {
+        if (cb) cb(err, 'Unable to access Guest trello board database');
+        return;
+    }
+    
+    var labelInfo = {
+        green: {name: 'Player', id: null, rename: false},
+        yellow: {name: 'Donor', id: null, rename: false},
+        orange: {name: 'Bidder', id: null, rename: false},
+        red: {name: 'Issues', id: null, rename: false},
+        purple: {name: 'Winner!', id: null, rename: false},
+        blue: {name: 'Paid', id: null, rename: false},
+        sky: {name: 'Delivered', id: null, rename: false},
+    }
+    boardlabels.forEach(function(label) {
+        let info = labelInfo[label.color];
+        info.id = label.id;
+        if (info.name !== label.name) info.rename = true;
+    });
+    
+    var labelCount = 0;
+    boardlabels.forEach(function(label) {
+        let info = labelInfo[label.color];
+        if (info.id === null || info.rename) labelCount++;
+    });
+
+    var labelInfoId = Object.keys(labelInfo);
+    labelInfoId.forEach(function(idInfo) {
+        let info = labelInfo[idInfo];
+        if (!info.id) {
+            api.push('post.labels',
+                {idBoard: board.id,
+                name: info.name,
+                color:idInfo},
+                (err, entry) => {
+                    if (err && cb) cb(err, 'Unable to add Guest label');
+                    else labelCount--;
+
+                    if (cb && labelCount === 0) cb(err, 'Guest Trello board labels are synchronized');
+                });
+            api.send();
+        }
+        if (info.rename) {
+            api.push('put.labels',
+                {idLabel: info.id,
+                name: info.name},
+                (err, entry) => {
+                    if (err && cb) cb(err, 'Unable to rename Guest label');
+                    else labelCount--;
+
+                    if (cb && labelCount === 0) cb(err, 'Guest Trello board labels are synchronized');
+                });
+            api.send();
+        }
+    });
+    
+    if (cb && labelCount === 0) {
+        cb(null, 'No labels need to be changed on Guest Trello board');
+    }
+}
+
+function verifyItemBoardLabels(cfg, cb) {
+    // Scan and add guest lists that are not on board
+    var boardlabels;
+    var board = cfg.trello.boards.find(b => b.alias === 'items');
+    try {
+        boardlabels = board.db.getData('/labels');
+    } catch(err) {
+        if (cb) cb(err, 'Unable to access Item trello board database');
+        return;
+    }
+    
+    var labelInfo = {
+        green: {name: 'Ready', id: null, rename: false},
+        yellow: {name: 'Donated', id: null, rename: false},
+        orange: {name: 'Bid', id: null, rename: false},
+        red: {name: 'Issues', id: null, rename: false},
+        purple: {name: 'Won!', id: null, rename: false},
+        blue: {name: 'Paid', id: null, rename: false},
+        sky: {name: 'Delivered', id: null, rename: false},
+    }
+    boardlabels.forEach(function(label) {
+        let info = labelInfo[label.color];
+        info.id = label.id;
+        if (info.name !== label.name) info.rename = true;
+    });
+    
+    var labelCount = 0;
+    boardlabels.forEach(function(label) {
+        let info = labelInfo[label.color];
+        if (info.id === null || info.rename) labelCount++;
+    });
+
+    var labelInfoId = Object.keys(labelInfo);
+    labelInfoId.forEach(function(idInfo) {
+        let info = labelInfo[idInfo];
+        if (!info.id) {
+            api.push('post.labels',
+                {idBoard: board.id,
+                name: info.name,
+                color:idInfo},
+                (err, entry) => {
+                    if (err && cb) cb(err, 'Unable to add Item label');
+                    else labelCount--;
+
+                    if (cb && labelCount === 0) cb(err, 'Item Trello board labels are synchronized');
+                });
+            api.send();
+        }
+        if (info.rename) {
+            api.push('put.labels',
+                {idLabel: info.id,
+                name: info.name},
+                (err, entry) => {
+                    if (err && cb) cb(err, 'Unable to rename Item label');
+                    else labelCount--;
+
+                    if (cb && labelCount === 0) cb(err, 'Item Trello board labels are synchronized');
+                });
+            api.send();
+        }
+    });
+    
+    if (cb && labelCount === 0) {
+        cb(null, 'No labels need to be changed on Item Trello board');
+    }
+}
+
 
 exports = module.exports = {
     setCredentials: function setCredentials(creds) { api.setCredentials(creds); },
@@ -530,6 +666,8 @@ exports = module.exports = {
             function(callback) {addNewItemBoardLists(cfg, callback);},
             function(callback) {addNewGuestBoardCards(cfg, callback);},
             function(callback) {addNewItemBoardCards(cfg, callback);},
+            function(callback) {verifyGuestBoardLabels(cfg, callback);},
+            function(callback) {verifyItemBoardLabels(cfg, callback);},
         ],
         function(err, results) {
             if (cb) cb(err, results);

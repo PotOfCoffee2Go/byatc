@@ -28,6 +28,14 @@ module.exports = {
                 boardName: 'Auction Guests', // Name of board on Trello
             },
             {
+                id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
+                name: '2016 O&B Guest List', // Info only - the id is what google uses to open the sheet
+                alias: 'auctioneer', // Name used in Database, REST, and Websocket requests
+                range: 'Auctioneer!A2:M1000', // Range of data to collect from sheet
+                db: null, // [Added at runtime] Object returned when db connect/open
+                boardName: '', // Name of board on Trello
+            },
+            {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'items', // Name used in Database, REST, and Websocket requests
@@ -38,11 +46,11 @@ module.exports = {
             {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
-                alias: 'category', // Name used in Database, REST, and Websocket requests
+                alias: 'categories', // Name used in Database, REST, and Websocket requests
                 range: 'Categories!A1:D100', // Range of data to collect
                 db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: '', // Name of board on Trello - '' = do not create
-            }
+            },
         ]
     },
 

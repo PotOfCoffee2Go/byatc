@@ -31,9 +31,11 @@ function csvToObjects(lines) {
         if (lines[l].length > 3) {
             data.sheet = {};
             for (let c = 0; c < lines[l].length; c++) {
-                data.sheet[columns[c]] = lines[l][c];          
+                var value = lines[l][c];
+                if (value === 'TRUE') value = true;
+                else if (value === 'FALSE') value = false;
+                data.sheet[columns[c]] = value;          
             }
-            data.auction = {bid: 0, won: 0, shipping: 0, tax: 0, paid: 0};
             // add object to output
             records[data.sheet.id] = data;
         }
@@ -54,7 +56,7 @@ function gearSheet(sheet, cb) {
                 cb(err, 'Error ' + sheet.name + ' unable to create DB sheets' + sheet.alias + '.json');
             else {
                 let guestList = csvToObjects(response.values);
-                sheet.db.push('/cards', guestList);
+                sheet.db.push('/', guestList);
                 cb(err, 'Loaded ' + sheet.name + ' into DB sheets' + sheet.alias + '.json');
             }
     });

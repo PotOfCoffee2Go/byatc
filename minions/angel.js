@@ -4,6 +4,7 @@
 
 const
     url = require('url'),
+    async = require('async'),
     gearbox = require('./#gearing/gearbox'),
     
     MinionError = gearbox.MinionError,
@@ -59,6 +60,30 @@ Angel.prototype.getNodejsURL = function getNodejsURL(req, res, next) {
     // Is a RESTful (express) request
     return url.parse(req.protocol + 's://' + req.get('host') + req.originalUrl);
 };
+
+
+Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
+
+    // Array of boards to collect data from
+    async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
+        //  Process REST requests from frontends
+        web.routes.restRouter.get('/' + boss.name + '/clerk/' + sheet.alias + '*', (req, res, next) => {
+            var prayer = web.minion.angel.invokePrayer(req, res, next);
+            web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
+        });
+
+        callback(null,'REST request for data in ' + sheet.alias + ' complete');
+    },
+    function(err, results) {
+        if (cb) cb(err, results);
+    });
+
+};
+
+
+
+
+
 
 
 /// - Get request
