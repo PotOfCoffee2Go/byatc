@@ -286,11 +286,11 @@ function getBoardListsFromSheets(cfg, cb) {
         return;
     }
     
-    var cards = Object.keys(sheetcards);
+    cards = Object.keys(sheetcards);
     cards.forEach(function(idCard) {
-        let category = sheetcards[idCard].category.name;
+        let category = sheetcards[idCard].category.Name;
         let list = boardlists.find(l => l.name === category);
-        if (!list && sheetcards[idCard].category.name.length > 0) {
+        if (!list && sheetcards[idCard].category.Name.length > 0) {
             boardlists.push({id: null, name: category});
         }
     });

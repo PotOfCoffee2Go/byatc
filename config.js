@@ -17,7 +17,7 @@ module.exports = {
     websockets: true, // Enable socket.io
 
     spreadsheets: {
-        database: 'sheets', // Database name prefix results in ('sheets' + alias + '.json')
+        database: '', // Database name prefix results in ('sheets' + alias + '.json')
         sheets: [
             {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
@@ -39,7 +39,7 @@ module.exports = {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'items', // Name used in Database, REST, and Websocket requests
-                range: 'Auction_Items!A1:J1000', // Range of data to collect
+                range: 'Auction_Items!A2:J1000', // Range of data to collect
                 db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: 'Auction Items', // Name of board on Trello
             },
@@ -47,7 +47,7 @@ module.exports = {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'categories', // Name used in Database, REST, and Websocket requests
-                range: 'Categories!A1:D100', // Range of data to collect
+                range: 'Categories!A2:E100', // Range of data to collect
                 db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: '', // Name of board on Trello - '' = do not create
             },
