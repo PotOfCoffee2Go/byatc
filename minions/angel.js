@@ -64,16 +64,32 @@ Angel.prototype.getNodejsURL = function getNodejsURL(req, res, next) {
 
 Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
 
+    var restPath = '';
+    
     // Array of boards to collect data from
     async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
-        //  Process REST requests from frontends
-        web.routes.restRouter.get('/' + boss.name + '/clerk/' + sheet.alias + '*', (req, res, next) => {
-            var prayer = web.minion.angel.invokePrayer(req, res, next);
-            web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
-        });
+        restPath = '';
 
-        callback(null,'REST request for data in ' + sheet.alias + ' complete');
+        //  Process REST requests from frontends
+        restPath  = '/' + boss.name + '/clerk/' + sheet.alias + '*';
+        if (sheet.db) {
+            web.routes.restRouter.get(restPath, (req, res, next) => {
+                var prayer = web.minion.angel.invokePrayer(req, res, next);
+                web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
+            });
+        }
+        callback(null,'Angel added REST path ' + restPath);
+        
     }, (err, results) => {
+
+        restPath  = '/' + boss.name + '/chef/serve/auctioneer';
+        //  Process REST request (usually from Ninja) for auction data
+        web.routes.restRouter.get(restPath, (req, res, next) => {
+            var prayer = web.minion.angel.invokePrayer(req, res, next);
+            web.minion.chef.onServeAuctioneer(req, res, next, prayer);
+        });
+        results.push('Angel added REST path ' + restPath);
+
         if (cb) cb(err, results);
     });
 

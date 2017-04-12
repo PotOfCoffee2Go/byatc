@@ -24,7 +24,6 @@ module.exports = {
                 name: '2016 O&B Guest List', // Info only - the id is what google uses to open the sheet
                 alias: 'guests', // Name used in Database, REST, and Websocket requests
                 range: 'Auction_Guests!A1:K1000', // Range of data to collect from sheet
-                db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: 'Auction Guests', // Name of board on Trello
             },
             {
@@ -32,23 +31,29 @@ module.exports = {
                 name: '2016 O&B Guest List', // Info only - the id is what google uses to open the sheet
                 alias: 'auctioneer', // Name used in Database, REST, and Websocket requests
                 range: 'Auctioneer!A2:M1000', // Range of data to collect from sheet
-                db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: '', // Name of board on Trello
+                remove: true   // Remove database after merging with main Guest DB
             },
             {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'items', // Name used in Database, REST, and Websocket requests
-                range: 'Auction_Items!A2:J1000', // Range of data to collect
-                db: null, // [Added at runtime] Object returned when db connect/open
+                range: 'Auction_Items!A2:E1000', // Range of data to collect
                 boardName: 'Auction Items', // Name of board on Trello
+            },
+            {
+                id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
+                name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
+                alias: 'itemauctioninfo', // Name used in Database, REST, and Websocket requests
+                range: 'Auction_Items!F2:L1000', // Range of data to collect
+                boardName: '', // Name of board on Trello
+                remove: true   // Remove database after merging with main Item DB
             },
             {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'categories', // Name used in Database, REST, and Websocket requests
                 range: 'Categories!A2:E100', // Range of data to collect
-                db: null, // [Added at runtime] Object returned when db connect/open
                 boardName: '', // Name of board on Trello - '' = do not create
             },
         ]

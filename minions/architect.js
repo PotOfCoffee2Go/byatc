@@ -150,7 +150,7 @@ Architect.prototype.syncTrelloBoards = function syncTrelloBoards(boss, cb) {
 Architect.prototype.getAuctionInfo = function getAuctionInfo(boss, cb) {
 
     request({
-        url: web.cfg.kingdom.websites.cyborg + '/cyborg/chef/create/auction',
+        url: web.cfg.kingdom.websites.cyborg + '/cyborg/chef/serve/auctionee',
         method: 'GET' },
         function (err, response, body) { 
             if (err) {

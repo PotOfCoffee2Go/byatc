@@ -37,7 +37,7 @@ module.exports = {
         async.series([
             //(callback) => {architect.gearIntercom(boss, callback);},
             //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
-            //(callback) => {architect.getAuctionInfo(boss, callback);},
+            (callback) => {architect.getAuctionInfo(boss, callback);},
         ], (err, results) => {
             if (cb) cb(err, results);
         });

@@ -61,6 +61,7 @@ module.exports = function (asTheQueenCommands) {
             cfg.kingdom = req.body.kingdom;
             asTheQueenCommands[req.params.cmd](req.params.boss, function (err, reply) {
                 res.send(util.inspect(reply, { showHidden: false, depth: null }));
+                console.log(util.inspect(reply, { showHidden: false, depth: null }));
             });
     });
 

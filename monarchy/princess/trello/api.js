@@ -164,14 +164,12 @@ function send(entry) {
             delete options.qs.key;
             delete options.qs.token;
             if (cb) cb(null, entry);
-            console.log(entry.byatc.log);
         }
         else {
             entry.response = err;
             delete options.qs.key;
             delete options.qs.token;
             if (cb) cb(err, entry);
-            console.log(entry.byatc.log);
         }
     });
 }

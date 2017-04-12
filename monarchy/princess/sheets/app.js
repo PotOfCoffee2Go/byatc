@@ -52,11 +52,11 @@ function gearSheet(sheet, cb) {
         valueRenderOption: 'FORMATTED_VALUE',
         }, (err, response) => {
             if (err)
-                cb(err, 'Error ' + sheet.name + ' unable to create DB sheets' + sheet.alias + '.json');
+                cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
             else {
                 let guestList = csvToObjects(response.values);
                 sheet.db.push('/', guestList);
-                cb(err, 'Loaded ' + sheet.name + ' into DB sheets' + sheet.alias + '.json');
+                cb(err, 'Princess Sheets loaded ' + sheet.name + ' into DB ' + sheet.alias + '.json');
             }
     });
 }

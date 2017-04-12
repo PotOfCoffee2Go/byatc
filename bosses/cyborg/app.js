@@ -43,7 +43,6 @@ module.exports = {
             (callback) => {web.minion.chef.mergeDatabases(boss, callback);},
             (callback) => {architect.syncTrelloBoards(boss, callback);},
             (callback) => {web.minion.angel.assignRoutes(boss, callback);},
-
         ],
         (err, results) => {
             if (cb) cb(err, results);
