@@ -38,9 +38,7 @@ module.exports = {
             //(callback) => {architect.gearIntercom(boss, callback);},
             //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
             (callback) => {architect.gearAuction(boss, callback);},
-        ], (err, results) => {
-            if (cb) cb(err, results);
-        });
+        ], (err, results) => {cb(err, results);});
     }
 };
 

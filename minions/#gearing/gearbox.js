@@ -1,6 +1,6 @@
 'use strict';
 
-(function (){
+(function () {
 
     const
         fs = require('fs'),

@@ -1,6 +1,6 @@
 'use strict';
 
-(function (){
+(function () {
 
 const
     fs = require('fs-extra'),
@@ -11,7 +11,7 @@ const
     MinionError = gearbox.MinionError,
     minionName = 'chef';
 
-// Express web server and boss for this minion
+// Expressjs web server
 var web = null;
 
 function Chef (Web) {
@@ -19,7 +19,6 @@ function Chef (Web) {
 }
 
 function mergeTrelloGuestDatabase(cb) {
-
     // Merge the trello guest information into the guest database 
     var sheetGuests, boardGuests, error;
     var alias = 'guests';
@@ -31,7 +30,7 @@ function mergeTrelloGuestDatabase(cb) {
         boardGuests = cfgboard.db.getData('/cards');
     } catch(err) {
         error = new MinionError(minionName, 'Chef can not get guest sheets and/or board data from Dbs', 101, err);
-        if (cb) cb(error);
+        cb(error);
         return;
     }
 
@@ -45,7 +44,7 @@ function mergeTrelloGuestDatabase(cb) {
     // Clear the trello board item db
     cfgboard.db.push('/cards', []);
     
-    if (cb) cb(null, 'Chef merged trello info into Guest database');
+    cb(null, 'Chef merged trello info into Guest database');
 }
 
 function mergeTrelloItemDatabase(cb) {
@@ -60,7 +59,7 @@ function mergeTrelloItemDatabase(cb) {
         boardItems = cfgboard.db.getData('/cards');
     } catch(err) {
         error = new MinionError(minionName, 'Chef can not get item sheets and/or board data from Dbs', 101, err);
-        if (cb) cb(error);
+        cb(error);
         return;
     }
 
@@ -74,7 +73,7 @@ function mergeTrelloItemDatabase(cb) {
     // Clear the trello board item db
     cfgboard.db.push('/cards', []);
     
-    if (cb) cb(null, 'Chef merged trello info into Item database');
+    cb(null, 'Chef merged trello info into Item database');
 }
 
 function mergeCategoriesDatabase(cb) {
@@ -89,7 +88,7 @@ function mergeCategoriesDatabase(cb) {
         itemCards = cfgitem.db.getData('/');
     } catch(err) {
         var error = new MinionError(minionName, 'Chef can not get category sheet and/or items db', 101, err);
-        if (cb) cb(error);
+        cb(error);
         return;
     }
 
@@ -101,7 +100,7 @@ function mergeCategoriesDatabase(cb) {
     
     cfgitem.db.push('/', itemCards);
 
-    if (cb) cb(null, 'Chef merged category info into Item database');
+    cb(null, 'Chef merged category info into Item database');
 
 }
 
@@ -117,7 +116,7 @@ function mergeGuestAuctionDatabase(cb) {
         guestCards = cfgguest.db.getData('/');
     } catch(err) {
         var error = new MinionError(minionName, 'Chef can not get auction sheet and/or guest db', 101, err);
-        if (cb) cb(error);
+        cb(error);
         return;
     }
 
@@ -131,11 +130,10 @@ function mergeGuestAuctionDatabase(cb) {
     // Clear the auctioneer database
     cfgsheet.db.push('/', {});
 
-    if (cb) cb(null, 'Chef merged auction info into Guest database');
+    cb(null, 'Chef merged auction info into Guest database');
 }
 
 function mergeItemAuctionDatabase(cb) {
-
     // Merge the categories into the items database
     var sheetAuction, itemCards;
     var alias = 'itemauctioninfo';
@@ -147,7 +145,7 @@ function mergeItemAuctionDatabase(cb) {
         itemCards = cfgitem.db.getData('/');
     } catch(err) {
         var error = new MinionError(minionName, 'Chef can not get auctioninfo sheet and/or items db', 101, err);
-        if (cb) cb(error);
+        cb(error);
         return;
     }
 
@@ -161,7 +159,7 @@ function mergeItemAuctionDatabase(cb) {
     // Clear the item auction info db
     cfgsheet.db.push('/', {});
 
-    if (cb) cb(null, 'Chef merged auction info into Item database');
+    cb(null, 'Chef merged auction info into Item database');
 }
 
 function removeMergedDatabases(cb) {
@@ -177,11 +175,10 @@ function removeMergedDatabases(cb) {
     web.cfg.spreadsheets.sheets = 
         web.cfg.spreadsheets.sheets.filter(s => s.db !== null);
 
-    if (cb) cb(null, 'Chef deleted files ' + removedDbs.join(', '));
+    cb(null, 'Chef deleted files ' + removedDbs.join(', '));
 }
 
 Chef.prototype.mergeDatabases = function mergeDatabases(boss, cb) {
-
     async.series([
         (callback) => {mergeTrelloGuestDatabase(callback);},
         (callback) => {mergeTrelloItemDatabase(callback);},
@@ -189,10 +186,7 @@ Chef.prototype.mergeDatabases = function mergeDatabases(boss, cb) {
         (callback) => {mergeGuestAuctionDatabase(callback);},
         (callback) => {mergeItemAuctionDatabase(callback);},
         (callback) => {removeMergedDatabases(callback);},
-    ],
-    (err, results) => {
-        if (cb) cb(err, results);
-    });
+    ], (err, results) => {cb(err, results);});
 };
 
 Chef.prototype.onServeAuctioneer = function onServeAuctioneer(req, res, next, prayer) {

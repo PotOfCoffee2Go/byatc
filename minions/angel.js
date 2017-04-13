@@ -1,6 +1,6 @@
 'use strict';
 
-(function (){
+(function () {
 
 const
     url = require('url'),
@@ -10,7 +10,7 @@ const
     MinionError = gearbox.MinionError,
     minionName = 'angel';
 
-// Express web server and boss for this minion
+// Expressjs web server
 var web = null;
 
 function Angel (Web) {
@@ -19,11 +19,9 @@ function Angel (Web) {
 
 // Prayer is the payload for REST and/or Websocket responses
 Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
-    var fullUrl = web.minion.angel.getNodejsURL(req, res, next);
+    var fullUrl = web.minion.angel.getFullURL(req, res, next);
     var path = fullUrl.pathname.split('/');
-    // Remove the '/boss/minion/' part - what is left references the object in the DB
-    var resource = '/' + fullUrl.pathname.split('/').slice(4).join('/');
-    // Send the prayer to the requester
+    // Create the prayer - assume it will be forfilled
     return {
         boss: path[1],
         minion: path[2],
@@ -35,7 +33,7 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
     };
 },
 
-// Prayer is the payload for REST and/or Websocket responses
+// Ut-oh - prayer was not answered - so construct error response
 Angel.prototype.errorPrayer = function errorPrayer(err, prayer) {
     return {
         boss: prayer.boss,
@@ -51,7 +49,7 @@ Angel.prototype.errorPrayer = function errorPrayer(err, prayer) {
 /// Get the absolute url of the request
 ///    ie: https://host/path?querystring#hash part from the url
 /// Indicates socket.io by setting protocol and host to https://socketio
-Angel.prototype.getNodejsURL = function getNodejsURL(req, res, next) {
+Angel.prototype.getFullURL = function getFullURL(req, res, next) {
     // When request is a string is from socket.io
     if (typeof req.resource === 'string') {
         return url.parse('https://' + hostname + req.resource, true);
@@ -62,20 +60,14 @@ Angel.prototype.getNodejsURL = function getNodejsURL(req, res, next) {
 };
 
 Angel.prototype.assignTrelloWebhook = function assignTrelloWebhook(boss, board) {
-    
     var restPath, results = [];
     
     // Trello WebHook
     restPath = '/' + boss.name + '/webhook/trello/' + board.alias;
     
-    // Trello WebHooks Verification - always send back 200 response code
+    // Trello WebHook Verification - always send back 200 response code
     web.routes.restRouter.head(restPath, (req, res, next) => {res.sendStatus(200);});
     results.push('Angel added Trello webhook REST path Head ' + restPath);
-    
-    //  Process trello get request - always send back 200 response code
-    //web.routes.restRouter.get(board.callbackURL, (req, res, next) => {
-    //    web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
-    //});
 
     //  Process trello post request - always send back 200 response code
     web.routes.restRouter.post(restPath, (req, res, next) => {
@@ -83,18 +75,16 @@ Angel.prototype.assignTrelloWebhook = function assignTrelloWebhook(boss, board) 
     });
     results.push('Angel added Trello webhook REST path Post ' + restPath);
 
-    // Trello WebHook Full address
+    // Assign complete web address for Trello WebHook callbackURL ('https://domain.com/path/etc')
     board.callbackURL = web.cfg.kingdom.websites[boss.name] + restPath;
     
     return results;
 };
 
-
 Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
-
     var restPath = '';
     
-    // Array of boards to collect data from
+    // Array of 'sheets' with databases for clerk to lookup data
     async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
         restPath = '';
 
@@ -109,7 +99,6 @@ Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
         callback(null,'Angel added REST path Get ' + restPath);
         
     }, (err, results) => {
-
         restPath  = '/' + boss.name + '/chef/serve/auctioneer';
         //  Process REST request (usually from Ninja) for auction data
         web.routes.restRouter.get(restPath, (req, res, next) => {
@@ -118,12 +107,10 @@ Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
         });
         results.push('Angel added REST path Get ' + restPath);
 
-        if (cb) cb(err, results);
+        cb(err, results);
     });
 
 };
-
-
 
 
 

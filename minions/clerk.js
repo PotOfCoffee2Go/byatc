@@ -1,6 +1,6 @@
 'use strict';
 
-(function (){
+(function () {
 
 const
     gearbox = require('./#gearing/gearbox'),
@@ -9,7 +9,7 @@ const
     minionName = 'clerk';
 
 
-// Express web server and boss for this minion
+// Expressjs web server
 var web = null;
 
 function Clerk (Web) {

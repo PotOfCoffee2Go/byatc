@@ -1,6 +1,6 @@
 'use strict';
 
-(function (){
+(function () {
 
 const
     fs = require('fs-extra'),
@@ -12,9 +12,7 @@ const
     MinionError = gearbox.MinionError,
     minionName = 'architect';
 
-var listeners = [];
-
-// Express web server and boss for this minion
+// Expressjs web server
 var web = null; // assigned later
 
 
@@ -38,64 +36,50 @@ Architect.prototype.gearWebSites = function gearWebSites(siteDir) {
 /// Intercom communication between bosses
 Architect.prototype.gearIntercom = function gearIntercom(boss, cb) {
     // Todo: Intercom system
-    if (cb) cb(null,['Boss intercom started']);
+    cb(null,['Boss intercom started']);
 };
 
 Architect.prototype.gearWebsockets = function gearWebsockets(boss, cb) {
-    if (web.cfg.websockets) {
-        listeners.push(function() {
-            web.ios.on('connection', (socket) => {
-                var angel = web.minion.angel;
+    web.ios.on('connection', (socket) => {
+        var angel = web.minion.angel;
 
-                /// #### Standard Messages
-                socket.on('disconnect', () => {console.log('onDisconnect: ' + socket.id);});
+        /// #### Standard Messages
+        socket.on('disconnect', () => {console.log('onDisconnect: ' + socket.id);});
 
-                /// #### Angel Minion Messages
-                socket.on('Get', (message) => {angel.onGet(socket, message);});
-                socket.on('Post', (message) => {angel.onPost(socket, message);});
-                socket.on('Put', (message) => {angel.onPut(socket, message);});
-                socket.on('Patch', (message) => {angel.onPatch(socket, message);});
-                socket.on('Delete', (message) => {angel.onDelete(socket, message);});
-        
-                socket.on('Watch', (message) => {angel.onWatch(socket, message);});
-                socket.on('Unwatch', (message) => {angel.onUnwatch(socket, message);});
-                // socket.on('update bid', (message) => {onUpdateBid(socket, message);});
-        
-                // - Send a 'Connected' message back to the client
-                angel.emitConnected(socket);
-            });
-        });
-    }
-    if (cb) cb(null);
+        /// #### Angel Minion Messages
+        socket.on('Get', (message) => {angel.onGet(socket, message);});
+        socket.on('Post', (message) => {angel.onPost(socket, message);});
+        socket.on('Put', (message) => {angel.onPut(socket, message);});
+        socket.on('Patch', (message) => {angel.onPatch(socket, message);});
+        socket.on('Delete', (message) => {angel.onDelete(socket, message);});
+
+        socket.on('Watch', (message) => {angel.onWatch(socket, message);});
+        socket.on('Unwatch', (message) => {angel.onUnwatch(socket, message);});
+        // socket.on('update bid', (message) => {onUpdateBid(socket, message);});
+
+        // - Send a 'Connected' message back to the client
+        angel.emitConnected(socket);
+    });
+    cb(null);
 };
 
 // Get data for auction from google sheets
 Architect.prototype.gearSheets = function gearSheets(boss, cb) {
+    web.minion.constable.givePrincessSheetsCredentials();
 
-    if (web.cfg.spreadsheets) {
+    // Array of sheets to collect data from
+    async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
+        // dbname, true = auto save, true = pretty
+        sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
 
-        web.spreadsheets.setCredentials(web.cfg.kingdom.keys.sheets);
-
-        // Array of sheets to collect data from
-        async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
-            // dbname, true = auto save, true = pretty
-            sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
-    
-            web.spreadsheets.gearSheet(sheet, callback);
-            
-        }, (err, results) => {
-            if (cb) cb(err, results);
-        });            
-    }
+        web.spreadsheets.gearSheet(sheet, callback);
+        
+    }, (err, results) => {cb(err, results);});            
 };
 
-Architect.prototype.getTrelloInfo = function getTrelloInfo(boss, cb) {
-    web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
-    web.trello.setCredentials(web.cfg.kingdom.keys.trello);
-    
-    web.trello.getTrelloInfo(web.cfg, (err, results) => {
-        if (cb) cb(err, results);
-    });
+Architect.prototype.rousePrincessTrello = function rousePrincessTrello(boss, cb) {
+    web.minion.constable.givePrincessTrelloCredentials();
+    web.trello.rousePrincessTrello(web.cfg, (err, results) => cb(err, results));
 };
 
 
@@ -114,13 +98,13 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
 
     }, (err, results) => {
         results = whresults.concat(results);
-        if (cb) cb(err, results);
+        cb(err, results);
     });            
 };   
 
 
 Architect.prototype.syncTrelloBoards = function syncTrelloBoards(boss, cb) {
-    web.trello.syncTrelloBoards(web.cfg, (err, results) => {if (cb) cb(err, results);});
+    web.trello.syncTrelloBoards(web.cfg, (err, results) => {cb(err, results);});
 };
 
 

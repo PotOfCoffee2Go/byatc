@@ -38,16 +38,13 @@ module.exports = {
         async.series([
             //(callback) => {architect.gearIntercom(boss, callback);},
             //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
-            (callback) => {architect.getTrelloInfo(boss, callback);},
+            (callback) => {architect.rousePrincessTrello(boss, callback);},
             (callback) => {architect.gearSheets(boss, callback);},
             (callback) => {architect.gearTrello(boss, callback);},
             (callback) => {web.minion.chef.mergeDatabases(boss, callback);},
             (callback) => {architect.syncTrelloBoards(boss, callback);},
             (callback) => {web.minion.angel.assignRoutes(boss, callback);},
-        ],
-        (err, results) => {
-            if (cb) cb(err, results);
-        });
+        ], (err, results) => {cb(err, results);});
     }
 };
 

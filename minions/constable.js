@@ -8,7 +8,7 @@ const
     MinionError = gearbox.MinionError,
     minionName = 'constable';
 
-// Express web server and boss for this minion
+// Expressjs web server
 var web = null;
 
 function Constable (Web) {
@@ -17,6 +17,15 @@ function Constable (Web) {
 
 
 Constable.prototype.setQueensCredentials = function setQueensCredentials(creds) {
+};
+
+Constable.prototype.givePrincessSheetsCredentials = function givePrincessSheetsCredentials() {
+    web.spreadsheets.setCredentials(web.cfg.kingdom.keys.sheets);
+};
+
+Constable.prototype.givePrincessTrelloCredentials = function givePrincessTrelloCredentials() {
+    web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
+    web.trello.setCredentials(web.cfg.kingdom.keys.trello);
 };
 
 Constable.prototype.checkBossCredentials = function checkBossCredentials() {

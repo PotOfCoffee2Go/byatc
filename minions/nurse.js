@@ -1,6 +1,6 @@
 'use strict';
 
-(function (){
+(function () {
 const
     path = require('path'),
     gearbox = require('./#gearing/gearbox'),
@@ -9,7 +9,7 @@ const
     minionName = 'nurse';
 
 
-// Express web server and boss for this minion
+// Expressjs web server
 var web = null;
     
 function Nurse (Web) {
@@ -18,7 +18,7 @@ function Nurse (Web) {
 
 Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next, notFoundPath) {
         console.log('Nurse got the critical WebSite patient - doa :(');
-        var fullUrl = web.minion.angel.getNodejsURL(req, res, next);
+        var fullUrl = web.minion.angel.getFullURL(req, res, next);
         console.log(fullUrl.pathname);
         
         if (req.accepts('html')) {

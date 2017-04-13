@@ -117,7 +117,7 @@ function getMemberBoards(cfg, cb) {
                 }
             });
             cfg.trello.boards = keepers;
-            if (cb) cb(err, 'Princess Trello boards ' + boardnames.join(', '));
+            cb(err, 'Princess Trello boards ' + boardnames.join(', '));
         });
     api.send();
 }
@@ -144,7 +144,7 @@ function getWebhooks(cfg, cb) {
                     webhookUrls.push({boardname: board.name, callbackURL: 'No Trello Callback'});
                 }
             });
-            if (cb) cb(err, {'Princess Trello using webhooks': webhookUrls});
+            cb(err, {'Princess Trello using webhooks': webhookUrls});
         });
     api.send();
 }
@@ -162,12 +162,12 @@ function postBoard(board, cb) {
 
             board.id = entry.response.id;
             delete board.action;
-            if (cb) cb(err, 'Princess Trello created board ' + board.name);
+            cb(err, 'Princess Trello created board ' + board.name);
         });
         api.send();
     }
     else {
-        if (cb) cb(null, 'Princess Trello found board ' + board.name);
+        cb(null, 'Princess Trello found board ' + board.name);
     }
 }
 
@@ -182,12 +182,12 @@ function putWebhook(board, cb) {
             if (err) {cb(err, board); return;}
 
             board.webhook = entry.response;
-            if (cb) cb(err, 'Princess Trello created webhook for board ' + board.name);
+            cb(err, 'Princess Trello created webhook for board ' + board.name);
         });
         api.send();
     }
     else {
-        if (cb) cb(null, 'Princess Trello found webhook for board ' + board.name);
+        cb(null, 'Princess Trello found webhook for board ' + board.name);
     }
 }
     
@@ -201,7 +201,7 @@ function getBoard(board, cb) {
             board.lists = entry.response.lists;
             entry.response.alias = board.alias;
             board.db.push('/', format.board(entry.response));
-            if (cb) cb(err, 'Princess Trello saved data from board ' + board.name);
+            cb(err, 'Princess Trello saved data from board ' + board.name);
         });
     api.send();
 }
@@ -223,7 +223,7 @@ function getBoardComments(board, cb) {
             // false = merge into existing board
             board.db.push('/comments', comments);
         }
-        if (cb) cb(err, entry);
+        cb(err, entry);
     });
     api.send();
 }
@@ -258,7 +258,7 @@ function getBoardListsFromSheets(cfg, cb) {
         sheetcards = sheet.db.getData('/');
         boardlists = board.db.getData('/lists');
     } catch(err) {
-        if (cb) cb(err, 'Princess Trello unable to access guest sheet and/or trello board databases');
+        cb(err, 'Princess Trello unable to access guest sheet and/or trello board databases');
         return;
     }
     
@@ -279,7 +279,7 @@ function getBoardListsFromSheets(cfg, cb) {
         sheetcards = sheet.db.getData('/');
         boardlists = board.db.getData('/lists');
     } catch(err) {
-        if (cb) cb(err, 'Princess Trello unable to access item sheet and/or trello board databases');
+        cb(err, 'Princess Trello unable to access item sheet and/or trello board databases');
         return;
     }
     
@@ -293,7 +293,7 @@ function getBoardListsFromSheets(cfg, cb) {
     });
     board.db.push('/lists', boardlists);
 
-    if (cb) cb(null, 'Princess Trello - board lists are synchronized');
+    cb(null, 'Princess Trello - board lists are synchronized');
 }
 
 function addNewGuestBoardLists(cfg, cb) {
@@ -303,7 +303,7 @@ function addNewGuestBoardLists(cfg, cb) {
     try {
         boardlists = board.db.getData('/lists');
     } catch(err) {
-        if (cb) cb(err, 'Princess Trello unable to access Guest trello board database');
+        cb(err, 'Princess Trello unable to access Guest trello board database');
         return;
     }
     
@@ -318,7 +318,7 @@ function addNewGuestBoardLists(cfg, cb) {
                 {idBoard: board.id, name: list.name, pos: 'bottom' },
                 (err, entry) => {
                     if (err) {
-                        if (cb) cb(err, 'Princess Trello unable to add Guest list');
+                        cb(err, 'Princess Trello unable to add Guest list');
                     }
                     else {
                         list.id = entry.response.id;
@@ -346,7 +346,7 @@ function addNewItemBoardLists(cfg, cb) {
     try {
         boardlists = board.db.getData('/lists');
     } catch(err) {
-        if (cb) cb(err, 'Princess Trello unable to access Item trello board database');
+        cb(err, 'Princess Trello unable to access Item trello board database');
         return;
     }
     
@@ -361,7 +361,7 @@ function addNewItemBoardLists(cfg, cb) {
                 {idBoard: board.id, name: list.name, pos: 'bottom' },
                 (err, entry) => {
                     if (err) {
-                        if (cb) cb(err, 'Princess Trello unable to add Item lists');
+                        cb(err, 'Princess Trello unable to add Item lists');
                     }
                     else {
                         list.id = entry.response.id;
@@ -391,7 +391,7 @@ function addNewGuestBoardCards(cfg, cb) {
         sheetcards = sheet.db.getData('/');
         boardlists = board.db.getData('/lists');
     } catch(err) {
-        if (cb) cb(err, 'Princess Trello unable to access guest sheet and/or trello board databases');
+        cb(err, 'Princess Trello unable to access guest sheet and/or trello board databases');
         return;
     }
     
@@ -415,7 +415,7 @@ function addNewGuestBoardCards(cfg, cb) {
                     keepFromSource: 'checklists'},
                     (err, entry) => {
                         if (err) {
-                            if (cb) cb(err, 'Princess Trello unable to add Guest cards');
+                            cb(err, 'Princess Trello unable to add Guest cards');
                         }
                         else {
                             // sheetcards[idCard].trello = entry.response;
@@ -445,7 +445,7 @@ function addNewItemBoardCards(cfg, cb) {
         sheetcards = sheet.db.getData('/');
         boardlists = board.db.getData('/lists');
     } catch(err) {
-        if (cb) cb(err, 'Princess Trello unable to access item sheet and/or trello board databases');
+        cb(err, 'Princess Trello unable to access item sheet and/or trello board databases');
         return;
     }
     
@@ -468,7 +468,7 @@ function addNewItemBoardCards(cfg, cb) {
                     keepFromSource: 'checklists'},
                     (err, entry) => {
                         if (err) {
-                            if (cb) cb(err, 'Princess Trello unable to add Item cards');
+                            cb(err, 'Princess Trello unable to add Item cards');
                         }
                         else {
                             // sheetcards[idCard].trello = entry.response;
@@ -497,7 +497,7 @@ function verifyGuestBoardLabels(cfg, cb) {
     try {
         boardlabels = board.db.getData('/labels');
     } catch(err) {
-        if (cb) cb(err, 'Princess Trello unable to access Guest trello board database');
+        cb(err, 'Princess Trello unable to access Guest trello board database');
         return;
     }
     
@@ -564,7 +564,7 @@ function verifyItemBoardLabels(cfg, cb) {
     try {
         boardlabels = board.db.getData('/labels');
     } catch(err) {
-        if (cb) cb(err, 'Princess Trello unable to access Item trello board database');
+        cb(err, 'Princess Trello unable to access Item trello board database');
         return;
     }
     
@@ -628,15 +628,12 @@ function verifyItemBoardLabels(cfg, cb) {
 exports = module.exports = {
     setCredentials: function setCredentials(creds) { api.setCredentials(creds); },
 
-
-    getTrelloInfo: function getTrelloInfo(cfg, cb) {
+    rousePrincessTrello: function rousePrincessTrello(cfg, cb) {
         async.series([
             (callback) => {getMemberTeam(cfg, callback);},
             (callback) => {getMemberBoards(cfg, callback);},
             (callback) => {getWebhooks(cfg, callback);},
-        ], (err, results) => {
-            if (cb) cb(err, results);
-        });
+        ], (err, results) => {cb(err, results);});
     },
 
 
@@ -646,9 +643,7 @@ exports = module.exports = {
             (callback) => {putWebhook(board, callback);},
             (callback) => {getBoard(board, callback);},
             // (callback) => {getBoardComments(board, callback);},
-        ], (err, results) => {
-            if (cb) cb(err, results);
-        });
+        ], (err, results) => {cb(err, results);});
     },
     
     syncTrelloBoards: function syncTrelloBoards(cfg, cb) {
@@ -660,12 +655,8 @@ exports = module.exports = {
             (callback) => {addNewItemBoardCards(cfg, callback);},
             (callback) => {verifyGuestBoardLabels(cfg, callback);},
             (callback) => {verifyItemBoardLabels(cfg, callback);},
-        ], (err, results) => {
-            if (cb) cb(err, results);
-        });
+        ], (err, results) => {cb(err, results);});
     },
-
-
 };
     
     

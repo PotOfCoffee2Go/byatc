@@ -50,14 +50,14 @@ function validateData(tapi, data, cb) {
     var uriFields = getUriFields(tapi.url);
     uriFields.forEach((field) => {
         if (typeof data[field] === 'undefined') {
-            if (cb) cb(new Error('Missing required field "'+ field + '" in data'));
+            cb(new Error('Missing required field "'+ field + '" in data'));
             result = false;
         }
     });
     tapi.params.forEach((param) => {
         if (param.Required === 'Required') {
             if (typeof data[param] === 'undefined') {
-                if (cb) cb(new Error('Missing required field "'+ param + '" in data'));
+                cb(new Error('Missing required field "'+ param + '" in data'));
                 result = false;
             }
         }
@@ -117,10 +117,10 @@ function buildRequest(tapi, data, cb) {
     if (validateData(tapi,data, (err) => {console.log(err);})) {
         replaceUriFieldsWithData(options, data);
         placeDataIntoRequest(options, data);
-        if (cb) cb(null, options);
+        cb(null, options);
     }
     else {
-        if (cb) cb(new Error('Data is missing fields'), options);
+        cb(new Error('Data is missing fields'), options);
     }
 
 }
@@ -163,13 +163,13 @@ function send(entry) {
             entry.response = body;
             delete options.qs.key;
             delete options.qs.token;
-            if (cb) cb(null, entry);
+            cb(null, entry);
         }
         else {
             entry.response = err;
             delete options.qs.key;
             delete options.qs.token;
-            if (cb) cb(err, entry);
+            cb(err, entry);
         }
     });
 }
