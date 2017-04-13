@@ -21,7 +21,7 @@ which is updated weekly with the tasks as they are being ( or not being ;) done.
 
 For those interested (or wishing to contribute) to the code being written - visit the GitHub repository 
 [byatc](https://github.com/PotOfCoffee2Go/byatc). The server side code-base is expected to 
-be completed by April 17 - at which time the REST API and WebSocket documentation for front-end development
+be completed by May 1st, 2017 - at which time the REST API and WebSocket documentation for front-end development
 to the auction will be available.
 
 

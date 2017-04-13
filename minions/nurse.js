@@ -16,7 +16,7 @@ function Nurse (Web) {
     web = Web;
 }
 
-Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next, notFoundPath) {
+Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next) {
         console.log('Nurse got the critical WebSite patient - doa :(');
         var fullUrl = web.minion.angel.getFullURL(req, res, next);
         console.log(fullUrl.pathname);
@@ -35,7 +35,7 @@ Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next, not
             return;
         }
         else {
-            res.status(404).sendFile(notFoundPath + '/images/pac/cyborg.svg');
+            res.status(404).sendFile(__dirname, '../bosses/www/pages/notfound.html');
         }
     }
     

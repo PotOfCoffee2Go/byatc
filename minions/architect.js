@@ -20,18 +20,6 @@ function Architect (Web) {
     web = Web;
 }
 
-/// Frontend sites, API Docs, -  html, js, css, etc
-Architect.prototype.gearWebSites = function gearWebSites(siteDir) {
-    web.routes.finalRouter.use('/', gearbox.markdown); // give markdown a try first
-    web.routes.finalRouter.use('/', web.express.static(siteDir + '/docs'));
-    web.routes.finalRouter.use('/docs', gearbox.markdown);
-    web.routes.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
-
-    // Error handler
-    web.routes.finalRouter.use(function(req, res, next) {
-        web.minion.nurse.criticalSiteCare(req, res, next, siteDir);
-    });
-};
 
 /// Intercom communication between bosses
 Architect.prototype.gearIntercom = function gearIntercom(boss, cb) {

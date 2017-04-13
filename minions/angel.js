@@ -59,6 +59,20 @@ Angel.prototype.getFullURL = function getFullURL(req, res, next) {
     return url.parse(req.protocol + 's://' + req.get('host') + req.originalUrl);
 };
 
+/// Frontend sites, API Docs, -  html, js, css, etc
+Angel.prototype.gearFinalRoutes = function gearFinalRoutes(siteDir) {
+    web.routes.finalRouter.use('/docs', gearbox.markdown);
+    web.routes.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
+    web.routes.finalRouter.use('/', gearbox.markdown); // give markdown a try first
+    web.routes.finalRouter.use('/', web.express.static(siteDir + '/'));
+
+    // Error handler
+    web.routes.finalRouter.use(function(req, res, next) {
+        web.minion.nurse.criticalSiteCare(req, res, next, siteDir);
+    });
+};
+
+
 Angel.prototype.assignTrelloWebhook = function assignTrelloWebhook(boss, board) {
     var restPath, results = [];
     

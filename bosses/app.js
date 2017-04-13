@@ -36,8 +36,8 @@ var asTheQueenCommands = {
 /// Spark up web server
 const web = require('./server')(asTheQueenCommands);
 
-/// Gear up Default Web Site holding system API docs, html pages, js, css, etc.
-web.minion.architect.gearWebSites(path.resolve(__dirname + '/www'));
+/// Gear up paths to Default Web Site and Error handling 
+web.minion.angel.gearFinalRoutes(path.resolve(__dirname + '/www'));
 
 console.log('Web Server created');
     

@@ -13,7 +13,7 @@ var boss = {
     name: 'pirate',
     app: path.join(__dirname,'../'),
     dir: path.join(__dirname, ''),
-    www: path.join(__dirname,'www')
+    www: path.join(__dirname,'../www')
 }
 
 /// Commands from the queen
