@@ -14,9 +14,6 @@ const
 var asTheQueenCommands = {
     
     /// Make some steam and start up the machines!
-    //  Note that the order of starting the machines up is important as they
-    //   are adding app.get/post/etc routes to express, which is touchy
-    //   about the order of said routes
     startMachines: function startMachines(bossName, cb) {  
 
         // Boss already geared up

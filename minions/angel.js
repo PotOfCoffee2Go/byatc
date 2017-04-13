@@ -61,6 +61,34 @@ Angel.prototype.getNodejsURL = function getNodejsURL(req, res, next) {
     return url.parse(req.protocol + 's://' + req.get('host') + req.originalUrl);
 };
 
+Angel.prototype.assignTrelloWebhook = function assignTrelloWebhook(boss, board) {
+    
+    var restPath, results = [];
+    
+    // Trello WebHook
+    restPath = '/' + boss.name + '/webhook/trello/' + board.alias;
+    
+    // Trello WebHooks Verification - always send back 200 response code
+    web.routes.restRouter.head(restPath, (req, res, next) => {res.sendStatus(200);});
+    results.push('Angel added Trello webhook REST path Head ' + restPath);
+    
+    //  Process trello get request - always send back 200 response code
+    //web.routes.restRouter.get(board.callbackURL, (req, res, next) => {
+    //    web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
+    //});
+
+    //  Process trello post request - always send back 200 response code
+    web.routes.restRouter.post(restPath, (req, res, next) => {
+        web.webhook.trello(req, res, next, (req, res) => {res.sendStatus(200);});
+    });
+    results.push('Angel added Trello webhook REST path Post ' + restPath);
+
+    // Trello WebHook Full address
+    board.callbackURL = web.cfg.kingdom.websites[boss.name] + restPath;
+    
+    return results;
+};
+
 
 Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
 
@@ -78,7 +106,7 @@ Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
                 web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
             });
         }
-        callback(null,'Angel added REST path ' + restPath);
+        callback(null,'Angel added REST path Get ' + restPath);
         
     }, (err, results) => {
 
@@ -88,7 +116,7 @@ Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
             var prayer = web.minion.angel.invokePrayer(req, res, next);
             web.minion.chef.onServeAuctioneer(req, res, next, prayer);
         });
-        results.push('Angel added REST path ' + restPath);
+        results.push('Angel added REST path Get ' + restPath);
 
         if (cb) cb(err, results);
     });

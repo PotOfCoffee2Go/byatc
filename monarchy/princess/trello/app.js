@@ -158,16 +158,16 @@ function postBoard(board, cb) {
             defaultLists: false,
             prefs_permissionLevel: 'org'
         }, (err, entry) => {
-            if (!err) {
-                board.id = entry.response.id;
-                delete board.action;
-            }
-            if (cb) cb(err, board);
+            if (err) {cb(err, board); return;}
+
+            board.id = entry.response.id;
+            delete board.action;
+            if (cb) cb(err, 'Princess Trello created board ' + board.name);
         });
         api.send();
     }
     else {
-        if (cb) cb(null, board);
+        if (cb) cb(null, 'Princess Trello found board ' + board.name);
     }
 }
 
@@ -178,16 +178,16 @@ function putWebhook(board, cb) {
             callbackURL: board.callbackURL,
             idModel: board.id,
             description: board.name
-            }, (err, entry) => {
-                if (!err) {
-                    board.webhook = entry.response;
-                }
-                if (cb) cb(err, entry);
+        }, (err, entry) => {
+            if (err) {cb(err, board); return;}
+
+            board.webhook = entry.response;
+            if (cb) cb(err, 'Princess Trello created webhook for board ' + board.name);
         });
         api.send();
     }
     else {
-        if (cb) cb(null, board.webhook);
+        if (cb) cb(null, 'Princess Trello found webhook for board ' + board.name);
     }
 }
     
@@ -196,15 +196,12 @@ function getBoard(board, cb) {
     api.push('get.boards.id',
         telloArguments.getBoard(idBoard),
         (err, entry) => {
-            if (err) {
-                board.db.push('/', err);
-            }
-            else {
-                board.lists = entry.response.lists;
-                entry.response.alias = board.alias;
-                board.db.push('/', format.board(entry.response));
-            }
-            if (cb) cb(err, entry);
+            if (err) {cb(err, board); return;}
+
+            board.lists = entry.response.lists;
+            entry.response.alias = board.alias;
+            board.db.push('/', format.board(entry.response));
+            if (cb) cb(err, 'Princess Trello saved data from board ' + board.name);
         });
     api.send();
 }
@@ -650,10 +647,7 @@ exports = module.exports = {
             (callback) => {getBoard(board, callback);},
             // (callback) => {getBoardComments(board, callback);},
         ], (err, results) => {
-            if (err)
-                cb(err, 'Princess Trello error ' + board.name + ' unable to create DB trello' + board.alias + '.json');
-            else
-                cb(err, 'Princess Trello loaded ' + board.name + ' into DB trello' + board.alias + '.json');
+            if (cb) cb(err, results);
         });
     },
     

@@ -90,67 +90,43 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
 };
 
 Architect.prototype.getTrelloInfo = function getTrelloInfo(boss, cb) {
-    if (web.cfg.trello) {
-        web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
-        web.trello.setCredentials(web.cfg.kingdom.keys.trello);
-        
-        web.trello.getTrelloInfo(web.cfg, (err, results) => {
-            if (cb) cb(err, results);
-        });
-    }
+    web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
+    web.trello.setCredentials(web.cfg.kingdom.keys.trello);
+    
+    web.trello.getTrelloInfo(web.cfg, (err, results) => {
+        if (cb) cb(err, results);
+    });
 };
 
 
 // Build the Trello interface
 Architect.prototype.gearTrello = function gearTrello(boss, cb) {
-    if (web.cfg.trello) {
+    var whresults = [];
+    // Array of boards to collect data from
+    async.mapSeries(web.cfg.trello.boards, function(board, callback) {
+        // dbname, true = auto save, true = pretty
+        board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database + board.alias, true, true);
 
-        // Array of boards to collect data from
-        async.mapSeries(web.cfg.trello.boards, function(board, callback) {
-            // dbname, true = auto save, true = pretty
-            board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database + board.alias, true, true);
-    
-            // Trello WebHook
-            board.callbackURL = '/' + boss.name + '/webhook/trello/' + board.alias;
+        // Add the paths that will be used by the Trello WebHooks
+        whresults = whresults.concat(web.minion.angel.assignTrelloWebhook(boss, board));
 
-            // Trello WebHooks Verification - always send back 200 response code
-            web.routes.restRouter.head(board.callbackURL, (req, res, next) => {res.sendStatus(200);});
+        web.trello.gearBoard(board, callback);
 
-            //  Process trello get request - always send back 200 response code
-            web.routes.restRouter.get(board.callbackURL, (req, res, next) => {
-                web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
-            });
-
-            //  Process trello post request - always send back 200 response code
-            web.routes.restRouter.post(board.callbackURL, (req, res, next) => {
-                web.webhook.trello(board.db, req, res, (req, res) => {res.sendStatus(200);});
-            });
-
-            // Trello WebHook Full address
-            board.callbackURL = web.cfg.kingdom.websites.cyborg + board.callbackURL;
-
-            web.trello.gearBoard(board, callback);
-
-        }, (err, results) => {
-            if (cb) cb(err, results);
-        });            
-    }
+    }, (err, results) => {
+        results = whresults.concat(results);
+        if (cb) cb(err, results);
+    });            
 };   
 
 
 Architect.prototype.syncTrelloBoards = function syncTrelloBoards(boss, cb) {
-    if (web.cfg.trello) {
-        web.trello.syncTrelloBoards(web.cfg, (err, results) => {
-            if (cb) cb(err, results);
-        });
-    }
+    web.trello.syncTrelloBoards(web.cfg, (err, results) => {if (cb) cb(err, results);});
 };
 
 
-Architect.prototype.getAuctionInfo = function getAuctionInfo(boss, cb) {
-
+Architect.prototype.gearAuction = function gearAuction(boss, cb) {
     request({
-        url: web.cfg.kingdom.websites.cyborg + '/cyborg/chef/serve/auctionee',
+        url: web.cfg.kingdom.websites.cyborg + '/cyborg/chef/serve/auctioneer',
         method: 'GET' },
         function (err, response, body) { 
             if (err) {

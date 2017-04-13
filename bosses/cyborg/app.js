@@ -34,6 +34,7 @@ module.exports = {
         // Check enviroment variables for the credential keys/tokens and such
         web.minion.constable.checkBossCredentials(web.bosses[boss]);
 
+        // Start up tasks which this boss is responible
         async.series([
             //(callback) => {architect.gearIntercom(boss, callback);},
             //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
