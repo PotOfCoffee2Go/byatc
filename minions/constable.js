@@ -28,10 +28,13 @@ Constable.prototype.givePrincessTrelloCredentials = function givePrincessTrelloC
     web.trello.setCredentials(web.cfg.kingdom.keys.trello);
 };
 
-Constable.prototype.checkBossCredentials = function checkBossCredentials() {
+Constable.prototype.checkCredentials = function checkCredentials(cb) {
     if (!web.cfg.kingdom.keys || !web.cfg.kingdom.keys.trello || 
         !web.cfg.kingdom.keys.trello.key.length > 5 || !web.cfg.kingdom.keys.trello.token.length > 5) {
-            throw (new Error('Trello Key/Token not in Kingdom Keys'));
+            cb (new Error('Trello Key/Token not in Kingdom Keys'));
+    }
+    else {
+        cb(null, 'Constable verified boss credentials');
     }
 }
 

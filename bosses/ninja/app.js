@@ -31,10 +31,8 @@ module.exports = {
         // Clear the boss working database directory
         fs.emptyDirSync(boss.dir + '/db');
     
-        // Check enviroment variables for the credential keys/tokens and such
-        web.minion.constable.checkBossCredentials(web.bosses[boss]);
-        
         async.series([
+            (callback) => {web.minion.constable.checkCredentials(callback);},
             //(callback) => {architect.gearIntercom(boss, callback);},
             //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
             (callback) => {architect.gearAuction(boss, callback);},

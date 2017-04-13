@@ -24,25 +24,19 @@ module.exports = {
     //   are adding app.get/post/etc routes to express, which is touchy
     //   about the order of said routes
     gearBoss: function gearBoss(web, bossName, cb) {  
-        const architect = web.minion.architect;
-
         web.bosses[boss] = boss;
 
         // Clear the boss working database directory
         fs.emptyDirSync(boss.dir + '/db');
 
-        // Check enviroment variables for the credential keys/tokens and such
-        web.minion.constable.checkBossCredentials(web.bosses[boss]);
-
         // Start up tasks which this boss is responible
         async.series([
-            //(callback) => {architect.gearIntercom(boss, callback);},
-            //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
-            (callback) => {architect.rousePrincessTrello(boss, callback);},
-            (callback) => {architect.gearSheets(boss, callback);},
-            (callback) => {architect.gearTrello(boss, callback);},
-            (callback) => {web.minion.chef.mergeDatabases(boss, callback);},
-            (callback) => {architect.syncTrelloBoards(boss, callback);},
+            (callback) => {web.minion.constable.checkCredentials(callback);},
+            (callback) => {web.minion.architect.rousePrincessTrello(callback);},
+            (callback) => {web.minion.architect.gearSheets(boss, callback);},
+            (callback) => {web.minion.architect.gearTrello(boss, callback);},
+            (callback) => {web.minion.chef.mergeDatabases(callback);},
+            (callback) => {web.minion.architect.syncTrelloBoards(callback);},
             (callback) => {web.minion.angel.assignRoutes(boss, callback);},
         ], (err, results) => {cb(err, results);});
     }

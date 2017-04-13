@@ -178,7 +178,7 @@ function removeMergedDatabases(cb) {
     cb(null, 'Chef deleted files ' + removedDbs.join(', '));
 }
 
-Chef.prototype.mergeDatabases = function mergeDatabases(boss, cb) {
+Chef.prototype.mergeDatabases = function mergeDatabases(cb) {
     async.series([
         (callback) => {mergeTrelloGuestDatabase(callback);},
         (callback) => {mergeTrelloItemDatabase(callback);},

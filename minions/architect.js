@@ -77,7 +77,7 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
     }, (err, results) => {cb(err, results);});            
 };
 
-Architect.prototype.rousePrincessTrello = function rousePrincessTrello(boss, cb) {
+Architect.prototype.rousePrincessTrello = function rousePrincessTrello(cb) {
     web.minion.constable.givePrincessTrelloCredentials();
     web.trello.rousePrincessTrello(web.cfg, (err, results) => cb(err, results));
 };
@@ -103,7 +103,7 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
 };   
 
 
-Architect.prototype.syncTrelloBoards = function syncTrelloBoards(boss, cb) {
+Architect.prototype.syncTrelloBoards = function syncTrelloBoards(cb) {
     web.trello.syncTrelloBoards(web.cfg, (err, results) => {cb(err, results);});
 };
 
