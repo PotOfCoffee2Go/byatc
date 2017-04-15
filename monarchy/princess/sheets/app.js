@@ -25,7 +25,7 @@ function csvToObjects(lines) {
     var records = {};
     var columns = lines[0];
     // loop through each line of csv file
-    for (let l = 1; l <= lines.length-1; l++) {
+    for (let l = 1; l < lines.length; l++) {
         let data = {};
         // builds object based on column headers
         if (lines[l].length > 3) {
@@ -43,7 +43,7 @@ function csvToObjects(lines) {
     return records;
 }
 
-function gearSheet(sheet, cb) {
+function gearSheet(boss, sheet, cb) {
     var sheets = google.sheets('v4');
     sheets.spreadsheets.values.get({
         auth: auth,
@@ -54,8 +54,12 @@ function gearSheet(sheet, cb) {
             if (err)
                 cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
             else {
-                let guestList = csvToObjects(response.values);
-                sheet.db.push('/', guestList);
+                if (boss.name === 'ninja') {
+                    sheet.db.push('/', response.values);
+                }
+                else {
+                    sheet.db.push('/', csvToObjects(response.values));
+                }
                 cb(err, 'Princess Sheets loaded ' + sheet.name + ' into DB ' + sheet.alias + '.json');
             }
     });

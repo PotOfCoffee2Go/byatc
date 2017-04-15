@@ -35,12 +35,13 @@ var asTheQueenCommands = {
 
 /// Spark up web server
 const web = require('./server')(asTheQueenCommands);
+console.log('Web Server created');
 
 /// Gear up paths to Default Web Site and Error handling 
-web.minion.angel.gearFinalRoutes(path.resolve(__dirname + '/www'));
+web.minion.angel.gearTrailingRoutes(path.resolve(__dirname + '/www'));
+console.log('Default routes are active');
 
-console.log('Web Server created');
-    
+
 // Listen for requests from Her Majesty
 web.listen();
 

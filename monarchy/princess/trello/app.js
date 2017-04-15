@@ -646,7 +646,7 @@ exports = module.exports = {
         ], (err, results) => {cb(err, results);});
     },
     
-    syncTrelloBoards: function syncTrelloBoards(cfg, cb) {
+    gearTrelloBoards: function gearTrelloBoards(cfg, cb) {
         async.series([
             (callback) => {getBoardListsFromSheets(cfg, callback);},
             (callback) => {addNewGuestBoardLists(cfg, callback);},

@@ -60,20 +60,20 @@ Angel.prototype.getFullURL = function getFullURL(req, res, next) {
 };
 
 /// Frontend sites, API Docs, -  html, js, css, etc
-Angel.prototype.gearFinalRoutes = function gearFinalRoutes(siteDir) {
-    web.routes.finalRouter.use('/docs', gearbox.markdown);
-    web.routes.finalRouter.use('/docs', web.express.static(siteDir + '/docs'));
-    web.routes.finalRouter.use('/', gearbox.markdown); // give markdown a try first
-    web.routes.finalRouter.use('/', web.express.static(siteDir + '/'));
+Angel.prototype.gearTrailingRoutes = function gearTrailingRoutes(siteDir) {
+    web.routes.trailingRouter.use('/docs', gearbox.markdown);
+    web.routes.trailingRouter.use('/docs', web.express.static(siteDir + '/docs'));
+    web.routes.trailingRouter.use('/', gearbox.markdown); // give markdown a try first
+    web.routes.trailingRouter.use('/', web.express.static(siteDir + '/'));
 
     // Error handler
-    web.routes.finalRouter.use(function(req, res, next) {
+    web.routes.trailingRouter.use(function(req, res, next) {
         web.minion.nurse.criticalSiteCare(req, res, next, siteDir);
     });
 };
 
 
-Angel.prototype.assignTrelloWebhook = function assignTrelloWebhook(boss, board) {
+Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
     var restPath, results = [];
     
     // Trello WebHook
@@ -81,13 +81,13 @@ Angel.prototype.assignTrelloWebhook = function assignTrelloWebhook(boss, board) 
     
     // Trello WebHook Verification - always send back 200 response code
     web.routes.restRouter.head(restPath, (req, res, next) => {res.sendStatus(200);});
-    results.push('Angel added Trello webhook REST path Head ' + restPath);
+    results.push('Angel added Trello webhook REST resource HEAD ' + restPath);
 
     //  Process trello post request - always send back 200 response code
     web.routes.restRouter.post(restPath, (req, res, next) => {
         web.webhook.trello(req, res, next, (req, res) => {res.sendStatus(200);});
     });
-    results.push('Angel added Trello webhook REST path Post ' + restPath);
+    results.push('Angel added Trello webhook REST resource POST ' + restPath);
 
     // Assign complete web address for Trello WebHook callbackURL ('https://domain.com/path/etc')
     board.callbackURL = web.cfg.kingdom.websites[boss.name] + restPath;
@@ -95,7 +95,7 @@ Angel.prototype.assignTrelloWebhook = function assignTrelloWebhook(boss, board) 
     return results;
 };
 
-Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
+Angel.prototype.gearRestResources = function gearRestResources(boss, cb) {
     var restPath = '';
     
     // Array of 'sheets' with databases for clerk to lookup data
@@ -110,27 +110,15 @@ Angel.prototype.assignRoutes = function assignRoutes(boss, cb) {
                 web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
             });
         }
-        callback(null,'Angel added REST path Get ' + restPath);
+        callback(null,'Angel added REST resource GET ' + restPath);
         
-    }, (err, results) => {
-        restPath  = '/' + boss.name + '/chef/serve/auctioneer';
-        //  Process REST request (usually from Ninja) for auction data
-        web.routes.restRouter.get(restPath, (req, res, next) => {
-            var prayer = web.minion.angel.invokePrayer(req, res, next);
-            web.minion.chef.onServeAuctioneer(req, res, next, prayer);
-        });
-        results.push('Angel added REST path Get ' + restPath);
-
-        cb(err, results);
-    });
-
+    }, (err, results) => {cb(err, results);});
 };
 
 
 
 
-
-/// - Get request
+// - Get request
 Angel.prototype.onGet = function onGet(socket, msg) {
     if (msg.resource) {
         console.log('onGet: ' + socket.id + ' resource - ' + msg.resource);

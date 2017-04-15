@@ -55,7 +55,7 @@ module.exports = function (asTheQueenCommands) {
     /// Health required by OpenShift or whoever wants to check if server listening
     app.get('/health', (req, res, next) => {sendJson(null, res, {'health':'ok'});});
 
-    /// Not much is going to happen until Her Majesty commands it so
+    /// Not much happens until Her Majesty commands it so
     app.post('/queen/commands/:boss/:cmd', (req, res, next) => {
         res.type('text');
             cfg.kingdom = req.body.kingdom;
@@ -66,22 +66,21 @@ module.exports = function (asTheQueenCommands) {
     });
 
 
-    /// -- Main REST Routes --
+    /// -- Main RESTful Routes --
     
     var restRouter = express.Router();
-    // The architect will populate this router with the boss routes
-    //  once /queen/commands/startMachines (above)
+    // Contains the RESTful requests
     app.use(function mRestRouter(req, res, next) {
       restRouter(req, res, next);
     });
 
-    /// -- Final Routes --
+    /// -- Trailing Routes --
 
-    // The architect will populate this router with the trailing routes
-    //  to final websites, docs, error handlers at end of the route list
-    var finalRouter = express.Router();
+    // This router contains the last routes to websites, docs, and
+    //  error handlers at end of the route list
+    var trailingRouter = express.Router();
     app.use(function (req, res, next) {
-      finalRouter(req, res, next);
+      trailingRouter(req, res, next);
     });
 
     // For Cloud9 the port/ip is env.PORT and env.IP
@@ -105,7 +104,7 @@ module.exports = function (asTheQueenCommands) {
         minion: null,
         routes: {
             restRouter: restRouter,
-            finalRouter: finalRouter,
+            trailingRouter: trailingRouter,
         },
         listen: listen,
         ios: ios,

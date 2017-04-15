@@ -26,7 +26,7 @@ module.exports = {
     gearBoss: function gearBoss(web, bossName, cb) {  
         const architect = web.minion.architect;
 
-        web.bosses[boss] = boss;
+        web.bosses[bossName] = boss;
         
         // Clear the boss working database directory
         fs.emptyDirSync(boss.dir + '/db');

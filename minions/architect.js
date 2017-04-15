@@ -60,7 +60,7 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
         // dbname, true = auto save, true = pretty
         sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
 
-        web.spreadsheets.gearSheet(sheet, callback);
+        web.spreadsheets.gearSheet(boss, sheet, callback);
         
     }, (err, results) => {cb(err, results);});            
 };
@@ -80,7 +80,7 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
         board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database + board.alias, true, true);
 
         // Add the paths that will be used by the Trello WebHooks
-        whresults = whresults.concat(web.minion.angel.assignTrelloWebhook(boss, board));
+        whresults = whresults.concat(web.minion.angel.gearTrelloWebhook(boss, board));
 
         web.trello.gearBoard(board, callback);
 
@@ -91,8 +91,8 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
 };   
 
 
-Architect.prototype.syncTrelloBoards = function syncTrelloBoards(cb) {
-    web.trello.syncTrelloBoards(web.cfg, (err, results) => {cb(err, results);});
+Architect.prototype.gearTrelloBoards = function gearTrelloBoards(cb) {
+    web.trello.gearTrelloBoards(web.cfg, (err, results) => {cb(err, results);});
 };
 
 
