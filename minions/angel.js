@@ -96,11 +96,10 @@ Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
 };
 
 Angel.prototype.gearRestResources = function gearRestResources(boss, cb) {
-    var restPath = '';
-    
     // Array of 'sheets' with databases for clerk to lookup data
     async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
-        restPath = '';
+        var restPath = '';
+        var restResources = [];
 
         //  Process REST requests from frontends
         restPath  = '/' + boss.name + '/clerk/' + sheet.alias + '*';
@@ -109,8 +108,19 @@ Angel.prototype.gearRestResources = function gearRestResources(boss, cb) {
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
                 web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
             });
+            restResources.push('Angel added REST resource GET ' + restPath);
         }
-        callback(null,'Angel added REST resource GET ' + restPath);
+        else {
+            if (sheet.rows) {
+                restPath  = '/' + boss.name + '/clerk/' + sheet.alias;
+                web.routes.restRouter.get(restPath, (req, res, next) => {
+                    var prayer = web.minion.angel.invokePrayer(req, res, next);
+                    web.minion.clerk.onGetAuctionRows(req, res, next, prayer);
+                });
+                restResources.push('Angel added REST resource GET ' + restPath);
+            }
+        }
+        callback(null, restResources);
         
     }, (err, results) => {cb(err, results);});
 };

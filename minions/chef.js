@@ -43,6 +43,9 @@ function mergeTrelloGuestDatabase(cb) {
     });
     // Clear the trello board item db
     cfgboard.db.push('/cards', []);
+
+    // Clear the auction rows - will not be used
+    cfgsheet.rows = null;
     
     cb(null, 'Chef merged trello info into Guest database');
 }
@@ -73,6 +76,9 @@ function mergeTrelloItemDatabase(cb) {
     // Clear the trello board item db
     cfgboard.db.push('/cards', []);
     
+    // Clear the auction rows - will not be used
+    cfgsheet.rows = null;
+    
     cb(null, 'Chef merged trello info into Item database');
 }
 
@@ -100,6 +106,9 @@ function mergeCategoriesDatabase(cb) {
     
     cfgitem.db.push('/', itemCards);
 
+    // Clear the auction rows - will not be used
+    cfgsheet.rows = null;
+    
     cb(null, 'Chef merged category info into Item database');
 
 }
@@ -107,7 +116,7 @@ function mergeCategoriesDatabase(cb) {
 function mergeGuestAuctionDatabase(cb) {
     // Merge the autioneer into the items database
     var sheetAuctioneer, guestCards;
-    var alias = 'auctioneer';
+    var alias = 'auction/guests';
     
     var cfgsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
     var cfgguest = web.cfg.spreadsheets.sheets.find(s => s.alias === 'guests');
@@ -136,7 +145,7 @@ function mergeGuestAuctionDatabase(cb) {
 function mergeItemAuctionDatabase(cb) {
     // Merge the categories into the items database
     var sheetAuction, itemCards;
-    var alias = 'itemauctioninfo';
+    var alias = 'auction/items';
     
     var cfgsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
     var cfgitem = web.cfg.spreadsheets.sheets.find(s => s.alias === 'items');
@@ -172,10 +181,7 @@ function removeMergedDatabases(cb) {
         }
     });
     
-    web.cfg.spreadsheets.sheets = 
-        web.cfg.spreadsheets.sheets.filter(s => s.db !== null);
-
-    cb(null, 'Chef deleted files ' + removedDbs.join(', '));
+    cb(null, 'Chef deleted databases for ' + removedDbs.join(', '));
 }
 
 Chef.prototype.gearDatabases = function gearDatabases(cb) {

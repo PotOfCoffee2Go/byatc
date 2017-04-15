@@ -54,6 +54,7 @@ function gearSheet(sheet, cb) {
             if (err)
                 cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
             else {
+                sheet.rows = response.values;
                 sheet.db.push('/', csvToObjects(response.values));
                 cb(err, 'Princess Sheets loaded ' + sheet.name + ' into DB ' + sheet.alias + '.json');
             }

@@ -105,6 +105,7 @@ Architect.prototype.gearAuction = function gearAuction(boss, cb) {
                 console.log(err);
             }
             else {
+                
                 console.log(body);
             }
         }
