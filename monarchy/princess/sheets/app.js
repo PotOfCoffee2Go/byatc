@@ -54,12 +54,7 @@ function gearSheet(boss, sheet, cb) {
             if (err)
                 cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
             else {
-                if (boss.name === 'ninja') {
-                    sheet.db.push('/', response.values);
-                }
-                else {
-                    sheet.db.push('/', csvToObjects(response.values));
-                }
+                sheet.db.push('/', csvToObjects(response.values));
                 cb(err, 'Princess Sheets loaded ' + sheet.name + ' into DB ' + sheet.alias + '.json');
             }
     });
