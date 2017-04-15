@@ -95,39 +95,32 @@ Architect.prototype.gearTrelloBoards = function gearTrelloBoards(cb) {
     web.trello.gearTrelloBoards(web.cfg, (err, results) => {cb(err, results);});
 };
 
+function getAuctionList(boss, listName, cb) {
+    request({
+        url: web.cfg.kingdom.websites.cyborg + '/cyborg/clerk/auction/' + listName,
+        method: 'GET', json: true },
+        function (err, response, body) { 
+            if (err) {
+                cb(err);
+            }
+            else {
+                var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
+                if (sheet) {
+                    sheet.rows = body.data;
+                    cb(null, boss.name + ' architect got auction ' + listName + ' list from cyborg');
+                }
+                else {
+                    cb(new Error(boss.name + ' could not assign auction ' + listName));
+                }
+            }
+        }
+    );
+}
 
 Architect.prototype.gearAuction = function gearAuction(boss, cb) {
-    
     async.parallel([
-        function (callback) {
-            request({
-                url: web.cfg.kingdom.websites.cyborg + '/cyborg/clerk/auction/guests',
-                method: 'GET' },
-                function (err, response, body) { 
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        callback(null, boss.name + ' architect got auction Guest list from cyborg');
-                    }
-                }
-            );
-        },
-    
-        function (callback) {
-            request({
-                url: web.cfg.kingdom.websites.cyborg + '/cyborg/clerk/auction/items',
-                method: 'GET' },
-                function (err, response, body) { 
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        callback(null, boss.name + ' architect got auction Item list from cyborg');
-                    }
-                }
-            );
-        }
+        (callback) => {getAuctionList(boss, 'guests', callback);},
+        (callback) => {getAuctionList(boss, 'items', callback);}
     ], (err, results) => {cb(err, results);});
     
 };

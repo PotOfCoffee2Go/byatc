@@ -34,6 +34,7 @@ module.exports = {
             //(callback) => {architect.gearIntercom(boss, callback);},
             //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
             (callback) => {web.minion.architect.gearAuction(boss, callback);},
+            (callback) => {web.minion.angel.gearNinjaRestResources(callback);},
         ], (err, results) => {cb(err, results);});
     }
 };

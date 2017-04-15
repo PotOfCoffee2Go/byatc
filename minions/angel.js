@@ -96,7 +96,7 @@ Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
     return results;
 };
 
-Angel.prototype.gearRestResources = function gearRestResources(boss, cb) {
+Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss, cb) {
     // Array of 'sheets' with databases for clerk to lookup data
     async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
         var restPath = '';
@@ -143,6 +143,7 @@ Angel.prototype.relayQueenCommandToNinja = function relayQueenCommandToNinja(bos
     
     );
 };
+
 Angel.prototype.relayQueenCommandToPirate = function relayQueenCommandToPirate(boss, cb) {
     var results = [boss.name + ' relay Her Majesty command to pirate'];
     request({
@@ -159,6 +160,28 @@ Angel.prototype.relayQueenCommandToPirate = function relayQueenCommandToPirate(b
     
     );
 };
+
+
+Angel.prototype.gearNinjaRestResources = function gearNinjaRestResources(cb) {
+    var restPath = '';
+        //  Process REST requests from frontends
+        restPath  = '/ninja/clerk/bid/*';
+        web.routes.restRouter.post(restPath, (req, res, next) => {
+            var prayer = web.minion.angel.invokePrayer(req, res, next);
+            web.minion.clerk.onBid(req, res, next, prayer);
+        });
+        cb(null,'ninja Angel added REST resource Post ' + restPath);
+
+};
+
+Angel.prototype.gearPirateRestResources = function gearPirateRestResources(boss, cb) {
+
+};
+
+
+
+
+
 
 // - Get request
 Angel.prototype.onGet = function onGet(socket, msg) {

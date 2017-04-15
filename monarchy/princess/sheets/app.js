@@ -32,8 +32,6 @@ function csvToObjects(lines) {
             data.sheet = {};
             for (let c = 0; c < lines[l].length; c++) {
                 var value = lines[l][c];
-                if (value === 'TRUE') value = true;
-                else if (value === 'FALSE') value = false;
                 data.sheet[columns[c]] = value;          
             }
             // add object to output
@@ -49,7 +47,7 @@ function gearSheet(sheet, cb) {
         auth: auth,
         spreadsheetId: sheet.id,
         range: sheet.range,
-        valueRenderOption: 'FORMATTED_VALUE',
+        valueRenderOption: 'UNFORMATTED_VALUE',
         }, (err, response) => {
             if (err)
                 cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
