@@ -43,7 +43,7 @@ function csvToObjects(lines) {
     return records;
 }
 
-function gearSheet(boss, sheet, cb) {
+function gearSheet(sheet, cb) {
     var sheets = google.sheets('v4');
     sheets.spreadsheets.values.get({
         auth: auth,

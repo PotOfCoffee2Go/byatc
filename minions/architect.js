@@ -60,7 +60,7 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
         // dbname, true = auto save, true = pretty
         sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
 
-        web.spreadsheets.gearSheet(boss, sheet, callback);
+        web.spreadsheets.gearSheet(sheet, callback);
         
     }, (err, results) => {cb(err, results);});            
 };
