@@ -30,7 +30,7 @@ module.exports = {
         fs.emptyDirSync(boss.dir + '/db');
     
         async.series([
-            (callback) => {web.minion.constable.checkCredentials(callback);},
+            (callback) => {web.minion.constable.checkCredentials(boss, callback);},
             //(callback) => {architect.gearIntercom(boss, callback);},
             //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
             (callback) => {web.minion.architect.gearAuction(boss, callback);},

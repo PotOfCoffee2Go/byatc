@@ -97,19 +97,38 @@ Architect.prototype.gearTrelloBoards = function gearTrelloBoards(cb) {
 
 
 Architect.prototype.gearAuction = function gearAuction(boss, cb) {
-    request({
-        url: web.cfg.kingdom.websites.cyborg + '/cyborg/chef/serve/auctioneer',
-        method: 'GET' },
-        function (err, response, body) { 
-            if (err) {
-                console.log(err);
-            }
-            else {
-                
-                console.log(body);
-            }
+    
+    async.parallel([
+        function (callback) {
+            request({
+                url: web.cfg.kingdom.websites.cyborg + '/cyborg/clerk/auction/guests',
+                method: 'GET' },
+                function (err, response, body) { 
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback(null, boss.name + ' architect got auction Guest list from cyborg');
+                    }
+                }
+            );
+        },
+    
+        function (callback) {
+            request({
+                url: web.cfg.kingdom.websites.cyborg + '/cyborg/clerk/auction/items',
+                method: 'GET' },
+                function (err, response, body) { 
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback(null, boss.name + ' architect got auction Item list from cyborg');
+                    }
+                }
+            );
         }
-    );
+    ], (err, results) => {cb(err, results);});
     
 };
 

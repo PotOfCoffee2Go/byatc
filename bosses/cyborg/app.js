@@ -28,13 +28,15 @@ module.exports = {
 
         // Start up tasks which this boss is responible
         async.series([
-            (callback) => {web.minion.constable.checkCredentials(callback);},
+            (callback) => {web.minion.constable.checkCredentials(boss, callback);},
             (callback) => {web.minion.architect.rousePrincessTrello(callback);},
             (callback) => {web.minion.architect.gearSheets(boss, callback);},
             (callback) => {web.minion.architect.gearTrello(boss, callback);},
             (callback) => {web.minion.chef.gearDatabases(callback);},
             (callback) => {web.minion.architect.gearTrelloBoards(callback);},
             (callback) => {web.minion.angel.gearRestResources(boss, callback);},
+            (callback) => {web.minion.angel.relayQueenCommandToNinja(boss, callback);},
+            (callback) => {web.minion.angel.relayQueenCommandToPirate(boss, callback);},
         ], (err, results) => {cb(err, results);});
     }
 };

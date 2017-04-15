@@ -24,7 +24,6 @@ module.exports = {
     //   are adding app.get/post/etc routes to express, which is touchy
     //   about the order of said routes
     gearBoss: function gearBoss(web, bossName, cb) {  
-        const architect = web.minion.architect;
 
         web.bosses[bossName] = boss;
         
@@ -32,7 +31,7 @@ module.exports = {
         fs.emptyDirSync(boss.dir + '/db');
     
         async.series([
-            (callback) => {web.minion.constable.checkCredentials(callback);},
+            (callback) => {web.minion.constable.checkCredentials(boss, callback);},
             //(callback) => {architect.gearIntercom(boss, callback);},
             //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
         ], (err, results) => {cb(err, results);});

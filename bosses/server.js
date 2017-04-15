@@ -58,11 +58,11 @@ module.exports = function (asTheQueenCommands) {
     /// Not much happens until Her Majesty commands it so
     app.post('/queen/commands/:boss/:cmd', (req, res, next) => {
         res.type('text');
-            cfg.kingdom = req.body.kingdom;
-            asTheQueenCommands[req.params.cmd](req.params.boss, function (err, reply) {
-                res.send(util.inspect(reply, { showHidden: false, depth: null }));
-                console.log(util.inspect(reply, { showHidden: false, depth: null }));
-            });
+        cfg.kingdom = req.body.kingdom;
+        asTheQueenCommands[req.params.cmd](req.params.boss, function (err, reply) {
+//            res.send(util.inspect(reply, { showHidden: false, depth: null }));
+            res.send(JSON.stringify(reply, null, 2));
+        });
     });
 
 

@@ -5,6 +5,7 @@
 const
     url = require('url'),
     async = require('async'),
+    request = require('request'),
     gearbox = require('./#gearing/gearbox'),
     
     MinionError = gearbox.MinionError,
@@ -126,7 +127,38 @@ Angel.prototype.gearRestResources = function gearRestResources(boss, cb) {
 };
 
 
-
+Angel.prototype.relayQueenCommandToNinja = function relayQueenCommandToNinja(boss, cb) {
+    var results = [boss.name + ' relay Her Majesty command to ninja'];
+    request({
+        url: web.cfg.kingdom.websites.ninja + '/queen/commands/ninja/startMachines',
+        method: 'POST',
+        json: {kingdom: web.cfg.kingdom}},
+        function (err, response, body) { 
+            if (err) cb(err); 
+            else {
+                results.push(body);
+                cb(null, results);
+            }
+        }
+    
+    );
+};
+Angel.prototype.relayQueenCommandToPirate = function relayQueenCommandToPirate(boss, cb) {
+    var results = [boss.name + ' relay Her Majesty command to pirate'];
+    request({
+        url: web.cfg.kingdom.websites.pirate + '/queen/commands/pirate/startMachines',
+        method: 'POST',
+        json: {kingdom: web.cfg.kingdom}},
+        function (err, response, body) { 
+            if (err) cb(err); 
+            else {
+                results.push(body);
+                cb(null, results);
+            }
+        }
+    
+    );
+};
 
 // - Get request
 Angel.prototype.onGet = function onGet(socket, msg) {

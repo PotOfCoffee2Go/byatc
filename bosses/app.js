@@ -24,7 +24,10 @@ var asTheQueenCommands = {
         }
 
         switch (bossName) {
-            case 'cyborg': cyborg.gearBoss(web, bossName, cb); break;
+            case 'cyborg': cyborg.gearBoss(web, bossName, (err, results) => {
+                cb(err, results);
+                console.log(util.inspect(results, { showHidden: false, depth: null }));
+            }); break;
             case 'ninja': ninja.gearBoss(web, bossName, cb); break;
             case 'pirate': pirate.gearBoss(web, bossName, cb); break;
             default: cb(null, bossName + ' is not an advisor My Majesty!'); return;
