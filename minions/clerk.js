@@ -43,26 +43,53 @@ Clerk.prototype.onGetAuctionRows = function onGetAuctionRows(req, res, next, pra
 };
 
 
-var ge = {
-  'id': 0, 'fullname': 1, 'table': 2, 'player?': 3, 'donor?': 4, 'issues?': 5, 'bidder?': 6, 
-  'winner?': 7, 'paid?': 8, 'delivered?': 9, 'bids': 10, 'won': 11,
-  'due': 12, 'shipping': 13, 'tax': 14, 'paid': 15, 
-};
-
-var ie = {
-  'id': 0, 'OpenBid': 1, 'Increment': 2, 'BuyNow': 3, 'BuyNowOnly': 4, 'QtyLeft': 5,
-  'QtySold': 6, 'CurrentBid': 7, 'Bidder': 8, 'Due': 9, 'Shipping': 10, 'Tax': 11, 'Paid': 12, 
-};
-
 Clerk.prototype.onBid = function onBid(req, res, next, prayer) {
+    var error, ge, ie;
     var guestsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/guests');
     var itemsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items');
-    var guest = guestsheet.find(g => g[0] === data.guestid);
-    var item = guestsheet.find(i => i[0] === data.itemid);
-    
-    
-    prayer.data = {yippie: 'got your bid!'};
-    web.sendJson(null, res, prayer);
+
+    try {
+        ge = guestsheet.fields;
+        ie = itemsheet.fields;
+        var guest = guestsheet.find(g => g[0] === req.body.guestid);
+        var item = itemsheet.find(i => i[0] === req.body.itemid);
+        
+        if (!item[ie.Ready]) {
+            error = new MinionError(minionName, 'This item is not open for bidding', 101, null);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+        
+        if (item[ie.BuyNowOnly]) {
+            error = new MinionError(minionName, 'This item is buy only', 101, null);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+        
+        if (item[ie.QtyLeft] < 1) {
+            error = new MinionError(minionName, 'This item has already been sold', 101, null);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+        
+        if (req.body.amount >= (item[ie.CurrentBid] + item[ie.Increment])) {
+            item[ie.CurrentBid] = req.body.amount;
+            item[ie.Bidder] = req.body.guestid;
+            guest[ge.bids]++;
+            web.sendJson(null, res, prayer);
+            return;
+        }
+        else {
+            error = new MinionError(minionName, 'Invalid bid amount - must be current bid + increment (or higher)', 101, null);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+    }
+    catch(err) {
+        error = new MinionError(minionName, 'Can not get data from Db', 101, err);
+        web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+        return;
+    }
 };
 
 module.exports = Clerk;

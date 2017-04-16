@@ -32,7 +32,10 @@ module.exports = {
                 alias: 'auction/guests', // Name used in Database, REST, and Websocket requests
                 range: 'Auctioneer!A2:P1000', // Range of data to collect from sheet
                 boardName: '', // Name of board on Trello
-                remove: true   // Remove database after merging with main Guest DB
+                remove: true,   // Remove database after merging with main Guest DB
+                fields: {'id': 0, 'fullname': 1, 'table': 2, 'player?': 3, 'donor?': 4, 'issues?': 5,
+                        'bidder?': 6, 'winner?': 7, 'paid?': 8, 'delivered?': 9, 'bids': 10, 'won': 11,
+                        'due': 12, 'shipping': 13, 'tax': 14, 'paid': 15}
             },
             {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
@@ -45,9 +48,12 @@ module.exports = {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'auction/items', // Name used in Database, REST, and Websocket requests
-                range: 'Auction_Items!F2:R1000', // Range of data to collect
+                range: 'Auction_Items!F2:U1000', // Range of data to collect
                 boardName: '', // Name of board on Trello
-                remove: true   // Remove database after merging with main Item DB
+                remove: true,   // Remove database after merging with main Item DB
+                fields: {'id': 0, 'OpenBid': 1, 'Increment': 2, 'BuyNow': 3, 'BuyNowOnly': 4,
+                        'Ready': 5, 'QtyLeft': 6, 'QtySold': 7, 'CurrentBid': 8, 'Time': 9,
+                        'Bidder': 10, 'Due': 11, 'Shipping': 12, 'Tax': 13, 'Paid': 14 }
             },
             {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
