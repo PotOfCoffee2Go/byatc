@@ -30,7 +30,7 @@ module.exports = {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Guest List', // Info only - the id is what google uses to open the sheet
                 alias: 'auction/guests', // Name used in Database, REST, and Websocket requests
-                range: 'Auctioneer!A2:M1000', // Range of data to collect from sheet
+                range: 'Auctioneer!A2:P1000', // Range of data to collect from sheet
                 boardName: '', // Name of board on Trello
                 remove: true   // Remove database after merging with main Guest DB
             },
@@ -45,7 +45,7 @@ module.exports = {
                 id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'auction/items', // Name used in Database, REST, and Websocket requests
-                range: 'Auction_Items!F2:L1000', // Range of data to collect
+                range: 'Auction_Items!F2:R1000', // Range of data to collect
                 boardName: '', // Name of board on Trello
                 remove: true   // Remove database after merging with main Item DB
             },
