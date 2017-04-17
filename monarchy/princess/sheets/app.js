@@ -54,7 +54,7 @@ function gearSheet(sheet, cb) {
             else {
                 sheet.rows = response.values;
                 sheet.db.push('/', csvToObjects(response.values));
-                cb(err, 'Princess Sheets loaded ' + sheet.name + ' into DB ' + sheet.alias + '.json');
+                cb(err, 'Princess Sheets loaded spreadsheet -' + sheet.name + '- range -' + sheet.range + '- into DB ' + sheet.alias + '.json');
             }
     });
 }

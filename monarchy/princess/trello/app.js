@@ -78,7 +78,7 @@ function getMemberTeam(cfg, cb) {
                         id: team.id,
                         shortname: team.name,
                         displayName: team.displayName};
-                    cb(null, 'Princess Trello using team ' + team.displayName);
+                    cb(null, 'Princess Trello using team -' + team.displayName + '-');
                 }
                 else {
                     cb(new Error('Princess Trello - Team not found - ' + cfg.trello.team.shortname));
@@ -117,7 +117,7 @@ function getMemberBoards(cfg, cb) {
                 }
             });
             cfg.trello.boards = keepers;
-            cb(err, 'Princess Trello boards ' + boardnames.join(', '));
+            cb(err, 'Princess Trello found boards ' + boardnames.join(', '));
         });
     api.send();
 }
@@ -144,7 +144,7 @@ function getWebhooks(cfg, cb) {
                     webhookUrls.push({boardname: board.name, callbackURL: 'No Trello Callback'});
                 }
             });
-            cb(err, {'Princess Trello using webhooks': webhookUrls});
+            cb(err, {'Princess Trello accepting Trello webhooks for ': webhookUrls});
         });
     api.send();
 }

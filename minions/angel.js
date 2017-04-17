@@ -82,13 +82,13 @@ Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
     
     // Trello WebHook Verification - always send back 200 response code
     web.routes.restRouter.head(restPath, (req, res, next) => {res.sendStatus(200);});
-    results.push('Angel added Trello webhook REST resource HEAD ' + restPath);
+    results.push('Angel added Trello webhook REST method HEAD ' + restPath + ' to respond with http status 200');
 
     //  Process trello post request - always send back 200 response code
     web.routes.restRouter.post(restPath, (req, res, next) => {
         web.webhook.trello(req, res, next, web.cfg, () => {res.sendStatus(200);});
     });
-    results.push('Angel added Trello webhook REST resource POST ' + restPath);
+    results.push('Angel added Trello webhook REST method POST ' + restPath + ' to web.webhook.trello()');
 
     // Assign complete web address for Trello WebHook callbackURL ('https://domain.com/path/etc')
     board.callbackURL = web.cfg.kingdom.websites[boss.name] + restPath;
@@ -109,13 +109,22 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
                 web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
             });
-            restResources.push('Angel added REST resource GET ' + restPath);
+            restResources.push('Angel added REST method GET ' + restPath + 
+                                ' which calls clerk onGetFromSheetsDb()');
 
             web.routes.restRouter.post(restPath, (req, res, next) => {
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
                 web.minion.clerk.onPostToSheetsDb(req, res, next, prayer);
             });
-            restResources.push('Angel added REST resource POST ' + restPath);
+            restResources.push('Angel added REST method POST ' + restPath + 
+                                ' which calls clerk onPostToSheetsDb()');
+
+            web.routes.restRouter.delete(restPath, (req, res, next) => {
+                var prayer = web.minion.angel.invokePrayer(req, res, next);
+                web.minion.clerk.onDeleteFromSheetsDb(req, res, next, prayer);
+            });
+            restResources.push('Angel added REST method DELETE ' + restPath + 
+                                ' which calls clerk onDeleteFromSheetsDb()');
         }
         else {
             if (sheet.rows) {
@@ -124,7 +133,8 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
                     var prayer = web.minion.angel.invokePrayer(req, res, next);
                     web.minion.clerk.onGetAuctionRows(req, res, next, prayer);
                 });
-                restResources.push('Angel added REST resource GET ' + restPath);
+                restResources.push('Angel added REST method GET ' + restPath +
+                                   ' which calls clerk onGetAuctionRows()');
             }
         }
         callback(null, restResources);

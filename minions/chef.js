@@ -181,7 +181,7 @@ function removeMergedDatabases(cb) {
         }
     });
     
-    cb(null, 'Chef deleted databases for ' + removedDbs.join(', '));
+    cb(null, 'Chef deleted merged auction info databases ' + removedDbs.join(', '));
 }
 
 Chef.prototype.gearDatabases = function gearDatabases(cb) {
