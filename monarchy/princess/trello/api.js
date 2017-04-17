@@ -64,7 +64,6 @@ function validateData(tapi, data, cb) {
     });
     
     return result;
-    
 }
 
 // Find the variables defined in the url
@@ -154,8 +153,7 @@ function push(cmd, data, cb) {
 // Send a request to Trello - when done fire the next request
 //   in most cases this will stay below the 10 call per second limit
 function send(entry) {
-    var cmd = entry.byatc.cmd,
-        options = entry.options,
+    var options = entry.options,
         cb = entry.cb;
 
     request(options, (err, response, body) => {
@@ -174,13 +172,17 @@ function send(entry) {
     });
 }
 
-
-    module.exports.setCredentials = function(creds) {keys = {key: creds.key, token: creds.token };};
-    // Push request on the FIFO queue
-    module.exports.getToken = function() {return keys.token};
-    // Push request on the FIFO queue
-    module.exports.push = push;
-    // Send requests that are on the FIFO queue
-    module.exports.send = function(ms){ms = ms || null; if (!limiterId) limiter(ms);};
+    module.exports = {
+        setCredentials: (creds) => {keys = {key: creds.key, token: creds.token };},
+        // Push request on the FIFO queue
+        getToken: () => {return keys.token},
+        // Push request on the FIFO queue
+        push: push,
+        // Send requests that are on the FIFO queue
+        send: (ms) => {
+            ms = ms || null;
+            if (!limiterId) limiter(ms);
+        }
+    };
 
 })();

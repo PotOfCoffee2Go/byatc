@@ -86,7 +86,7 @@ Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
 
     //  Process trello post request - always send back 200 response code
     web.routes.restRouter.post(restPath, (req, res, next) => {
-        web.webhook.trello(req, res, next, (req, res) => {res.sendStatus(200);});
+        web.webhook.trello(req, res, next, web.cfg, () => {res.sendStatus(200);});
     });
     results.push('Angel added Trello webhook REST resource POST ' + restPath);
 
@@ -110,6 +110,12 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
                 web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
             });
             restResources.push('Angel added REST resource GET ' + restPath);
+
+            web.routes.restRouter.post(restPath, (req, res, next) => {
+                var prayer = web.minion.angel.invokePrayer(req, res, next);
+                web.minion.clerk.onPostToSheetsDb(req, res, next, prayer);
+            });
+            restResources.push('Angel added REST resource POST ' + restPath);
         }
         else {
             if (sheet.rows) {
