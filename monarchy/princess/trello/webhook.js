@@ -9,7 +9,7 @@ const
 function addLabel(cfg, json, cb ) {
     var options = {
         method: 'POST',
-        uri: cfg.kingdom.websites.cyborg + '/cyborg/clerk/' +
+        uri: cfg.kingdom.website + '/cyborg/clerk/' +
             (json.id[0] === 'G' ? 'guests/' : 'items/') +
             json.id + '/trello/labels/' + json.data.color,
         headers: {'User-Agent': 'trello webhook'},
@@ -21,7 +21,7 @@ function addLabel(cfg, json, cb ) {
 function removeLabel(cfg, json, cb ) {
     var options = {
         method: 'DELETE',
-        uri: cfg.kingdom.websites.cyborg + '/cyborg/clerk/' +
+        uri: cfg.kingdom.website + '/cyborg/clerk/' +
             (json.id[0] === 'G' ? 'guests/' : 'items/') +
             json.id + '/trello/labels/' + json.data.color,
         headers: {'User-Agent': 'trello webhook'},

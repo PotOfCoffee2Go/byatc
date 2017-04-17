@@ -15,7 +15,6 @@ const
 // Expressjs web server
 var web = null; // assigned later
 
-
 function Architect (Web) {
     web = Web;
 }
@@ -95,26 +94,27 @@ Architect.prototype.gearTrelloBoards = function gearTrelloBoards(cb) {
     web.trello.gearTrelloBoards(web.cfg, (err, results) => {cb(err, results);});
 };
 
+function unassignable(boss, listName, cb) {
+    cb(new Error(boss.name + ' could not assign auction list' + listName));
+}
 function getAuctionList(boss, listName, cb) {
-    request({
-        url: web.cfg.kingdom.websites.cyborg + '/cyborg/clerk/auction/' + listName,
-        method: 'GET', json: true },
-        function (err, response, body) { 
-            if (err) {
-                cb(err);
-            }
-            else {
-                var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
-                if (sheet) {
-                    sheet.rows = body.data;
-                    cb(null, boss.name + ' architect got auction ' + listName + ' list from cyborg');
-                }
-                else {
-                    cb(new Error(boss.name + ' could not assign auction ' + listName));
-                }
-            }
-        }
-    );
+    if (listName === 'guests') {
+        var guests = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
+        if (!guests) {unassignable(boss, listName, cb); return;}
+        let guestList = guests.rows;
+        if (!guestList) {unassignable(boss, listName, cb); return;}
+        web.minion.clerk.setGuestList(guestList);
+    }
+    else if (listName === 'items') {
+        var items = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
+        if (!items) {unassignable(boss, listName, cb); return;}
+        let itemList = items.rows;
+        if (!itemList) {unassignable(boss, listName, cb); return;}
+        web.minion.clerk.setItemList(itemList);
+    }
+    else  {unassignable(boss, listName, cb); return;}
+
+    cb(null, boss.name + ' architect gave clerk the auction ' + listName + ' list');
 }
 
 Architect.prototype.gearAuction = function gearAuction(boss, cb) {
@@ -122,7 +122,6 @@ Architect.prototype.gearAuction = function gearAuction(boss, cb) {
         (callback) => {getAuctionList(boss, 'guests', callback);},
         (callback) => {getAuctionList(boss, 'items', callback);}
     ], (err, results) => {cb(err, results);});
-    
 };
 
 

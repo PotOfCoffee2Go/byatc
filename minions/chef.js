@@ -35,6 +35,22 @@ function mergeTrelloGuestDatabase(cb) {
     }
 
     boardGuests.forEach(function (boardGuest) {
+        let labels = {};
+        boardGuest.labels.forEach((label) => {
+            delete label.uses;
+            labels[label.color] = label;
+        });
+        delete labels.uses;
+        boardGuest.labels = labels;
+        
+        let attached = {}, count = 0;
+        boardGuest.attachments.forEach((attach) => {
+            attached[count.toString()] = attach;
+            count++;
+        });
+        delete boardGuest.attachments;
+        boardGuest.attached = attached;
+        
         let boardId = boardGuest.name.split(' ')[0];
         if(sheetGuests[boardId]) {
             sheetGuests[boardId].trello = boardGuest;
@@ -67,6 +83,22 @@ function mergeTrelloItemDatabase(cb) {
     }
 
     boardItems.forEach(function (boardItem) {
+        let labels = {};
+        boardItem.labels.forEach((label) => {
+            delete label.uses;
+            labels[label.color] = label;
+        });
+        delete labels.uses;
+        boardItem.labels = labels;
+        
+        let attached = {}, count = 0;
+        boardItem.attachments.forEach((attach) => {
+            attached[count.toString()] = attach;
+            count++;
+        });
+        delete boardItem.attachments;
+        boardItem.attached = attached;
+        
         let boardId = boardItem.name.split(' ')[0];
         if(sheetItems[boardId]) {
             sheetItems[boardId].trello = boardItem;

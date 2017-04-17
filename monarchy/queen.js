@@ -26,11 +26,7 @@ Note: If you believe the keys have been compromised - log onto Trello, Google
 */
 
 var kingdom = {
-    websites: {
-        cyborg: '',
-        ninja: '',
-        pirate: ''
-    },
+    website: '',
     keys: {
         trello: {
             key: '',
@@ -50,12 +46,10 @@ const // Modules
 function startAdvisors() {
 
 
-    console.log('cyborg is at: %s', kingdom.websites.cyborg);
-    console.log('ninja  is at: %s', kingdom.websites.ninja);
-    console.log('pirate is at: %s', kingdom.websites.pirate);
+    console.log('website is at: %s', kingdom.website);
 
     request({
-        url:kingdom.websites.cyborg + '/queen/commands/cyborg/startMachines',
+        url:kingdom.website + '/queen/commands/cyborg/startMachines',
         method: 'POST',
         json: {kingdom:kingdom}},
         function (err, httpResponse, body) { 

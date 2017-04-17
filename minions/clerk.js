@@ -11,10 +11,14 @@ const
 
 // Expressjs web server
 var web = null;
+var guestList, itemList;
 
 function Clerk (Web) {
     web = Web;
 }
+
+Clerk.prototype.setGuestList = function setGuestList(list) {guestList = list;};
+Clerk.prototype.setItemList = function setItemList(list) {itemList = list;};
 
 Clerk.prototype.onGetFromSheetsDb = function onGetFromSheetsDb(req, res, next, prayer) {
     var sheetAlias = prayer.resource.split('/')[3];
@@ -31,43 +35,42 @@ Clerk.prototype.onGetFromSheetsDb = function onGetFromSheetsDb(req, res, next, p
 };
 
 Clerk.prototype.onPostToSheetsDb = function onPostToSheetsDb(req, res, next, prayer) {
-    console.log(prayer.resource);
-    console.log(req.body);prayer.resource
-    prayer.data = 'clerk post';
-    web.sendJson(null, res, prayer);
-    return;
-    
-    var sheetAlias = prayer.resource.split('/')[3];
-    var datastore = web.cfg.spreadsheets.sheets.find(s => s.alias === sheetAlias);
-    try { // Remove the '/boss/clerk/alias' from resource to get the DB path
-        var dataPath = prayer.resource.split('/').slice(4).join('/');
-        prayer.data = datastore.db.getData('/' + dataPath);
+    var
+        data = null,
+        newData = req.body.data,
+        pathList = prayer.resource.split('/'),
+        datastore = web.cfg.spreadsheets.sheets.find(s => s.alias === pathList[3]), // guests,items,categories
+        dataPath = '/' + pathList.slice(4, pathList.length - 1).join('/');
+    try {
+        data = datastore.db.getData(dataPath);
+        data[pathList[pathList.length-1]] = newData;
+        datastore.db.push(dataPath, data);
     } catch(err) {
         var error = new MinionError(minionName, 'Can not get data from Db', 101, err);
         web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
         return;
     }
+    prayer.data = newData;
     web.sendJson(null, res, prayer);
 };
 
 
 Clerk.prototype.onDeleteFromSheetsDb = function onDeleteFromSheetsDb(req, res, next, prayer) {
-    console.log(prayer.resource);
-    console.log(req.body);prayer.resource
-    prayer.data = 'clerk delete';
-    web.sendJson(null, res, prayer);
-    return;
-    
-    var sheetAlias = prayer.resource.split('/')[3];
-    var datastore = web.cfg.spreadsheets.sheets.find(s => s.alias === sheetAlias);
-    try { // Remove the '/boss/clerk/alias' from resource to get the DB path
-        var dataPath = prayer.resource.split('/').slice(4).join('/');
-        prayer.data = datastore.db.getData('/' + dataPath);
+    var
+        data = null,
+        pathList = prayer.resource.split('/'),
+        datastore = web.cfg.spreadsheets.sheets.find(s => s.alias === pathList[3]), // guests,items,categories
+        dataPath = '/' + pathList.slice(4, pathList.length - 1).join('/');
+    try {
+        data = datastore.db.getData(dataPath);
+        delete data[pathList[pathList.length-1]];
+        datastore.db.push(dataPath, data);
     } catch(err) {
         var error = new MinionError(minionName, 'Can not get data from Db', 101, err);
         web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
         return;
     }
+    prayer.data = data;
     web.sendJson(null, res, prayer);
 };
 

@@ -91,7 +91,7 @@ Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
     results.push('Angel added Trello webhook REST method POST ' + restPath + ' to web.webhook.trello()');
 
     // Assign complete web address for Trello WebHook callbackURL ('https://domain.com/path/etc')
-    board.callbackURL = web.cfg.kingdom.websites[boss.name] + restPath;
+    board.callbackURL = web.cfg.kingdom.website + restPath;
     
     return results;
 };
@@ -146,7 +146,7 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
 Angel.prototype.relayQueenCommandToNinja = function relayQueenCommandToNinja(boss, cb) {
     var results = [boss.name + ' relay Her Majesty command to ninja'];
     request({
-        url: web.cfg.kingdom.websites.ninja + '/queen/commands/ninja/startMachines',
+        url: web.cfg.kingdom.website + '/queen/commands/ninja/startMachines',
         method: 'POST',
         json: {kingdom: web.cfg.kingdom}},
         function (err, response, body) { 
@@ -163,7 +163,7 @@ Angel.prototype.relayQueenCommandToNinja = function relayQueenCommandToNinja(bos
 Angel.prototype.relayQueenCommandToPirate = function relayQueenCommandToPirate(boss, cb) {
     var results = [boss.name + ' relay Her Majesty command to pirate'];
     request({
-        url: web.cfg.kingdom.websites.pirate + '/queen/commands/pirate/startMachines',
+        url: web.cfg.kingdom.website + '/queen/commands/pirate/startMachines',
         method: 'POST',
         json: {kingdom: web.cfg.kingdom}},
         function (err, response, body) { 
