@@ -132,8 +132,8 @@ function mergeCategoriesDatabase(cb) {
 
     var icards = Object.keys(itemCards);
     icards.forEach(function(idCard) {
-        let itemCategory = itemCards[idCard].sheet.Category;
-        itemCards[idCard].category = sheetCategory[itemCategory].sheet;
+        let itemCategory = itemCards[idCard].google.Category;
+        itemCards[idCard].category = sheetCategory[itemCategory].google;
     });
     
     cfgitem.db.push('/', itemCards);
@@ -163,7 +163,7 @@ function mergeGuestAuctionDatabase(cb) {
 
     var gcards = Object.keys(guestCards);
     gcards.forEach(function(idCard) {
-        guestCards[idCard].auction = sheetAuctioneer[idCard].sheet;
+        guestCards[idCard].auction = sheetAuctioneer[idCard].google;
     });
     
     cfgguest.db.push('/', guestCards);
@@ -192,7 +192,7 @@ function mergeItemAuctionDatabase(cb) {
 
     var icards = Object.keys(itemCards);
     icards.forEach(function(idCard) {
-        itemCards[idCard].auction = sheetAuction[idCard].sheet;
+        itemCards[idCard].auction = sheetAuction[idCard].google;
     });
     
     cfgitem.db.push('/', itemCards);

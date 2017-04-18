@@ -264,9 +264,9 @@ function getBoardListsFromSheets(cfg, cb) {
     
     var cards = Object.keys(sheetcards);
     cards.forEach(function(idCard) {
-        let table = 'Table ' + sheetcards[idCard].sheet.starting_table;
+        let table = 'Table ' + sheetcards[idCard].google.starting_table;
         let list = boardlists.find(l => l.name === table);
-        if (!list && sheetcards[idCard].sheet.starting_table.length > 0) {
+        if (!list && sheetcards[idCard].google.starting_table.length > 0) {
             boardlists.push({id: null, name: table});
         }
     });
