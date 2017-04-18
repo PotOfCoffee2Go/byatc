@@ -43,10 +43,9 @@ function mergeTrelloGuestDatabase(cb) {
         delete labels.uses;
         boardGuest.labels = labels;
         
-        let attached = {}, count = 0;
+        let attached = {};
         boardGuest.attachments.forEach((attach) => {
-            attached[count.toString()] = attach;
-            count++;
+            attached[attach.name] = {name: attach.name, url: attach.url};
         });
         delete boardGuest.attachments;
         boardGuest.attached = attached;
@@ -91,10 +90,9 @@ function mergeTrelloItemDatabase(cb) {
         delete labels.uses;
         boardItem.labels = labels;
         
-        let attached = {}, count = 0;
+        let attached = {};
         boardItem.attachments.forEach((attach) => {
-            attached[count.toString()] = attach;
-            count++;
+            attached[attach.name] = {name: attach.name, url: attach.url};
         });
         delete boardItem.attachments;
         boardItem.attached = attached;

@@ -48,7 +48,7 @@ module.exports = {
                 range: 'Auction_Items!F2:U1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true,   // Remove database after merging with main Item DB
-                fields: {'id': 0, 'OpenBid': 1, 'Increment': 2, 'BuyNow': 3, 'BuyOnly?': 4,
+                fields: {'id': 0, 'OpenBid': 1, 'Increment': 2, 'BuyPrice': 3, 'BuyOnly?': 4,
                         'Active?': 5, 'QtyLeft': 6, 'QtySold': 7, 'CurrentBid': 8, 'Time': 9,
                         'Bidder': 10, 'Due': 11, 'Shipping': 12, 'Tax': 13, 'Paid': 14 }
             },

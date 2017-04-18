@@ -13,7 +13,7 @@ function addLabel(cfg, json, cb ) {
             (json.id[0] === 'G' ? 'guests/' : 'items/') +
             json.id + '/trello/labels/' + json.data.color,
         headers: {'User-Agent': 'trello webhook'},
-        json: json // action = removeLabel or addLabel
+        json: json // action = addLabel
     };
     request(options, (err, response, body) => {cb(err);});
 }
@@ -25,7 +25,31 @@ function removeLabel(cfg, json, cb ) {
             (json.id[0] === 'G' ? 'guests/' : 'items/') +
             json.id + '/trello/labels/' + json.data.color,
         headers: {'User-Agent': 'trello webhook'},
-        json: json // action = removeLabel or addLabel
+        json: json // action = removeLabel
+    };
+    request(options, (err, response, body) => {cb(err);});
+}
+
+function addAttachment(cfg, json, cb ) {
+    var options = {
+        method: 'POST',
+        uri: cfg.kingdom.website + '/cyborg/clerk/' +
+            (json.id[0] === 'G' ? 'guests/' : 'items/') +
+            json.id + '/trello/attached/' + json.data.name,
+        headers: {'User-Agent': 'trello webhook'},
+        json: json // action = addAttachment
+    };
+    request(options, (err, response, body) => {cb(err);});
+}
+
+function removeAttachment(cfg, json, cb ) {
+    var options = {
+        method: 'DELETE',
+        uri: cfg.kingdom.website + '/cyborg/clerk/' +
+            (json.id[0] === 'G' ? 'guests/' : 'items/') +
+            json.id + '/trello/attached/' + json.data.name,
+        headers: {'User-Agent': 'trello webhook'},
+        json: json // action = removeAttachment
     };
     request(options, (err, response, body) => {cb(err);});
 }
@@ -53,8 +77,15 @@ exports = module.exports = {
                 data.label.idBoard = data.board.id;
                 addLabel(cfg, {id: id, action: 'addLabel', data: data.label}, cb);
                 break;
-            default: cb();
-
+            case 'addAttachmentToCard':
+                id = req.body.action.data.card.name.split(' ')[0];
+                addAttachment(cfg, {id: id, action: 'addAttachment', data: data.attachment}, cb);
+                break;
+            case 'deleteAttachmentFromCard':
+                id = req.body.action.data.card.name.split(' ')[0];
+                removeAttachment(cfg, {id: id, action: 'removeAttachment', data: data.attachment}, cb);
+                break;
+            default: console.log(req.body.action.type); cb(); break;
         }
         // console.log(util.inspect(req.body, { showHidden: true, depth: null }));
     }

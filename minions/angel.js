@@ -26,7 +26,7 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
     return {
         boss: path[1],
         minion: path[2],
-        resource: fullUrl.pathname,
+        resource: decodeURI(fullUrl.pathname),
         data: null,
         location: decodeURI(fullUrl.href),
         status: {code: 200, text: '200 - OK'},

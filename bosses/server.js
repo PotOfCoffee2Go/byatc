@@ -121,6 +121,7 @@ module.exports = function (asTheQueenCommands) {
         chef: new (require('../minions/chef'))(web),
         clerk: new (require('../minions/clerk'))(web),
         constable: new (require('../minions/constable'))(web),
+        cryer: new (require('../minions/cryer'))(web),
         nurse: new (require('../minions/nurse'))(web)
     };
 
