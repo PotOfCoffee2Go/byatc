@@ -6,16 +6,16 @@ const
     gearbox = require('./#gearing/gearbox'),
     
     MinionError = gearbox.MinionError,
-    minionName = 'cryer';
+    minionName = 'crier';
 
 
 // Expressjs web server
 var web = null;
     
-function Cryer (Web) {
+function Crier (Web) {
     web = Web;
 }
 
-module.exports = Cryer;
+module.exports = Crier;
 
 })();

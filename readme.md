@@ -24,7 +24,6 @@ For those interested (or wishing to contribute) to the code being written - visi
 be completed by May 1st, 2017 - at which time the REST API and WebSocket documentation for front-end development
 to the auction will be available.
 
-
 -----
 
 **Introduction stuff aside!**. Now, for some real SteamPunk fun! The Onyx and Breezy Auction takes place in the Victorian era
@@ -127,7 +126,7 @@ reports for distribution to Princess Sheets... Then goes back to bed.
 -------
 
 ### The Minions
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/angel.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/nurse.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/architect.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/chef.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/clerk.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/constable.svg" height="64" width="64" />
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/angel.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/nurse.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/architect.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/chef.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/clerk.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/crier.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/constable.svg" height="64" width="64" />
 
 -------
 Similar to bosses - the Minions 'think' they exist in a physical universe; but sadly they are just Nodejs Modules. 
@@ -191,6 +190,13 @@ minion. So each minion performs the basic tasks required, but are custom coded f
  `/minion/clerk.js`
  
 <br />
+
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/crier.svg" height="64" width="64" align="left">
+ <p><b>town crier</b> - Announces up-to-date news about the auction, guests, and item bid prices.</p>
+
+<br />
+
+ `/minion/crier.js`
 
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/constable.svg" height="64" width="64" align="left">
  <p><b>constable</b> - Security: Verifies guest credentials, controls and ensures data access rights are enforced.</p>
