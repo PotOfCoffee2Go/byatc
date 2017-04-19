@@ -103,14 +103,14 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
         var restResources = [];
 
         //  Process REST requests from frontends
-        restPath  = '/' + boss.name + '/clerk/' + sheet.alias + '*';
+        restPath  = '/' + boss.name + '/chef/' + sheet.alias + '*';
         if (sheet.db) {
             web.routes.restRouter.get(restPath, (req, res, next) => {
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
-                web.minion.clerk.onGetFromSheetsDb(req, res, next, prayer);
+                web.minion.chef.onGetFromSheetsDb(req, res, next, prayer);
             });
             restResources.push('Angel added REST method GET ' + restPath + 
-                                ' which calls clerk onGetFromSheetsDb()');
+                                ' which calls chef onGetFromSheetsDb()');
 
             web.routes.restRouter.post(restPath, (req, res, next) => {
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
