@@ -5,7 +5,6 @@
 const
     url = require('url'),
     async = require('async'),
-    request = require('request'),
     gearbox = require('./#gearing/gearbox'),
     
     MinionError = gearbox.MinionError,
@@ -112,6 +111,7 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
             restResources.push('Angel added REST method GET ' + restPath + 
                                 ' which calls chef onGetFromSheetsDb()');
 
+            restPath  = '/' + boss.name + '/clerk/' + sheet.alias + '*';
             web.routes.restRouter.post(restPath, (req, res, next) => {
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
                 web.minion.clerk.onPostToSheetsDb(req, res, next, prayer);
@@ -128,55 +128,19 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
         }
         else {
             if (sheet.rows) {
-                restPath  = '/' + boss.name + '/clerk/' + sheet.alias;
+                restPath  = '/' + boss.name + '/chef/' + sheet.alias;
                 web.routes.restRouter.get(restPath, (req, res, next) => {
                     var prayer = web.minion.angel.invokePrayer(req, res, next);
-                    web.minion.clerk.onGetAuctionRows(req, res, next, prayer);
+                    web.minion.chef.onGetAuctionRows(req, res, next, prayer);
                 });
                 restResources.push('Angel added REST method GET ' + restPath +
-                                   ' which calls clerk onGetAuctionRows()');
+                                   ' which calls chef onGetAuctionRows()');
             }
         }
         callback(null, restResources);
         
     }, (err, results) => {cb(err, results);});
 };
-
-
-Angel.prototype.relayQueenCommandToNinja = function relayQueenCommandToNinja(boss, cb) {
-    var results = [boss.name + ' relay Her Majesty command to ninja'];
-    request({
-        url: web.cfg.kingdom.website + '/queen/commands/ninja/startMachines',
-        method: 'POST',
-        json: {kingdom: web.cfg.kingdom}},
-        function (err, response, body) { 
-            if (err) cb(err); 
-            else {
-                results.push(body);
-                cb(null, results);
-            }
-        }
-    
-    );
-};
-
-Angel.prototype.relayQueenCommandToPirate = function relayQueenCommandToPirate(boss, cb) {
-    var results = [boss.name + ' relay Her Majesty command to pirate'];
-    request({
-        url: web.cfg.kingdom.website + '/queen/commands/pirate/startMachines',
-        method: 'POST',
-        json: {kingdom: web.cfg.kingdom}},
-        function (err, response, body) { 
-            if (err) cb(err); 
-            else {
-                results.push(body);
-                cb(null, results);
-            }
-        }
-    
-    );
-};
-
 
 Angel.prototype.gearNinjaRestResources = function gearNinjaRestResources(cb) {
     var restPath = '';
@@ -186,16 +150,14 @@ Angel.prototype.gearNinjaRestResources = function gearNinjaRestResources(cb) {
             var prayer = web.minion.angel.invokePrayer(req, res, next);
             web.minion.clerk.onBid(req, res, next, prayer);
         });
-        cb(null,'ninja Angel added REST resource Post ' + restPath);
+        cb(null,'ninja Angel added REST resource Post ' + restPath+
+                    ' which calls clerk onBid()');
 
 };
 
 Angel.prototype.gearPirateRestResources = function gearPirateRestResources(boss, cb) {
 
 };
-
-
-
 
 
 

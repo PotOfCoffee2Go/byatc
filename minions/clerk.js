@@ -64,19 +64,6 @@ Clerk.prototype.onDeleteFromSheetsDb = function onDeleteFromSheetsDb(req, res, n
 };
 
 
-Clerk.prototype.onGetAuctionRows = function onGetAuctionRows(req, res, next, prayer) {
-    var alias = prayer.resource.split('/')[3] + '/' + prayer.resource.split('/')[4];
-    var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
-    if (sheet === undefined || !sheet.rows) {
-        var error = new MinionError(minionName, 'Can not get rows from sheet', 101, null);
-        web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
-        return;
-    }
-    prayer.data = sheet.rows;
-    web.sendJson(null, res, prayer);
-};
-
-
 Clerk.prototype.onBid = function onBid(req, res, next, prayer) {
     var error, ge, ie;
     var guestsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/guests');
@@ -157,7 +144,7 @@ function mergeTrelloGuestDatabase(cb) {
             attached[attach.name] = {name: attach.name, url: attach.url};
         });
         delete boardGuest.attachments;
-        boardGuest.attached = attached;
+        boardGuest.attachments = attached;
         
         let boardId = boardGuest.name.split(' ')[0];
         if(sheetGuests[boardId]) {
@@ -204,7 +191,7 @@ function mergeTrelloItemDatabase(cb) {
             attached[attach.name] = {name: attach.name, url: attach.url};
         });
         delete boardItem.attachments;
-        boardItem.attached = attached;
+        boardItem.attachments = attached;
         
         let boardId = boardItem.name.split(' ')[0];
         if(sheetItems[boardId]) {

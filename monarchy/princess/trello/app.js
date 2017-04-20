@@ -264,9 +264,9 @@ function getBoardListsFromSheets(cfg, cb) {
     
     var cards = Object.keys(sheetcards);
     cards.forEach(function(idCard) {
-        let table = 'Table ' + sheetcards[idCard].google.starting_table;
+        let table = 'Table ' + sheetcards[idCard].google.Seat;
         let list = boardlists.find(l => l.name === table);
-        if (!list && sheetcards[idCard].google.starting_table.length > 0) {
+        if (!list && sheetcards[idCard].google.Seat.length > 0) {
             boardlists.push({id: null, name: table});
         }
     });
@@ -403,14 +403,14 @@ function addNewGuestBoardCards(cfg, cb) {
     
     cards.forEach(function(idCard) {
         if (!sheetcards[idCard].trello) {
-            let table = 'Table ' + sheetcards[idCard].sheet.starting_table;
+            let table = 'Table ' + sheetcards[idCard].sheet.Seat;
             let idList = boardlists.find(l => l.name === table).id;
-            if (idList && sheetcards[idCard].sheet.starting_table.length > 0) {
+            if (idList && sheetcards[idCard].sheet.Seat.length > 0) {
                 api.push('post.cards',
                     {idList: idList,
                     name: sheetcards[idCard].sheet.id + ' - ' + 
-                        sheetcards[idCard].sheet.first_name + ' ' + 
-                        sheetcards[idCard].sheet.last_name,
+                        sheetcards[idCard].sheet.FirstName + ' ' + 
+                        sheetcards[idCard].sheet.LastName,
                     idCardSource: cfg.trello.template.board.cards[0].id,
                     keepFromSource: 'checklists'},
                     (err, entry) => {
@@ -463,7 +463,7 @@ function addNewItemBoardCards(cfg, cb) {
                 api.push('post.cards',
                     {idList: idList,
                     name: sheetcards[idCard].sheet.id + ' - ' + 
-                        sheetcards[idCard].sheet.Donation,
+                        sheetcards[idCard].sheet.Item,
                     idCardSource: cfg.trello.template.board.cards[1].id,
                     keepFromSource: 'checklists'},
                     (err, entry) => {

@@ -6,15 +6,15 @@ const
     fs = require('fs-extra'),
     util = require('util'),
     path = require('path'),
-    async = require('async');
+    async = require('async'),
 
-// Note: this object must be appropriately same in cyborg, ninja, and pirate app.js'
-var boss = {
-    name: 'cyborg',
-    app: path.join(__dirname,'../'),
-    dir: path.join(__dirname, ''),
-    www: path.join(__dirname,'../www')
-}
+    // Note: this object must be appropriately same in cyborg, ninja, and pirate app.js'
+    boss = {
+        name: 'cyborg',
+        app: path.join(__dirname,'../'),
+        dir: path.join(__dirname, ''),
+        www: path.join(__dirname,'../www')
+    };
 
 /// Commands from the queen
 module.exports = {
@@ -35,8 +35,9 @@ module.exports = {
             (callback) => {web.minion.clerk.gearDatabases(callback);},
             (callback) => {web.minion.architect.gearTrelloBoards(callback);},
             (callback) => {web.minion.angel.gearCyborgRestResources(boss, callback);},
-            (callback) => {web.minion.angel.relayQueenCommandToNinja(boss, callback);},
-            (callback) => {web.minion.angel.relayQueenCommandToPirate(boss, callback);},
+            
+            (callback) => {web.minion.crier.relayQueenCommandToNinja(boss, callback);},
+            (callback) => {web.minion.crier.relayQueenCommandToPirate(boss, callback);},
         ], (err, results) => {cb(err, results);});
     }
 };

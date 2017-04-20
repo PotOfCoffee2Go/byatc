@@ -82,6 +82,19 @@ Chef.prototype.onGetFromSheetsDb = function onGetFromSheetsDb(req, res, next, pr
     web.sendJson(null, res, prayer);
 };
 
+Chef.prototype.onGetAuctionRows = function onGetAuctionRows(req, res, next, prayer) {
+    var alias = prayer.resource.split('/')[3] + '/' + prayer.resource.split('/')[4];
+    var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
+    if (sheet === undefined || !sheet.rows) {
+        var error = new MinionError(minionName, 'Can not get rows from sheet', 101, null);
+        web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+        return;
+    }
+    prayer.data = sheet.rows;
+    web.sendJson(null, res, prayer);
+};
+
+
 
 module.exports = Chef;
     

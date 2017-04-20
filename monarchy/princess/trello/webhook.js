@@ -35,7 +35,7 @@ function addAttachment(cfg, json, cb ) {
         method: 'POST',
         uri: cfg.kingdom.website + '/cyborg/clerk/' +
             (json.id[0] === 'G' ? 'guests/' : 'items/') +
-            json.id + '/trello/attached/' + json.data.name,
+            json.id + '/trello/attachments/' + json.data.name,
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = addAttachment
     };
@@ -47,7 +47,7 @@ function removeAttachment(cfg, json, cb ) {
         method: 'DELETE',
         uri: cfg.kingdom.website + '/cyborg/clerk/' +
             (json.id[0] === 'G' ? 'guests/' : 'items/') +
-            json.id + '/trello/attached/' + json.data.name,
+            json.id + '/trello/attachments/' + json.data.name,
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = removeAttachment
     };
@@ -79,7 +79,11 @@ exports = module.exports = {
                 break;
             case 'addAttachmentToCard':
                 id = req.body.action.data.card.name.split(' ')[0];
-                addAttachment(cfg, {id: id, action: 'addAttachment', data: data.attachment}, cb);
+                var info = {
+                    name: data.attachment.name,
+                    url: data.attachment.url
+                };
+                addAttachment(cfg, {id: id, action: 'addAttachment', data: info}, cb);
                 break;
             case 'deleteAttachmentFromCard':
                 id = req.body.action.data.card.name.split(' ')[0];

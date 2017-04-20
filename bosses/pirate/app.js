@@ -6,15 +6,15 @@ const
     fs = require('fs-extra'),
     util = require('util'),
     path = require('path'),
-    async = require('async');
+    async = require('async'),
 
 // Note: this object must be appropriately same in cyborg, ninja, and pirate app.js'
-var boss = {
-    name: 'pirate',
-    app: path.join(__dirname,'../'),
-    dir: path.join(__dirname, ''),
-    www: path.join(__dirname,'../www')
-}
+    boss = {
+        name: 'pirate',
+        app: path.join(__dirname,'../'),
+        dir: path.join(__dirname, ''),
+        www: path.join(__dirname,'../www')
+    };
 
 /// Commands from the queen
 module.exports = {
