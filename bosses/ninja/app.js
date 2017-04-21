@@ -13,7 +13,8 @@ const
         name: 'ninja',
         app: path.join(__dirname,'../'),
         dir: path.join(__dirname, ''),
-        www: path.join(__dirname,'../www')
+        www: path.join(__dirname,'../www'),
+        dbdir : path.join(__dirname,'../www/docs/ninja/db')
     };
 
 /// Commands from the queen
@@ -27,7 +28,7 @@ module.exports = {
         web.bosses[bossName] = boss;
         
         // Clear the boss working database directory
-        fs.emptyDirSync(boss.dir + '/db');
+        fs.emptyDirSync(boss.dbdir);
     
         async.series([
             (callback) => {web.minion.constable.checkCredentials(boss, callback);},

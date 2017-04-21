@@ -114,7 +114,7 @@ Clerk.prototype.onBid = function onBid(req, res, next, prayer) {
 };
 
 
-function mergeTrelloGuestDatabase(cb) {
+function mergeTrelloIntoGuestDatabase(cb) {
     // Merge the trello guest information into the guest database 
     var sheetGuests, boardGuests, error;
     var alias = 'guests';
@@ -161,7 +161,7 @@ function mergeTrelloGuestDatabase(cb) {
     cb(null, 'Clerk merged trello info into Guest database');
 }
 
-function mergeTrelloItemDatabase(cb) {
+function mergeTrelloIntoItemDatabase(cb) {
     // Merge the trello item information into the item database 
     var sheetItems, boardItems, error;
     var alias = 'items';
@@ -208,7 +208,7 @@ function mergeTrelloItemDatabase(cb) {
     cb(null, 'Clerk merged trello info into Item database');
 }
 
-function mergeCategoriesDatabase(cb) {
+function mergeCategoriesIntoItemDatabase(cb) {
     // Merge the categories into the items database
     var sheetCategory, itemCards;
     var alias = 'categories';
@@ -239,8 +239,57 @@ function mergeCategoriesDatabase(cb) {
 
 }
 
-function mergeGuestAuctionDatabase(cb) {
-    // Merge the autioneer into the items database
+
+function mergeTrelloIntoCategoriesDatabase(cb) {
+    // Merge the trello category information into the category database 
+    var sheetItems, boardItems, error;
+    var alias = 'categories';
+    
+    var cfgsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
+    var cfgboard = web.cfg.trello.boards.find(b => b.alias === alias);
+    try { 
+        sheetItems = cfgsheet.db.getData('/');
+        boardItems = cfgboard.db.getData('/cards');
+    } catch(err) {
+        error = new MinionError(minionName, 'Clerk can not get category sheets and/or board data from Dbs', 101, err);
+        cb(error);
+        return;
+    }
+
+    boardItems.forEach(function (boardItem) {
+        let labels = {};
+        boardItem.labels.forEach((label) => {
+            delete label.uses;
+            labels[label.color] = label;
+        });
+        delete labels.uses;
+        boardItem.labels = labels;
+        
+        let attached = {};
+        boardItem.attachments.forEach((attach) => {
+            attached[attach.name] = {name: attach.name, url: attach.url};
+        });
+        delete boardItem.attachments;
+        boardItem.attachments = attached;
+        
+        let boardId = boardItem.name.split(' ')[0];
+        if(sheetItems[boardId]) {
+            sheetItems[boardId].trello = boardItem;
+            cfgsheet.db.push('/' + boardId, sheetItems[boardId]);
+        }
+    });
+    // Clear the trello board item db
+    cfgboard.db.push('/cards', []);
+    
+    // Clear the auction rows - will not be used
+    cfgsheet.rows = null;
+
+    cb(null, 'Clerk merged trello info into Category database');
+
+}
+
+function mergeAuctionIntoGuestDatabase(cb) {
+    // Merge the autioneer into the guests database
     var sheetAuctioneer, guestCards;
     var alias = 'auction/guests';
     
@@ -268,7 +317,7 @@ function mergeGuestAuctionDatabase(cb) {
     cb(null, 'Clerk merged auction info into Guest database');
 }
 
-function mergeItemAuctionDatabase(cb) {
+function mergeAuctionIntoItemDatabase(cb) {
     // Merge the categories into the items database
     var sheetAuction, itemCards;
     var alias = 'auction/items';
@@ -313,11 +362,12 @@ function removeMergedDatabases(cb) {
 
 Clerk.prototype.gearDatabases = function gearDatabases(cb) {
     async.series([
-        (callback) => {mergeTrelloGuestDatabase(callback);},
-        (callback) => {mergeTrelloItemDatabase(callback);},
-        (callback) => {mergeCategoriesDatabase(callback);},
-        (callback) => {mergeGuestAuctionDatabase(callback);},
-        (callback) => {mergeItemAuctionDatabase(callback);},
+        (callback) => {mergeTrelloIntoGuestDatabase(callback);},
+        (callback) => {mergeTrelloIntoItemDatabase(callback);},
+        (callback) => {mergeCategoriesIntoItemDatabase(callback);},
+        (callback) => {mergeTrelloIntoCategoriesDatabase(callback);},
+        (callback) => {mergeAuctionIntoGuestDatabase(callback);},
+        (callback) => {mergeAuctionIntoItemDatabase(callback);},
         (callback) => {removeMergedDatabases(callback);},
     ], (err, results) => {cb(err, results);});
 };

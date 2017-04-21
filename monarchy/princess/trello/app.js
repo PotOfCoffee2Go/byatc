@@ -123,7 +123,7 @@ function getMemberBoards(cfg, cb) {
 }
 
 function getWebhooks(cfg, cb) {
-    var webhooks = [], keepers = [], webhookUrls = [];
+    var webhooks = [], webhookUrls = [];
     api.push('get.tokens.token.webhooks', {
         token: api.getToken()
         }, (err, entry) => {
@@ -293,6 +293,27 @@ function getBoardListsFromSheets(cfg, cb) {
     });
     board.db.push('/lists', boardlists);
 
+    // Scan and add category lists that are not on board
+    sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'categories');
+    board = cfg.trello.boards.find(b => b.alias === 'categories');
+    try {
+        sheetcards = sheet.db.getData('/');
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        cb(err, 'Princess Trello unable to access item sheet and/or trello board databases');
+        return;
+    }
+    
+    cards = Object.keys(sheetcards);
+    cards.forEach(function(idCard) {
+        let parent = sheetcards[idCard].google.Parent;
+        let list = boardlists.find(l => l.name === parent);
+        if (!list && sheetcards[idCard].google.Parent.length > 0) {
+            boardlists.push({id: null, name: parent});
+        }
+    });
+    board.db.push('/lists', boardlists);
+
     cb(null, 'Princess Trello - board lists are synchronized');
 }
 
@@ -382,6 +403,49 @@ function addNewItemBoardLists(cfg, cb) {
 
 }
 
+function addNewBoardLists(cfg, alias, cb) {
+    // Scan and add category lists that are not on board
+    var boardlists;
+    var board = cfg.trello.boards.find(b => b.alias === alias);
+    try {
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        cb(err, 'Princess Trello unable to access ' + alias + ' trello board database');
+        return;
+    }
+    
+    var listCount = 0;
+    boardlists.forEach(function(list) {
+        if (!list.id) listCount++;
+    });
+    
+    boardlists.forEach(function(list) {
+        if (!list.id) {
+            api.push('post.board.lists',
+                {idBoard: board.id, name: list.name, pos: 'bottom' },
+                (err, entry) => {
+                    if (err) {
+                        cb(err, 'Princess Trello unable to add ' + alias + ' lists');
+                    }
+                    else {
+                        list.id = entry.response.id;
+                        listCount--;
+                        
+                    }
+                    if (cb && listCount === 0) {
+                        board.db.push('/lists', boardlists);
+                        cb(err, 'Princess Trello synchronized ' + alias + ' Trello board lists');
+                    }
+                });
+            api.send();
+        }
+    });
+    if (cb && listCount === 0) {
+        cb(null, 'Princess Trello found no lists to be added to ' + alias + ' Trello board');
+    }
+
+}
+
 function addNewGuestBoardCards(cfg, cb) {
     // Scan and add guest cards that are not on board
     var sheetcards, boardlists;
@@ -403,14 +467,14 @@ function addNewGuestBoardCards(cfg, cb) {
     
     cards.forEach(function(idCard) {
         if (!sheetcards[idCard].trello) {
-            let table = 'Table ' + sheetcards[idCard].sheet.Seat;
+            let table = 'Table ' + sheetcards[idCard].google.Seat;
             let idList = boardlists.find(l => l.name === table).id;
-            if (idList && sheetcards[idCard].sheet.Seat.length > 0) {
+            if (idList && sheetcards[idCard].google.Seat.length > 0) {
                 api.push('post.cards',
                     {idList: idList,
-                    name: sheetcards[idCard].sheet.id + ' - ' + 
-                        sheetcards[idCard].sheet.FirstName + ' ' + 
-                        sheetcards[idCard].sheet.LastName,
+                    name: sheetcards[idCard].google.id + ' - ' + 
+                        sheetcards[idCard].google.FirstName + ' ' + 
+                        sheetcards[idCard].google.LastName,
                     idCardSource: cfg.trello.template.board.cards[0].id,
                     keepFromSource: 'checklists'},
                     (err, entry) => {
@@ -462,8 +526,8 @@ function addNewItemBoardCards(cfg, cb) {
             if (idList && sheetcards[idCard].category.name.length > 0) {
                 api.push('post.cards',
                     {idList: idList,
-                    name: sheetcards[idCard].sheet.id + ' - ' + 
-                        sheetcards[idCard].sheet.Item,
+                    name: sheetcards[idCard].google.id + ' - ' + 
+                        sheetcards[idCard].google.Item,
                     idCardSource: cfg.trello.template.board.cards[1].id,
                     keepFromSource: 'checklists'},
                     (err, entry) => {
@@ -489,6 +553,59 @@ function addNewItemBoardCards(cfg, cb) {
     }
 }
 
+
+function addNewCategoryBoardCards(cfg, cb) {
+    // Scan and add item cards that are not on board
+    var sheetcards, boardlists;
+    var sheet = cfg.spreadsheets.sheets.find(s => s.alias === 'categories');
+    var board = cfg.trello.boards.find(b => b.alias === 'categories');
+    try {
+        sheetcards = sheet.db.getData('/');
+        boardlists = board.db.getData('/lists');
+    } catch(err) {
+        cb(err, 'Princess Trello unable to access Category sheet and/or trello board databases');
+        return;
+    }
+    
+    var cardCount = 0;
+    var cards = Object.keys(sheetcards);
+    cards.forEach(function(idCard) {
+        if (!sheetcards[idCard].trello) cardCount++;
+    });
+    
+    cards.forEach(function(idCard) {
+        if (!sheetcards[idCard].trello) {
+            let parent = sheetcards[idCard].google.Parent;
+            let idList = boardlists.find(l => l.name === parent).id;
+            if (idList && sheetcards[idCard].google.Parent.length > 0) {
+                api.push('post.cards',
+                    {idList: idList,
+                    name: sheetcards[idCard].google.id + ' - ' + 
+                        sheetcards[idCard].google.Name,
+                    idCardSource: cfg.trello.template.board.cards[2].id,
+                    keepFromSource: 'checklists'},
+                    (err, entry) => {
+                        if (err) {
+                            cb(err, 'Princess Trello unable to add Category cards');
+                        }
+                        else {
+                            // sheetcards[idCard].trello = entry.response;
+                            cardCount--;
+                            
+                        }
+                        if (cb && cardCount === 0) {
+                            sheet.db.push('/', sheetcards);
+                            cb(err, 'Princess Trello synchronized Category Trello board cards');
+                        }
+                    });
+                api.send();
+            }
+        }
+    });
+    if (cb && cardCount === 0) {
+        cb(null, 'Princess Trello found no cards to be added to Category Trello board');
+    }
+}
 
 function verifyGuestBoardLabels(cfg, cb) {
     // Scan and add guest lists that are not on board
@@ -649,10 +766,12 @@ exports = module.exports = {
     gearTrelloBoards: function gearTrelloBoards(cfg, cb) {
         async.series([
             (callback) => {getBoardListsFromSheets(cfg, callback);},
-            (callback) => {addNewGuestBoardLists(cfg, callback);},
-            (callback) => {addNewItemBoardLists(cfg, callback);},
+            (callback) => {addNewBoardLists(cfg, 'guests', callback);},
+            (callback) => {addNewBoardLists(cfg, 'items', callback);},
+            (callback) => {addNewBoardLists(cfg, 'categories', callback);},
             (callback) => {addNewGuestBoardCards(cfg, callback);},
             (callback) => {addNewItemBoardCards(cfg, callback);},
+            (callback) => {addNewCategoryBoardCards(cfg, callback);},
             (callback) => {verifyGuestBoardLabels(cfg, callback);},
             (callback) => {verifyItemBoardLabels(cfg, callback);},
         ], (err, results) => {cb(err, results);});

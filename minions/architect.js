@@ -57,7 +57,7 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
     // Array of sheets to collect data from
     async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
         // dbname, true = auto save, true = pretty
-        sheet.db = new JsonDB(boss.dir + '/db/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
+        sheet.db = new JsonDB(boss.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
 
         web.spreadsheets.gearSheet(sheet, callback);
         
@@ -76,7 +76,7 @@ Architect.prototype.gearTrello = function gearTrello(boss, cb) {
     // Array of boards to collect data from
     async.mapSeries(web.cfg.trello.boards, function(board, callback) {
         // dbname, true = auto save, true = pretty
-        board.db = new JsonDB(boss.dir + '/db/' + web.cfg.trello.database + board.alias, true, true);
+        board.db = new JsonDB(boss.dbdir + '/' + web.cfg.trello.database + board.alias, true, true);
 
         // Add the paths that will be used by the Trello WebHooks
         whresults = whresults.concat(web.minion.angel.gearTrelloWebhook(boss, board));

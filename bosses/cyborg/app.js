@@ -13,7 +13,8 @@ const
         name: 'cyborg',
         app: path.join(__dirname,'../'),
         dir: path.join(__dirname, ''),
-        www: path.join(__dirname,'../www')
+        www: path.join(__dirname,'../www'),
+        dbdir : path.join(__dirname,'../www/docs/cyborg/db')
     };
 
 /// Commands from the queen
@@ -24,7 +25,7 @@ module.exports = {
         web.bosses[bossName] = boss;
 
         // Clear the boss working database directory
-        fs.emptyDirSync(boss.dir + '/db');
+        fs.emptyDirSync(boss.dbdir);
 
         // Start up tasks which this boss is responible
         async.series([

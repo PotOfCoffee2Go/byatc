@@ -26,7 +26,7 @@ module.exports = {
                 name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
                 alias: 'categories', // Name used in Database, REST, and Websocket requests - must be 'categories'
                 range: 'Categories!A2:E100', // Sheet and Range of data
-                boardName: '', // Name of board on Trello - '' = do not create
+                boardName: 'Auction Categories', // Name of board on Trello
             },
             
             // Guest and Item information - used/updated by ninja as auction runs
