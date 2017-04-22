@@ -29,32 +29,29 @@ var byatec = byatec || {};
             packet.data = ["*"].concat(args);
             onevent.call(this, packet);         // additional call to catch-all
         };
-        /* Usage of Catch-all byatec custom events
+        /* Usage of Catch-all byatec custom events */
         byatec.on('*',function(event, msg) {
             console.log('***', event, msg);
         });
-        */
+        
         
         /// Custom socket.io events
         /*
         All byatec custom socket.io emits and on events contain :
         {
-            boss: boss,
-            minion: minion,
             resource: 'the resource (or path) requested',
             data: object {} containing the data to emit(), or on() event is data returned,
-            location: 'the resource (or path) actually retrieved',
+            status: 'the status of the message',
             error: {name and message of error } or null if no error
         }
         */
-        var payload = function(boss, minion, resource, data) {
+        var payload = function(resource, data) {
             return {
-                boss: boss,
-                minion: minion,
                 resource: resource,
-                data: data ? data : {},
+                data: data,
                 status: null,
-                error: null };
+                error: null
+            };
         };
 
         // Emit message to the server

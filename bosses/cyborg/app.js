@@ -36,6 +36,7 @@ module.exports = {
             (callback) => {web.minion.clerk.gearDatabases(callback);},
             (callback) => {web.minion.architect.gearTrelloBoards(callback);},
             (callback) => {web.minion.angel.gearCyborgRestResources(boss, callback);},
+            (callback) => {web.minion.crier.gearSockets(boss, callback);},
             
             (callback) => {web.minion.crier.relayQueenCommandToNinja(boss, callback);},
             (callback) => {web.minion.crier.relayQueenCommandToPirate(boss, callback);},

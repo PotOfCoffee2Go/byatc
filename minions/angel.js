@@ -38,6 +38,25 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
     };
 };
 
+// Prayer is the payload for REST and/or Websocket responses
+Angel.prototype.socketPrayer = function socketPrayer(message) {
+    // Create the prayer - assume it will be forfilled
+    var path = message.resource.split('/');
+    return {
+        resource: message.resource,
+        data: {},
+        status: {
+            code: 200,
+            text: '200 - OK',
+            boss: path[1],
+            minion: path[2],
+            location: null,
+            timestamp: moment().format()
+            },
+        error: null
+    };
+};
+
 // Ut-oh - prayer was not answered - so construct error response
 Angel.prototype.errorPrayer = function errorPrayer(err, prayer) {
     return {

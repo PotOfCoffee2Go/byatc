@@ -33,8 +33,6 @@ module.exports = {
     
         async.series([
             (callback) => {web.minion.constable.checkCredentials(boss, callback);},
-            //(callback) => {architect.gearIntercom(boss, callback);},
-            //(callback) => {architect.gearWebsockets(boss, (err) => {callback(err);})},
         ], (err, results) => {cb(err, results);});
         
     }

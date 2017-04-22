@@ -49,21 +49,25 @@ Crier.prototype.relayQueenCommandToPirate = function relayQueenCommandToPirate(b
     );
 };
 
-Crier.prototype.gearWebsockets = function gearWebsockets(boss, cb) {
+Crier.prototype.gearSockets = function gearWebsockets(boss, cb) {
+    web.ios.set('authorization', function (handshake, callback) {
+      callback(null, true);
+    });
+
     web.ios.on('connection', (socket) => {
         var crier = web.minion.crier;
 
         /// #### Standard Messages
         socket.on('disconnect', () => {console.log('onDisconnect: ' + socket.id);});
-
         /// #### Crier Minion Messages
         socket.on('Watch', (message) => {crier.onWatch(socket, message);});
         socket.on('Unwatch', (message) => {crier.onUnwatch(socket, message);});
 
         // - Send a 'Connected' message back to the client
         crier.emitConnected(socket);
+        console.log('connected: ' + socket.id);
     });
-    cb(null);
+    cb(null, 'Crier added Socket Topics Watch and Unwatch');
 };
 
 /// - Got Watch request
@@ -91,7 +95,9 @@ Crier.prototype.onUnwatch = function onUnwatch(socket, msg) {
 /// #### Standard Events
 Crier.prototype.emitConnected = function emitConnected(socket) {
     // Send connected
-    socket.emit('Connected', web.minion.angel.prayer('/', {},'/',null,null));
+    var prayer = web.minion.angel.socketPrayer({resource: '/cyborg/crier'});
+    prayer.data = {crier: 'connected'};
+    socket.emit('Connected', prayer);
 };
 
 
