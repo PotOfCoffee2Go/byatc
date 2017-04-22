@@ -69,11 +69,12 @@ Chef.prototype.onGetFromSheetsDb = function onGetFromSheetsDb(req, res, next, pr
         web.minion.chef.onSelectFromSheetsDb(req, res, next, prayer);
         return;
     }
-    var sheetAlias = prayer.resource.split('/')[3],
+    var recid = prayer.resource.split('/')[4],
+        sheetAlias = prayer.resource.split('/')[3],
         datastore = web.cfg.spreadsheets.sheets.find(s => s.alias === sheetAlias);
     try { // Remove the '/boss/clerk/alias' from resource to get the DB path
         var dataPath = prayer.resource.split('/').slice(4).join('/');
-        prayer.data = datastore.db.getData('/' + dataPath);
+        prayer.data[recid] = datastore.db.getData('/' + dataPath);
     } catch(err) {
         var error = new MinionError(minionName, 'Can not get data from Db', 101, err);
         web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));

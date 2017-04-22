@@ -26,30 +26,6 @@ Architect.prototype.gearIntercom = function gearIntercom(boss, cb) {
     cb(null,['Boss intercom started']);
 };
 
-Architect.prototype.gearWebsockets = function gearWebsockets(boss, cb) {
-    web.ios.on('connection', (socket) => {
-        var angel = web.minion.angel;
-
-        /// #### Standard Messages
-        socket.on('disconnect', () => {console.log('onDisconnect: ' + socket.id);});
-
-        /// #### Angel Minion Messages
-        socket.on('Get', (message) => {angel.onGet(socket, message);});
-        socket.on('Post', (message) => {angel.onPost(socket, message);});
-        socket.on('Put', (message) => {angel.onPut(socket, message);});
-        socket.on('Patch', (message) => {angel.onPatch(socket, message);});
-        socket.on('Delete', (message) => {angel.onDelete(socket, message);});
-
-        socket.on('Watch', (message) => {angel.onWatch(socket, message);});
-        socket.on('Unwatch', (message) => {angel.onUnwatch(socket, message);});
-        // socket.on('update bid', (message) => {onUpdateBid(socket, message);});
-
-        // - Send a 'Connected' message back to the client
-        angel.emitConnected(socket);
-    });
-    cb(null);
-};
-
 // Get data for auction from google sheets
 Architect.prototype.gearSheets = function gearSheets(boss, cb) {
     web.minion.constable.givePrincessSheetsCredentials();

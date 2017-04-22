@@ -30,7 +30,6 @@ Crier.prototype.relayQueenCommandToNinja = function relayQueenCommandToNinja(bos
                 cb(null, results);
             }
         }
-    
     );
 };
 
@@ -47,8 +46,52 @@ Crier.prototype.relayQueenCommandToPirate = function relayQueenCommandToPirate(b
                 cb(null, results);
             }
         }
-    
     );
+};
+
+Crier.prototype.gearWebsockets = function gearWebsockets(boss, cb) {
+    web.ios.on('connection', (socket) => {
+        var crier = web.minion.crier;
+
+        /// #### Standard Messages
+        socket.on('disconnect', () => {console.log('onDisconnect: ' + socket.id);});
+
+        /// #### Crier Minion Messages
+        socket.on('Watch', (message) => {crier.onWatch(socket, message);});
+        socket.on('Unwatch', (message) => {crier.onUnwatch(socket, message);});
+
+        // - Send a 'Connected' message back to the client
+        crier.emitConnected(socket);
+    });
+    cb(null);
+};
+
+/// - Got Watch request
+Crier.prototype.onWatch = function onWatch(socket, msg) {
+    if (msg.resource) {
+        socket.join(msg.resource);
+        console.log('onWatch: ' + socket.id + ' joined resource - ' + msg.resource);
+    }
+    else {
+        console.log('onWatch: ' + socket.id + ' resource to join was not specified');
+    }
+};
+
+/// - Got Unwatch request
+Crier.prototype.onUnwatch = function onUnwatch(socket, msg) {
+    if (msg.resource) {
+        socket.leave(msg.resource);
+        console.log('onUnwatch: ' + socket.id + ' left resource - ' + msg.resource);
+    }
+    else {
+        console.log('onUnwatch: ' + socket.id + ' resource to leave was not specified ');
+    }
+};
+
+/// #### Standard Events
+Crier.prototype.emitConnected = function emitConnected(socket) {
+    // Send connected
+    socket.emit('Connected', web.minion.angel.prayer('/', {},'/',null,null));
 };
 
 

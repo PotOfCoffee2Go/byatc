@@ -5,6 +5,7 @@
 const
     url = require('url'),
     async = require('async'),
+    moment = require('moment-timezone'),
     gearbox = require('./#gearing/gearbox'),
     
     MinionError = gearbox.MinionError,
@@ -23,28 +24,37 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
     var path = fullUrl.pathname.split('/');
     // Create the prayer - assume it will be forfilled
     return {
-        boss: path[1],
-        minion: path[2],
         resource: decodeURI(fullUrl.pathname),
-        data: null,
-        location: decodeURI(fullUrl.href),
-        status: {code: 200, text: '200 - OK'},
+        data: {},
+        status: {
+            code: 200,
+            text: '200 - OK',
+            boss: path[1],
+            minion: path[2],
+            location: decodeURI(fullUrl.href),
+            timestamp: moment().format()
+            },
         error: null
     };
-},
+};
 
 // Ut-oh - prayer was not answered - so construct error response
 Angel.prototype.errorPrayer = function errorPrayer(err, prayer) {
     return {
-        boss: prayer.boss,
-        minion: prayer.minion,
         resource: prayer.resource,
-        data: null,
-        location: null,
-        status: {code: 418, text: '418 - I\'m a teapot'},
+        data: {},
+        status: {
+            code: 418,
+            text: '418 - I\'m a teapot',
+            boss: prayer.boss,
+            minion: prayer.minion,
+            location: null,
+            timestamp: prayer.status.timestamp
+            },
         error: err
     };
-},
+};
+
 
 /// Get the absolute url of the request
 ///    ie: https://host/path?querystring#hash part from the url
@@ -159,86 +169,6 @@ Angel.prototype.gearPirateRestResources = function gearPirateRestResources(boss,
 
 };
 
-
-
-// - Get request
-Angel.prototype.onGet = function onGet(socket, msg) {
-    if (msg.resource) {
-        console.log('onGet: ' + socket.id + ' resource - ' + msg.resource);
-    }
-    else {
-        console.log('onGet: ' + socket.id + ' resource was not specified ');
-    }
-};
-
-/// - Post request
-Angel.prototype.onPost = function onPost(socket, msg) {
-    if (msg.resource) {
-        console.log('onPost: ' + socket.id + ' resource - ' + msg.resource);
-    }
-    else {
-        console.log('onPost: ' + socket.id + ' resource was not specified ');
-    }
-};
-
-
-/// - Put request
-Angel.prototype.onPut = function onPut(socket, msg) {
-    if (msg.resource) {
-        console.log('Put: ' + socket.id + ' resource - ' + msg.resource);
-    }
-    else {
-        console.log('Put: ' + socket.id + ' resource was not specified ');
-    }
-};
-
-/// - Patch request
-Angel.prototype.onPatch = function onPatch(socket, msg) {
-    if (msg.resource) {
-        console.log('Patch: ' + socket.id + ' resource - ' + msg.resource);
-    }
-    else {
-        console.log('Patch: ' + socket.id + ' resource was not specified ');
-    }
-};
-
-/// - Delete request
-Angel.prototype.onDelete = function onDelete(socket, msg) {
-    if (msg.resource) {
-        console.log('Delete: ' + socket.id + ' resource - ' + msg.resource);
-    }
-    else {
-        console.log('Delete: ' + socket.id + ' resource was not specified ');
-    }
-};
-
-/// - Got Watch request
-Angel.prototype.onWatch = function onWatch(socket, msg) {
-    if (msg.resource) {
-        socket.join(msg.resource);
-        console.log('onWatch: ' + socket.id + ' joined resource - ' + msg.resource);
-    }
-    else {
-        console.log('onWatch: ' + socket.id + ' resource to join was not specified');
-    }
-};
-
-/// - Got Unwatch request
-Angel.prototype.onUnwatch = function onUnwatch(socket, msg) {
-    if (msg.resource) {
-        socket.leave(msg.resource);
-        console.log('onUnwatch: ' + socket.id + ' left resource - ' + msg.resource);
-    }
-    else {
-        console.log('onUnwatch: ' + socket.id + ' resource to leave was not specified ');
-    }
-};
-
-/// #### Standard Events
-Angel.prototype.emitConnected = function emitConnected(socket) {
-    // Send connected
-    socket.emit('Connected', Angel.prayer('/', {},'/',null,null));
-};
 
 module.exports = Angel;
 
