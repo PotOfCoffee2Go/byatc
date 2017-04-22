@@ -6,11 +6,19 @@ const
     api = require('./api'),
     request = require('request');
 
+
+function getAlias (cfg, boardname) {
+    var sheet = cfg.spreadsheets.sheets.find(s => s.boardName === boardname);
+    if (!sheet) return null;
+    return sheet.alias;
+}
+
+
 function addLabel(cfg, json, cb ) {
     var options = {
         method: 'POST',
         uri: cfg.kingdom.website + '/cyborg/clerk/' +
-            (json.id[0] === 'G' ? 'guests/' : 'items/') +
+            json.alias + '/' +
             json.id + '/trello/labels/' + json.data.color,
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = addLabel
@@ -22,7 +30,7 @@ function removeLabel(cfg, json, cb ) {
     var options = {
         method: 'DELETE',
         uri: cfg.kingdom.website + '/cyborg/clerk/' +
-            (json.id[0] === 'G' ? 'guests/' : 'items/') +
+            json.alias + '/' +
             json.id + '/trello/labels/' + json.data.color,
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = removeLabel
@@ -34,7 +42,7 @@ function addAttachment(cfg, json, cb ) {
     var options = {
         method: 'POST',
         uri: cfg.kingdom.website + '/cyborg/clerk/' +
-            (json.id[0] === 'G' ? 'guests/' : 'items/') +
+            json.alias + '/' +
             json.id + '/trello/attachments/' + json.data.name,
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = addAttachment
@@ -46,7 +54,7 @@ function removeAttachment(cfg, json, cb ) {
     var options = {
         method: 'DELETE',
         uri: cfg.kingdom.website + '/cyborg/clerk/' +
-            (json.id[0] === 'G' ? 'guests/' : 'items/') +
+            json.alias + '/' +
             json.id + '/trello/attachments/' + json.data.name,
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = removeAttachment
@@ -65,33 +73,37 @@ exports = module.exports = {
             return;
         }
 
-        let id, data = req.body.action.data;
-        switch (req.body.action.type) {
-            case 'removeLabelFromCard':
-                id = data.card.name.split(' ')[0];
-                data.label.idBoard = data.board.id;
-                removeLabel(cfg, {id: id, action: 'removeLabel', data: data.label}, cb);
-                break;
-            case 'addLabelToCard':
-                id = req.body.action.data.card.name.split(' ')[0];
-                data.label.idBoard = data.board.id;
-                addLabel(cfg, {id: id, action: 'addLabel', data: data.label}, cb);
-                break;
-            case 'addAttachmentToCard':
-                id = req.body.action.data.card.name.split(' ')[0];
-                var info = {
-                    name: data.attachment.name,
-                    url: data.attachment.url
-                };
-                addAttachment(cfg, {id: id, action: 'addAttachment', data: info}, cb);
-                break;
-            case 'deleteAttachmentFromCard':
-                id = req.body.action.data.card.name.split(' ')[0];
-                removeAttachment(cfg, {id: id, action: 'removeAttachment', data: data.attachment}, cb);
-                break;
-            default: console.log(req.body.action.type); cb(); break;
+        let id, data = req.body.action.data, alias = getAlias(cfg, data.board.name);
+        if (alias) {
+            switch (req.body.action.type) {
+                case 'removeLabelFromCard':
+                    id = data.card.name.split(' ')[0];
+                    data.label.idBoard = data.board.id;
+                    removeLabel(cfg, {id: id, action: 'removeLabel', alias: alias, data: data.label}, cb);
+                    break;
+                case 'addLabelToCard':
+                    id = req.body.action.data.card.name.split(' ')[0];
+                    data.label.idBoard = data.board.id;
+                    addLabel(cfg, {id: id, action: 'addLabel', alias: alias, data: data.label}, cb);
+                    break;
+                case 'addAttachmentToCard':
+                    id = req.body.action.data.card.name.split(' ')[0];
+                    var info = {
+                        name: data.attachment.name,
+                        url: data.attachment.url
+                    };
+                    addAttachment(cfg, {id: id, action: 'addAttachment', alias: alias, data: info}, cb);
+                    break;
+                case 'deleteAttachmentFromCard':
+                    id = req.body.action.data.card.name.split(' ')[0];
+                    removeAttachment(cfg, {id: id, action: 'removeAttachment', alias: alias, data: data.attachment}, cb);
+                    break;
+                default: console.log(req.body.action.type); cb(); break;
+            }
+            return;
         }
-        // console.log(util.inspect(req.body, { showHidden: true, depth: null }));
+        console.log('No alias for Trello board ' + data.board.name);
+        cb(); 
     }
 };
     
