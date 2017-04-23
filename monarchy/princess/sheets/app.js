@@ -29,13 +29,13 @@ function csvToObjects(lines) {
         let data = {};
         // builds object based on column headers
         if (lines[l].length > 3) {
-            data.google = {};
+            data.profile = {};
             for (let c = 0; c < lines[l].length; c++) {
                 var value = lines[l][c];
-                data.google[columns[c]] = value;          
+                data.profile[columns[c]] = value;          
             }
             // add object to output
-            records[data.google.id] = data;
+            records[data.profile.id] = data;
         }
     }
     return records;

@@ -118,6 +118,7 @@ var merge = {
                 cfgsheet.db.push('/' + boardId, sheetGuests[boardId]);
             }
         });
+        
         // Clear the trello board item db
         cfgboard.db.push('/cards', []);
     
@@ -192,8 +193,8 @@ var merge = {
     
         var icards = Object.keys(itemCards);
         icards.forEach(function(idCard) {
-            let itemCategory = itemCards[idCard].google.Category;
-            itemCards[idCard].category = sheetCategory[itemCategory].google;
+            let itemCategory = itemCards[idCard].profile.Category;
+            itemCards[idCard].category = sheetCategory[itemCategory].profile;
         });
         
         cfgitem.db.push('/', itemCards);
@@ -272,7 +273,7 @@ var merge = {
     
         var gcards = Object.keys(guestCards);
         gcards.forEach(function(idCard) {
-            guestCards[idCard].auction = sheetAuctioneer[idCard].google;
+            guestCards[idCard].auction = sheetAuctioneer[idCard].profile;
         });
         
         cfgguest.db.push('/', guestCards);
@@ -301,7 +302,7 @@ var merge = {
     
         var icards = Object.keys(itemCards);
         icards.forEach(function(idCard) {
-            itemCards[idCard].auction = sheetAuction[idCard].google;
+            itemCards[idCard].auction = sheetAuction[idCard].profile;
         });
         
         cfgitem.db.push('/', itemCards);

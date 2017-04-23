@@ -94,7 +94,7 @@
                   </div>
                   <div class="panel-footer">
                       <div class="input-group">
-                          <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                          <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." value="130" />
                           <span class="input-group-btn">
                               <button class="btn btn-primary btn-sm" id="btn-bid">
                                   Bid&nbsp;</button>
@@ -203,7 +203,7 @@
           guests = {};
 
       function displayItem(id, item) {
-        $('.timeline-title').html(id + ' - ' + item.data[id].google.Item);
+        $('.timeline-title').html(id + ' - ' + item.data[id].profile.Item);
         // $('#tl-body').html('');
         $('#tl-date').html(' ' + item.status.timestamp.split('T')[1].split('+')[0]);
         $('#tl-auction').html('&nbsp;&nbsp;Bid: $' + item.data[id].auction.CurrentBid);
