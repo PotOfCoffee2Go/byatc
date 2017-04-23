@@ -42,8 +42,9 @@ Clerk.prototype.onPostToSheetsDb = function onPostToSheetsDb(req, res, next, pra
     prayer.data = newData;
     web.sendJson(null, res, prayer);
 
+    // Let server send the response before sending to the watchers
     var resource = prayer.resource;
-    process.nextTick(() => web.minion.crier.broadcast(resource));
+    process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
 };
 
 
@@ -65,8 +66,9 @@ Clerk.prototype.onDeleteFromSheetsDb = function onDeleteFromSheetsDb(req, res, n
     prayer.data = data;
     web.sendJson(null, res, prayer);
 
+    // Let server send the response before sending to the watchers
     var resource = prayer.resource;
-    process.nextTick(() => web.minion.crier.broadcast(resource));
+    process.nextTick(() => web.minion.crier.broadcast('DELETE ' + resource));
 };
 
 
