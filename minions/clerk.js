@@ -116,14 +116,14 @@ Clerk.prototype.onBid = function onBid(req, res, next, prayer) {
 
 Clerk.prototype.gearDatabases = function gearDatabases(cb) {
     async.series([
-        (callback) => {gearbox.merge.trelloIntoGuestDatabase(web, minionName, callback);},
-        (callback) => {gearbox.merge.trelloIntoItemDatabase(web, minionName, callback);},
-        (callback) => {gearbox.merge.categoriesIntoItemDatabase(web, minionName, callback);},
-        (callback) => {gearbox.merge.trelloIntoCategoriesDatabase(web, minionName, callback);},
-        (callback) => {gearbox.merge.auctionIntoGuestDatabase(web, minionName, callback);},
-        (callback) => {gearbox.merge.auctionIntoItemDatabase(web, minionName, callback);},
-        (callback) => {gearbox.merge.removeDatabases(web, minionName, callback);},
-    ], (err, results) => {cb(err, results);});
+        callback => gearbox.merge.trelloIntoGuestDatabase(web, minionName, callback),
+        callback => gearbox.merge.trelloIntoItemDatabase(web, minionName, callback),
+        callback => gearbox.merge.categoriesIntoItemDatabase(web, minionName, callback),
+        callback => gearbox.merge.trelloIntoCategoriesDatabase(web, minionName, callback),
+        callback => gearbox.merge.auctionIntoGuestDatabase(web, minionName, callback),
+        callback => gearbox.merge.auctionIntoItemDatabase(web, minionName, callback),
+        callback => gearbox.merge.removeDatabases(web, minionName, callback),
+    ], (err, results) => cb(err, results));
 };
 
 

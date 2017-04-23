@@ -29,18 +29,18 @@ module.exports = {
 
         // Start up tasks which this boss is responible
         async.series([
-            (callback) => {web.minion.constable.checkCredentials(boss, callback);},
-            (callback) => {web.minion.architect.rousePrincessTrello(callback);},
-            (callback) => {web.minion.architect.gearSheets(boss, callback);},
-            (callback) => {web.minion.architect.gearTrello(boss, callback);},
-            (callback) => {web.minion.clerk.gearDatabases(callback);},
-            (callback) => {web.minion.architect.gearTrelloBoards(callback);},
-            (callback) => {web.minion.angel.gearCyborgRestResources(boss, callback);},
-            (callback) => {web.minion.crier.gearSockets(boss, callback);},
+            callback => web.minion.constable.checkCredentials(boss, callback),
+            callback => web.minion.architect.rousePrincessTrello(callback),
+            callback => web.minion.architect.gearSheets(boss, callback),
+            callback => web.minion.architect.gearTrello(boss, callback),
+            callback => web.minion.clerk.gearDatabases(callback),
+            callback => web.minion.architect.gearTrelloBoards(callback),
+            callback => web.minion.angel.gearCyborgRestResources(boss, callback),
+            callback => web.minion.crier.gearSockets(boss, callback),
             
-            (callback) => {web.minion.crier.relayQueenCommandToNinja(boss, callback);},
-            (callback) => {web.minion.crier.relayQueenCommandToPirate(boss, callback);},
-        ], (err, results) => {cb(err, results);});
+            callback => web.minion.crier.relayQueenCommandToNinja(boss, callback),
+            callback => web.minion.crier.relayQueenCommandToPirate(boss, callback),
+        ], (err, results) => cb(err, results))
     }
 };
 

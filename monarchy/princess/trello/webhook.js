@@ -23,7 +23,7 @@ function addLabel(cfg, json, cb ) {
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = addLabel
     };
-    request(options, (err, response, body) => {cb(err);});
+    request(options, (err, response, body) => cb(err));
 }
 
 function removeLabel(cfg, json, cb ) {
@@ -35,7 +35,7 @@ function removeLabel(cfg, json, cb ) {
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = removeLabel
     };
-    request(options, (err, response, body) => {cb(err);});
+    request(options, (err, response, body) => cb(err));
 }
 
 function addAttachment(cfg, json, cb ) {
@@ -47,7 +47,7 @@ function addAttachment(cfg, json, cb ) {
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = addAttachment
     };
-    request(options, (err, response, body) => {cb(err);});
+    request(options, (err, response, body) => cb(err));
 }
 
 function removeAttachment(cfg, json, cb ) {
@@ -59,13 +59,13 @@ function removeAttachment(cfg, json, cb ) {
         headers: {'User-Agent': 'trello webhook'},
         json: json // action = removeAttachment
     };
-    request(options, (err, response, body) => {cb(err);});
+    request(options, (err, response, body) => cb(err));
 }
 
 
 
 exports = module.exports = {
-    setCredentials: (creds) => {api.setCredentials(creds);},
+    setCredentials: creds => api.setCredentials(creds),
     trello: (req, res, next, cfg, cb) => {
         if (!req.body || !req.body.action || 
             !req.body.action || !req.body.action.data) {

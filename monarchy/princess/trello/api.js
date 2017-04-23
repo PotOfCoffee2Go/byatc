@@ -113,7 +113,7 @@ function buildRequest(tapi, data, cb) {
     };
     
     // Check the validity of the request and put the data where it belongs
-    if (validateData(tapi,data, (err) => {console.log(err);})) {
+    if (validateData(tapi,data, (err) => console.log(err))) {
         replaceUriFieldsWithData(options, data);
         placeDataIntoRequest(options, data);
         cb(null, options);

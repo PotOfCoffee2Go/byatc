@@ -32,8 +32,8 @@ module.exports = {
         fs.emptyDirSync(boss.dbdir);
     
         async.series([
-            (callback) => {web.minion.constable.checkCredentials(boss, callback);},
-        ], (err, results) => {cb(err, results);});
+            callback => web.minion.constable.checkCredentials(boss, callback),
+        ], (err, results) => cb(err, results));
         
     }
 };

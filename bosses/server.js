@@ -50,10 +50,10 @@ module.exports = function (asTheQueenCommands) {
     /// -- Basic Routes --
 
     /// Version info
-    app.get('/version', (req, res, next) => {sendJson(null, res, {version: '1.0.0'});});
+    app.get('/version', (req, res, next) => sendJson(null, res, {version: '1.0.0'}));
     
     /// Health required by OpenShift or whoever wants to check if server listening
-    app.get('/health', (req, res, next) => {sendJson(null, res, {'health':'ok'});});
+    app.get('/health', (req, res, next) => sendJson(null, res, {'health':'ok'}));
 
     /// Not much happens until Her Majesty commands it so
     app.post('/queen/commands/:boss/:cmd', (req, res, next) => {

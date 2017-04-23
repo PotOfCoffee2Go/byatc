@@ -58,10 +58,10 @@ Crier.prototype.gearSockets = function gearWebsockets(boss, cb) {
         var crier = web.minion.crier;
 
         /// #### Standard Messages
-        socket.on('disconnect', () => {console.log('onDisconnect: ' + socket.id);});
+        socket.on('disconnect', () => console.log('onDisconnect: ' + socket.id));
         /// #### Crier Minion Messages
-        socket.on('Watch', (message) => {crier.onWatch(socket, message);});
-        socket.on('Unwatch', (message) => {crier.onUnwatch(socket, message);});
+        socket.on('Watch', (message) => crier.onWatch(socket, message));
+        socket.on('Unwatch', (message) => crier.onUnwatch(socket, message));
 
         // - Send a 'Connected' message back to the client
         crier.emitConnected(socket);

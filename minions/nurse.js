@@ -17,10 +17,9 @@ function Nurse (Web) {
 }
 
 Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next) {
-        console.log('Nurse got the critical WebSite patient - doa :(');
         var fullUrl = web.minion.angel.getFullURL(req, res, next);
-        console.log(fullUrl.pathname);
-        
+        console.log('Nurse got the critical WebSite patient -' + fullUrl.pathname + '- doa :(');
+
         if (req.accepts('html')) {
             // Get this boss directory and Web Site root directory
             res.status(404).sendFile(path.resolve(__dirname, '../bosses/www/pages/notfound.html'));

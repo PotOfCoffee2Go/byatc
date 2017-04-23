@@ -95,9 +95,9 @@ function getAuctionList(boss, listName, cb) {
 
 Architect.prototype.gearAuction = function gearAuction(boss, cb) {
     async.parallel([
-        (callback) => {getAuctionList(boss, 'guests', callback);},
-        (callback) => {getAuctionList(boss, 'items', callback);}
-    ], (err, results) => {cb(err, results);});
+        callback => getAuctionList(boss, 'guests', callback),
+        callback => getAuctionList(boss, 'items', callback)
+    ], (err, results) => cb(err, results));
 };
 
 

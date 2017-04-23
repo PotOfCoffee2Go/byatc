@@ -109,12 +109,12 @@ Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
     restPath = '/' + boss.name + '/webhook/trello/' + board.alias;
     
     // Trello WebHook Verification - always send back 200 response code
-    web.routes.restRouter.head(restPath, (req, res, next) => {res.sendStatus(200);});
+    web.routes.restRouter.head(restPath, (req, res, next) => res.sendStatus(200));
     results.push('Angel added Trello webhook REST method HEAD ' + restPath + ' to respond with http status 200');
 
     //  Process trello post request - always send back 200 response code
     web.routes.restRouter.post(restPath, (req, res, next) => {
-        web.webhook.trello(req, res, next, web.cfg, () => {res.sendStatus(200);});
+        web.webhook.trello(req, res, next, web.cfg, () => res.sendStatus(200));
     });
     results.push('Angel added Trello webhook REST method POST ' + restPath + ' to web.webhook.trello()');
 
@@ -168,7 +168,7 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
         }
         callback(null, restResources);
         
-    }, (err, results) => {cb(err, results);});
+    }, (err, results) => cb(err, results));
 };
 
 Angel.prototype.gearNinjaRestResources = function gearNinjaRestResources(cb) {

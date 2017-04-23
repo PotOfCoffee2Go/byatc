@@ -747,34 +747,34 @@ exports = module.exports = {
 
     rousePrincessTrello: function rousePrincessTrello(cfg, cb) {
         async.series([
-            (callback) => {getMemberTeam(cfg, callback);},
-            (callback) => {getMemberBoards(cfg, callback);},
-            (callback) => {getWebhooks(cfg, callback);},
-        ], (err, results) => {cb(err, results);});
+            callback => getMemberTeam(cfg, callback),
+            callback => getMemberBoards(cfg, callback),
+            callback => getWebhooks(cfg, callback),
+        ], (err, results) => cb(err, results));
     },
 
 
     gearBoard: function(board, cb) {
         async.series([
-            (callback) => {postBoard(board, callback);},
-            (callback) => {putWebhook(board, callback);},
-            (callback) => {getBoard(board, callback);},
-            // (callback) => {getBoardComments(board, callback);},
-        ], (err, results) => {cb(err, results);});
+            callback => postBoard(board, callback),
+            callback => putWebhook(board, callback),
+            callback => getBoard(board, callback),
+            // (callback) => getBoardComments(board, callback),
+        ], (err, results) => cb(err, results));
     },
     
     gearTrelloBoards: function gearTrelloBoards(cfg, cb) {
         async.series([
-            (callback) => {getBoardListsFromSheets(cfg, callback);},
-            (callback) => {addNewBoardLists(cfg, 'guests', callback);},
-            (callback) => {addNewBoardLists(cfg, 'items', callback);},
-            (callback) => {addNewBoardLists(cfg, 'categories', callback);},
-            (callback) => {addNewGuestBoardCards(cfg, callback);},
-            (callback) => {addNewItemBoardCards(cfg, callback);},
-            (callback) => {addNewCategoryBoardCards(cfg, callback);},
-            (callback) => {verifyGuestBoardLabels(cfg, callback);},
-            (callback) => {verifyItemBoardLabels(cfg, callback);},
-        ], (err, results) => {cb(err, results);});
+            callback => getBoardListsFromSheets(cfg, callback),
+            callback => addNewBoardLists(cfg, 'guests', callback),
+            callback => addNewBoardLists(cfg, 'items', callback),
+            callback => addNewBoardLists(cfg, 'categories', callback),
+            callback => addNewGuestBoardCards(cfg, callback),
+            callback => addNewItemBoardCards(cfg, callback),
+            callback => addNewCategoryBoardCards(cfg, callback),
+            callback => verifyGuestBoardLabels(cfg, callback),
+            callback => verifyItemBoardLabels(cfg, callback),
+        ], (err, results) => cb(err, results));
     },
 };
     
