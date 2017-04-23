@@ -14,7 +14,7 @@ var byatec = byatec || {};
         }
 
         // Connect to server and get our socket
-        ns.socket = io.connect(url, {reconnect: true});
+        ns.socket = io.connect(url, {reconnect: false});
 
         ns.on = function(event, listener) {ns.socket.on(event, listener); };
         ns.off = function(event, listener) { ns.socket.removeListener(event, listener); };
@@ -22,6 +22,8 @@ var byatec = byatec || {};
         // Implement Catch-all -wildcard(*) feature- for byatec custom messages
         //  only catches byatec custom events (not regular socket.io events)
         //  http://stackoverflow.com/questions/10405070/socket-io-client-respond-to-all-events-with-one-handler
+        // Handy for debugging
+        /*
         var onevent = ns.socket.onevent;
         ns.socket.onevent = function (packet) {
             var args = packet.data || [];
@@ -29,11 +31,12 @@ var byatec = byatec || {};
             packet.data = ["*"].concat(args);
             onevent.call(this, packet);         // additional call to catch-all
         };
-        /* Usage of Catch-all byatec custom events */
-        byatec.on('*',function(event, msg) {
+
+        // Usage of Catch-all byatec custom events
+        byatec.on('*', function (event, msg) {
             console.log('***', event, msg);
         });
-        
+        */
         
         /// Custom socket.io events
         /*

@@ -49,6 +49,21 @@ Crier.prototype.relayQueenCommandToPirate = function relayQueenCommandToPirate(b
     );
 };
 
+Crier.prototype.broadcast = function broadcast(resource) {
+    var prayer = web.minion.angel.socketPrayer({resource: resource});
+    var path = resource.split('/'),
+        sheetAlias = path[3],
+        recid = path[4],
+        datastore = web.cfg.spreadsheets.sheets.find(s => s.alias === sheetAlias);
+    try { // Remove the '/boss/clerk/alias' from resource to get the DB path
+        prayer.data[recid] = datastore.db.getData('/' + recid);
+    } catch(err) {
+        return;
+    }
+    web.ios.sockets.in(sheetAlias + '/' + recid).emit('Watch', prayer);
+};
+
+
 Crier.prototype.gearSockets = function gearWebsockets(boss, cb) {
     web.ios.set('authorization', function (handshake, callback) {
       callback(null, true);
@@ -70,10 +85,16 @@ Crier.prototype.gearSockets = function gearWebsockets(boss, cb) {
     cb(null, 'Crier added Socket Topics Watch and Unwatch');
 };
 
+
 /// - Got Watch request
 Crier.prototype.onWatch = function onWatch(socket, msg) {
     if (msg.resource) {
-        socket.join(msg.resource);
+        var path = msg.resource.split('/'),
+            room = path[3] + '/' + path[4];
+        socket.join(room);
+        request({url: web.cfg.kingdom.website + msg.resource, method: 'GET', json: true},
+            (err, response, json) => socket.emit('Watch', err ? err : json));
+
         console.log('onWatch: ' + socket.id + ' joined resource - ' + msg.resource);
     }
     else {

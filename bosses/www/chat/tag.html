@@ -143,7 +143,15 @@
     <script>
     /* global byatec */
       byatec.connect("https://byatc-potofcoffee2go.c9users.io");
-      byatec.watch("/cyborg/chef/guests/G0270");
+
+      byatec.on('Connected', function (msg) {
+        console.log('onConnected', msg);
+        byatec.watch("/cyborg/chef/guests/G0270");
+      });
+
+      byatec.on('Watch', function (msg) {
+       console.log('onWatch', msg);
+      });
     </script>
 
 </body>
