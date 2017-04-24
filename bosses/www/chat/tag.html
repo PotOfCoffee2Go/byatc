@@ -20,20 +20,55 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Onyx &amp; Breezy Auction</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a id="nv-dashboard" href="#">Dashboard</a></li>
+            <li><a id="nv-auction" href="#">Auction</a></li>
+            <li><a id="nv-settings" href="#">Settings</a></li>
+            <li><a id="nv-profile" href="#">Profile</a></li>
+            <li><a id="nv-help" href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
 
-      <div class="container">
-        <div class="timeline-panel">
+    <div id="cn-auction" class="container collapse">
+      <div class="timeline-panel">
           <div class="timeline-heading">
-            <h4 class="timeline-title"></h4>
+            <h4 class="timeline-title itemtext"></h4>
             <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i><span id="tl-date"></span></small></p>
           </div>
             <div>
-              <span class="label label-default">alice</span>
-              <span class="label label-primary">story</span> 
+              <div class="btn-group">
+                  <a id="item-left-btn" type="button" class="btn btn-default btn-xs">
+                      <span class="glyphicon glyphicon-menu-left"></span>
+                  </a>
+              </div>
+              <!-- <span class="label label-default">alice</span>
+              <span class="label label-primary">story</span>  -->
               <span class="label label-success">blog</span>
               <span class="label label-info">personal</span>
               <span class="label label-warning">Warning</span>
               <span class="label label-danger">Danger</span>
+              <div class="btn-group pull-right">
+                  <a id="item-right-btn" type="button" class="btn btn-default btn-xs">
+                      <span class="glyphicon glyphicon-menu-right"></span>
+                  </a>
+              </div>
             </div>
             <div class="timeline-body">
             <p id="tl-body"></p>
@@ -47,19 +82,19 @@
           <div class="timeline-footer">
               <div class="panel panel-primary">
                   <div class="panel-heading" id="accordion">
-                      <span class="label label-primary">5</span>
                       <div class="btn-group">
                           <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseChat">
                               <span class="glyphicon glyphicon-comment"></span>
                           </a>
                       </div>
-                      <!-- <span class="glyphicon glyphicon-comment"></span> --><span></span>
-                      <span id="tl-auction" class="pull-right"></span>
+                      <span class="label label-primary" style="font-size: 1.2em;">5</span>
+                     <!-- <span class="glyphicon glyphicon-comment"></span> --><span></span>
                       <div class="btn-group pull-right">
                           <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseBid">
                               <span class="glyphicon glyphicon-chevron-down"></span>
                           </a>
                       </div>
+                      <span id="tl-auction" class="pull-right"></span>
                   </div>
               <div class="panel-collapse collapse" id="collapseBid">
                   <div class="panel-body">
@@ -177,7 +212,7 @@
           </div>
           <hr>
         </div>
-      </div>
+    </div>
 
     <!-- jQuery -->
     <script
@@ -199,30 +234,66 @@
 
     <script>
       /* global $ byatec */
-      var items = {},
-          guests = {};
+      var guests = {},
+          items = {}, itemIds = [], curItemIdx = 0,
+          categories = {}, categoryIds = [];
 
-      function displayItem(id, item) {
-        $('.timeline-title').html(id + ' - ' + item.data[id].profile.Item);
-        // $('#tl-body').html('');
-        $('#tl-date').html(' ' + item.status.timestamp.split('T')[1].split('+')[0]);
-        $('#tl-auction').html('&nbsp;&nbsp;Bid: $' + item.data[id].auction.CurrentBid);
+      function hideAll() {
+        $( ".container" ).hide();
       }
+
+      $('#nv-dashboard').click(function() { hideAll(); $('#cn-dashboard').show(); $('.navbar-toggle').click();});
+      $('#nv-auction').click(function() { hideAll(); $('#cn-auction').show(); $('.navbar-toggle').click(); });
+      $('#nv-settings').click(function() { hideAll(); $('#cn-settings').show(); $('.navbar-toggle').click(); });
+      $('#nv-profile').click(function() { hideAll(); $('#cn-profile').show(); $('.navbar-toggle').click(); });
+      $('#nv-help').click(function() { hideAll(); $('#cn-help').show(); $('.navbar-toggle').click(); });
+
+      $('#item-left-btn').click(function() {
+        if (curItemIdx === 0) curItemIdx = itemIds.length;
+        displayItem(itemIds[--curItemIdx]);
+        });
+
+      $('#item-right-btn').click(function() {
+        if (curItemIdx === itemIds.length-1) curItemIdx = -1;
+        displayItem(itemIds[++curItemIdx]);
+      });
+
+
+      function displayItem(id) {
+        $('.timeline-title').html(id + ' - ' + items[id].profile.Item);
+        // $('#tl-body').html('');
+        //$('#tl-date').html(' ' + item.status.timestamp.split('T')[1].split('+')[0]);
+        $('#tl-auction').html('Bid: $' + items[id].auction.CurrentBid + '&nbsp;&nbsp;');
+      }
+
+      function displayCategories(id, item) {
+      }
+
+      hideAll();
 
       byatec.connect("https://byatc-potofcoffee2go.c9users.io");
       
       byatec.on('Connected', function (msg) {
         console.log('onConnected', msg);
         byatec.watch("/cyborg/chef/guests/G0270");
-        byatec.watch("/cyborg/chef/items/I0281");
+        byatec.watch("/cyborg/chef/items/find/category/id/C006");
+        // byatec.watch("/cyborg/chef/categories");
       });
       
       byatec.on('Watch', function (msg) {
         var path = msg.resource.split('/');
-        if (path[3] === 'guests') guests[path[4]] = msg.data[path[4]];
+        if (path[3] === 'guests') {
+          guests[path[4]] = msg.data[path[4]];
+        }
         else if (path[3] === 'items') {
-          displayItem([path[4]], msg);
-          items[path[4]] = msg.data[path[4]];
+          items = msg.data;
+          itemIds = Object.keys(items);
+          curItemIdx = 0;
+          displayItem(itemIds[curItemIdx]);
+        }
+        else if (path[3] === 'categories') {
+          displayCategories([path[4]], msg);
+          categories[path[4]] = msg.data[path[4]];
         }
         console.log('onWatch', msg);
       });
