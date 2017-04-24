@@ -74,7 +74,10 @@ Chef.prototype.onGetFromSheetsDb = function onGetFromSheetsDb(req, res, next, pr
         datastore = web.cfg.spreadsheets.sheets.find(s => s.alias === sheetAlias);
     try { // Remove the '/boss/clerk/alias' from resource to get the DB path
         var dataPath = prayer.resource.split('/').slice(4).join('/');
-        prayer.data[recid] = datastore.db.getData('/' + dataPath);
+        if (recid)
+            prayer.data[recid] = datastore.db.getData('/' + dataPath);
+        else
+            prayer.data = datastore.db.getData('/' + dataPath);
     } catch(err) {
         var error = new MinionError(minionName, 'Can not get data from Db', 101, err);
         web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
