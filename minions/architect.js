@@ -20,7 +20,7 @@ function Architect (Web) {
 }
 
 
-/// Intercom communication between bosses
+// Intercom communication between bosses
 Architect.prototype.gearIntercom = function gearIntercom(boss, cb) {
     // Todo: Intercom system
     cb(null,['Boss intercom started']);

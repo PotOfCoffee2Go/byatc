@@ -3,31 +3,27 @@
 
 const
 // Standard Node stuff
-    fs = require('fs-extra'),
-    util = require('util'),
     path = require('path'),
     env = process.env,
 
 // Logger    
-    winston = require('winston'),
+    Winston = require('winston'),
     
 // Middleware
     bodyParser = require("body-parser"),
 
 // Princess Trello
-    // Request handlers for Trello Webhooks
     webhook = require('../monarchy/princess/trello/webhook'),
     trello = require('../monarchy/princess/trello/app'),
 
-
 // Princess Sheets
     spreadsheets = require('../monarchy/princess/sheets/app');
-    
-// Configuration
-var appDir = path.dirname(require.main.filename);
-var cfg = require(appDir + '/../config.js');  
 
-/// Helper to send JSON responses
+// Configuration
+var appDir = path.dirname(require.main.filename),
+    cfg = require(appDir + '/../config.js');  
+
+// Helper to send JSON responses
 function sendJson(err, res, data) {
     res.setHeader('Cache-Control', 'no-cache, no-store');
     if (err) {
@@ -38,53 +34,57 @@ function sendJson(err, res, data) {
     }
 }
 
-module.exports = function (asTheQueenCommands) {
+module.exports = (asTheQueenCommands) => {
 
-    /// HTTP(S) server
+    // Console logger
+    var logger = new Winston.Logger({
+        transports: [
+            new Winston.transports.Console({
+                colorize: true
+            })
+        ]
+    });
+
+    // HTTP(S) server
     var
-    express = require('express'),  
-        app = express(),  
-     server = require('http').Server(app),
-        ios = require('socket.io')(server);
+        express = require('express'),  
+            app = express(),  
+         server = require('http').Server(app),
+            ios = require('socket.io')(server);
         
-    /// JSON body parser
+    // JSON body parser
     app.use(bodyParser.json());
 
-    /// -- Basic Routes --
+    // -- Basic Routes --
 
-    /// Version info
+    // Version info
     app.get('/version', (req, res, next) => sendJson(null, res, {version: '1.0.0'}));
     
-    /// Health required by OpenShift or whoever wants to check if server listening
+    // Health required by OpenShift or whoever wants to check if server listening
     app.get('/health', (req, res, next) => sendJson(null, res, {'health':'ok'}));
 
-    /// Not much happens until Her Majesty commands it so
+    // Not much happens until Her Majesty commands it so
     app.post('/queen/commands/:boss/:cmd', (req, res, next) => {
         res.type('text');
         cfg.kingdom = req.body.kingdom;
         asTheQueenCommands[req.params.cmd](req.params.boss, function (err, reply) {
-//            res.send(util.inspect(reply, { showHidden: false, depth: null }));
             res.send(JSON.stringify(reply, null, 2));
         });
     });
 
 
-    /// -- Main RESTful Routes --
+    // -- Main RESTful Routes --
     
+    // Router will contain the RESTful requests
     var restRouter = express.Router();
-    // Contains the RESTful requests
-    app.use(function mRestRouter(req, res, next) {
-      restRouter(req, res, next);
-    });
+    app.use((req, res, next) => {restRouter(req, res, next);});
 
-    /// -- Trailing Routes --
+    // -- Trailing Routes --
 
     // This router contains the last routes to websites, docs, and
     //  error handlers at end of the route list
     var trailingRouter = express.Router();
-    app.use(function (req, res, next) {
-      trailingRouter(req, res, next);
-    });
+    app.use((req, res, next) => {trailingRouter(req, res, next);});
 
     // For Cloud9 the port/ip is env.PORT and env.IP
     // For OpenShift the port/ip is env.OPENSHIFT_NODEJS_PORT and env.OPENSHIFT_NODEJS_IP
@@ -93,7 +93,7 @@ module.exports = function (asTheQueenCommands) {
             env.OPENSHIFT_NODEJS_PORT || env.PORT || 3000,
             env.OPENSHIFT_NODEJS_IP || env.IP || 'localhost',
             () => {
-                web.winston.info('Web Server waiting for commands from Her Majesty');
+                web.logger.info('Web Server waiting for commands from Her Majesty');
             }
         );
    }
@@ -111,7 +111,7 @@ module.exports = function (asTheQueenCommands) {
         },
         listen: listen,
         ios: ios,
-        winston: winston,
+        logger: logger,
         webhook: webhook,
         trello: trello,
         spreadsheets: spreadsheets,

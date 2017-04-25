@@ -3,25 +3,26 @@
 (function () {
 
 const
+    BOSS = 'cyborg',
+
     fs = require('fs-extra'),
-    util = require('util'),
     path = require('path'),
     async = require('async'),
 
-    // Note: this object must be appropriately same in cyborg, ninja, and pirate app.js'
+    // Note: this object must be same in cyborg, ninja, and pirate app.js'
     boss = {
-        name: 'cyborg',
+        name: BOSS,
         app: path.join(__dirname,'../'),
         dir: path.join(__dirname, ''),
         www: path.join(__dirname,'../www'),
-        dbdir : path.join(__dirname,'../www/docs/cyborg/db')
+        dbdir : path.join(__dirname,'../www/docs/' + BOSS + '/db')
     };
 
-/// Commands from the queen
+// Commands from the queen
 module.exports = {
     
-    /// Make some steam and start up the machines!
-    gearBoss: function gearBoss(web, bossName, cb) {  
+    // Make some steam and start up the machines!
+    gearBoss: (web, bossName, cb) => {  
         web.bosses[bossName] = boss;
 
         // Clear the boss working database directory

@@ -13,7 +13,7 @@
         console.log('***', event, '***', msg);
     });
 
-    /// Standard socket.io events
+    // Standard socket.io events
     //  socket.io connect
     api.on('connect', function() {
         console.log('Established WebSocket connection to auction server');
@@ -23,7 +23,7 @@
         console.log('WebSocket disconnected from auction server');
     });
 
-    /// Custom socket.io events
+    // Custom socket.io events
     /*
     All custom socket.io events contain :
     {

@@ -31,7 +31,7 @@ module.exports = function (url) {
     function off(socket, event, listener) { socket.removeListener(event, listener); }
     
     
-    /// Custom socket.io events
+    // Custom socket.io events
     /*
     All custom socket.io emits and on events contain :
     {

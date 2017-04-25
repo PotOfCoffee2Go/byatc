@@ -10,11 +10,11 @@ const
     ninja = require('./ninja/app'),
     pirate = require('./pirate/app');
 
-/// Commands from the queen
+// Commands from the queen
 var asTheQueenCommands = {
     
-    /// Make some steam and start up the machines!
-    startMachines: function startMachines(bossName, cb) {  
+    // Make some steam and start up the machines!
+    startMachines: (bossName, cb) => {  
 
         // Boss already geared up
         if (web.bosses[bossName]) {
@@ -26,7 +26,7 @@ var asTheQueenCommands = {
         switch (bossName) {
             case 'cyborg': cyborg.gearBoss(web, bossName, (err, results) => {
                 cb(err, results);
-                web.winston.info(util.inspect(results, { showHidden: false, depth: null }));
+                web.logger.info(util.inspect(results, { showHidden: false, depth: null }));
             }); break;
             case 'ninja': ninja.gearBoss(web, bossName, cb); break;
             case 'pirate': pirate.gearBoss(web, bossName, cb); break;
@@ -35,15 +35,13 @@ var asTheQueenCommands = {
     }
 };
 
-
-/// Spark up web server
+// Spark up web server
 const web = require('./server')(asTheQueenCommands);
-web.winston.info('Web Server created');
+web.logger.info('Web Server created');
 
-/// Gear up paths to Default Web Site and Error handling 
+// Gear up paths to Default Web Site and Error handling 
 web.minion.angel.gearTrailingRoutes(path.resolve(__dirname + '/www'));
-web.winston.info('Default routes are active');
-
+web.logger.info('Default routes are active');
 
 // Listen for requests from Her Majesty
 web.listen();

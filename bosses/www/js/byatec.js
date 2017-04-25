@@ -38,7 +38,7 @@ var byatec = byatec || {};
         });
         */
         
-        /// Custom socket.io events
+        // Custom socket.io events
         /*
         All byatec custom socket.io emits and on events contain :
         {

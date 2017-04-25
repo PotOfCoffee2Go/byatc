@@ -75,9 +75,9 @@ Angel.prototype.errorPrayer = function errorPrayer(err, prayer) {
 };
 
 
-/// Get the absolute url of the request
-///    ie: https://host/path?querystring#hash part from the url
-/// Indicates socket.io by setting protocol and host to https://socketio
+// Get the absolute url of the request
+//    ie: https://host/path?querystring#hash part from the url
+// Indicates socket.io by setting protocol and host to https://socketio
 Angel.prototype.getFullURL = function getFullURL(req, res, next) {
     // When request is a string is from socket.io
     if (typeof req.resource === 'string') {
@@ -88,7 +88,7 @@ Angel.prototype.getFullURL = function getFullURL(req, res, next) {
     return url.parse(req.protocol + 's://' + req.get('host') + req.originalUrl);
 };
 
-/// Frontend sites, API Docs, -  html, js, css, etc
+// Frontend sites, API Docs, -  html, js, css, etc
 Angel.prototype.gearTrailingRoutes = function gearTrailingRoutes(siteDir) {
     web.routes.trailingRouter.use('/docs', gearbox.markdown);
     web.routes.trailingRouter.use('/docs', web.express.static(siteDir + '/docs'));
@@ -125,7 +125,7 @@ Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
 };
 
 Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss, cb) {
-    // Array of 'sheets' with databases for clerk to lookup data
+    // Array of 'sheets' with databases for chef and clerk
     async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
         var restPath = '';
         var restResources = [];
