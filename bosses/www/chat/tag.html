@@ -19,122 +19,172 @@
     <link href="tag.css" rel="stylesheet">
 
     <style type="text/css">
-      .carousel{
-          margin-top: 20px;
+      #tl-auction {
+        font-size: 1.3em;
+        text-align:center;
       }
-      .carousel .item img{
-          margin: 0 auto; /* Align slide image horizontally center */
+      
+      .timeline {
+        list-style: none;
+        padding: 20px 0 20px;
+        position: relative;
       }
-      .bs-example{
-      	margin: 20px;
+      .btn-labels {
+        font-size: 1.2em;
+        margin: 2px 2px 2px 2px;
+        white-space: nowrap;
+        text-align:center;
       }
+      
+      #accordion {
+        text-align:center;
+      }
+    
+      .timeline-heading {
+        margin: 6px;
+      }
+
+      .carousel {
+        margin-top: 20px;
+        height: 100%; 
+        max-height: 64px;
+      }
+      .carousel .item img {
+        margin: 0 auto; /* Align slide image horizontally center */
+        height: 100%; 
+        max-height: 60px;
+        width: auto;
+      }
+      .carousel-indicators li {
+        display:none;
+      }
+
       .carousel-caption {
-        padding: 0 0 0 40px;
-        top: 0;
+        padding: 0 0 0 6px;
         text-align:left;
         /* bottom: auto; */
         color: #000;
+        font-size: 1.0em;
         -webkit-font-smoothing: antialiased;
+      }
+
+      @media screen and (min-width: 1024px) {
+      .itemtext{
+          height:150px;
+          }
+      }      
+      
+      @media screen and (max-width: 800px) {
+      .itemtext{
+          height:100px;
+         }
+      }
+      
+      @media screen and (max-width: 600px) {
+      .itemtext{
+          height:60px;
+         }
       }
 
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Onyx &amp; Breezy Auction</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a id="nv-dashboard" href="#">Dashboard</a></li>
-            <li><a id="nv-auction" href="#">Auction</a></li>
-            <li><a id="nv-settings" href="#">Settings</a></li>
-            <li><a id="nv-profile" href="#">Profile</a></li>
-            <li><a id="nv-help" href="#">Help</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
-        </div>
+    <div id="cn-auction" class="container">
+      <div class="btn-labels">
+        <!-- <span class="label label-danger">alice</span>
+        <span class="label label-primary">story</span>
+        <span class="label label-warning">Favorites</span>  -->
+        <span class="label label-info">Categories</span>
+        <span class="label label-success">Your Bids</span>
+        <span class="label label-default">Chat</span>
+        <span class="label label-primary">Help</span>
       </div>
-    </nav>
-
-    <div class="bs-example">
-    <div id="myCarousel" class="carousel" data-ride="carousel">
-        <!-- Carousel indicators -->
-        <ol class="carousel-indicators">
-            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel" data-slide-to="1"></li>
-            <li data-target="#myCarousel" data-slide-to="2"></li>
-        </ol>   
-        <!-- Wrapper for carousel items -->
-        <div class="carousel-inner">
-            <div class="item active">
-                <img height="64" src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/home.png" alt="First Slide">
-                <div class="carousel-caption">
-                  <h4>Home</h4>
-                </div>
-            </div>
-            <div class="item">
-                <img height="64" src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ladies.png" alt="Second Slide">
-                <div class="carousel-caption">
-                  <h4>Ladies</h4>
-                </div>
-            </div>
-            <div class="item">
-                <img height="64" src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/painting.png" alt="Third Slide">
-                <div class="carousel-caption">
-                  <h4>Paintings</h4>
-                </div>
-            </div>
-        </div>
-        <!-- Carousel controls -->
-        <a class="carousel-control left" href="#myCarousel" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-        </a>
-        <a class="carousel-control right" href="#myCarousel" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-        </a>
-    </div>
-</div>
-
-    <div id="cn-auction" class="container collapse">
+      <div id="myCarousel" class="carousel" data-ride="carousel" data-interval="false">
+          <!-- Carousel indicators -->
+          <ol class="carousel-indicators">
+              <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#myCarousel" data-slide-to="1"></li>
+              <li data-target="#myCarousel" data-slide-to="2"></li>
+          </ol>   
+          <!-- Wrapper for carousel items -->
+          <div class="carousel-inner">
+              <div class="item active">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/home.png" alt="First Slide">
+                  <div class="carousel-caption">
+                    Household
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ladies.png" alt="Second Slide">
+                  <div class="carousel-caption">
+                    Ladies
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/painting.png" alt="Third Slide">
+                  <div class="carousel-caption">
+                    Paintings
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/electronics.png" alt="Third Slide">
+                  <div class="carousel-caption">
+                    Electronics
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/famous.png" alt="Third Slide">
+                  <div class="carousel-caption">
+                    Famous
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/gift.png" alt="Third Slide">
+                  <div class="carousel-caption">
+                    Gift Cards
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/men.png" alt="Third Slide">
+                  <div class="carousel-caption">
+                    Men
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/pets.png" alt="Third Slide">
+                  <div class="carousel-caption">
+                    Animals
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/sports.png" alt="Third Slide">
+                  <div class="carousel-caption">
+                    Sports
+                  </div>
+              </div>
+              <div class="item">
+                  <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/wine.png" alt="Third Slide">
+                  <div class="carousel-caption">
+                    Wine
+                  </div>
+              </div>
+          </div>
+          <!-- Carousel controls -->
+          <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left"></span>
+          </a>
+          <a class="carousel-control right" href="#myCarousel" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right"></span>
+          </a>
+      </div>
       <div class="timeline-panel">
+          <div class="timeline-body">
+            <p id="tl-body"></p>
+          </div>
           <div class="timeline-heading">
             <h4 class="timeline-title itemtext"></h4>
-            <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i><span id="tl-date"></span></small></p>
-          </div>
-            <div>
-              <div class="btn-group">
-                  <a id="item-left-btn" type="button" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-menu-left"></span>
-                  </a>
-              </div>
-              <!-- <span class="label label-default">alice</span>
-              <span class="label label-primary">story</span>  -->
-              <span class="label label-success">blog</span>
-              <span class="label label-info">personal</span>
-              <span class="label label-warning">Warning</span>
-              <span class="label label-danger">Danger</span>
-              <div class="btn-group pull-right">
-                  <a id="item-right-btn" type="button" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-menu-right"></span>
-                  </a>
-              </div>
-            </div>
-            <div class="timeline-body">
-            <p id="tl-body"></p>
-            <div>
-
-            </div>     
+            <h4><span class="label label-success">Buy Now for $</span></h4>
           </div>
           
           <p> </p>
@@ -142,24 +192,40 @@
           <div class="timeline-footer">
               <div class="panel panel-primary">
                   <div class="panel-heading" id="accordion">
-                      <div class="btn-group">
-                          <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseChat">
-                              <span class="glyphicon glyphicon-comment"></span>
-                          </a>
-                      </div>
-                      <span class="label label-primary" style="font-size: 1.2em;">5</span>
-                     <!-- <span class="glyphicon glyphicon-comment"></span> --><span></span>
-                      <div class="btn-group pull-right">
-                          <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseBid">
-                              <span class="glyphicon glyphicon-chevron-down"></span>
-                          </a>
-                      </div>
-                      <span id="tl-auction" class="pull-right"></span>
+                    <div class="pull-left">
+                      <a id="item-left-btn" type="button" class="btn btn-default btn-xs">
+                          <span class="glyphicon glyphicon-menu-left"></span>
+                      </a>
+                      &nbsp;
+                      <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseChat">
+                          <span class="glyphicon glyphicon-comment"></span>
+                      </a>
+                    </div>
+                    <span id="tl-auction"></span>
+                    &nbsp;
+                    <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseBid">
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </a>
+
+                    <div class="pull-right">
+                      <a id="item-right-btn" type="button" class="btn btn-default btn-xs">
+                          <span class="glyphicon glyphicon-menu-right"></span>
+                      </a>
+                    </div>
                   </div>
               <div class="panel-collapse collapse" id="collapseBid">
                   <div class="panel-body">
+                      <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." value="130" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-success btn-sm" id="btn-bid">
+                                    Bid&nbsp;</button>
+                            </span>
+                        </div>
+                      </div>
                       <ul class="chat">
-                          <li class="left clearfix"><span class="chat-img pull-left">
+                            <li class="left clearfix"><span class="chat-img pull-left">
                               <img src="https://placehold.it/32/55C1E7/fff&text=JS" alt="User Avatar" class="img-circle" />
                           </span>
                               <div class="chat-body clearfix">
@@ -187,18 +253,18 @@
                           </li>
                       </ul>
                   </div>
-                  <div class="panel-footer">
-                      <div class="input-group">
-                          <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." value="130" />
-                          <span class="input-group-btn">
-                              <button class="btn btn-primary btn-sm" id="btn-bid">
-                                  Bid&nbsp;</button>
-                          </span>
-                      </div>
-                  </div>
               </div>
               <div class="panel-collapse collapse" id="collapseChat">
                   <div class="panel-body">
+                      <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." value="" />
+                            <span class="input-group-btn">
+                                <button id="btn-send" class="btn btn-warning btn-sm">
+                                    Send</button>
+                            </span>
+                        </div>
+                      </div>
                       <ul class="chat">
                           <li class="left clearfix"><span class="chat-img pull-left">
                               <img src="https://placehold.it/50/55C1E7/fff&text=JS" alt="User Avatar" class="img-circle" />
@@ -258,22 +324,12 @@
                           </li>
                       </ul>
                   </div>
-                  <div class="panel-footer">
-                      <div class="input-group">
-                          <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
-                          <span class="input-group-btn">
-                              <button class="btn btn-warning btn-sm" id="btn-chat">
-                                  send</button>
-                          </span>
-                      </div>
-                  </div>
               </div>
             </div>
           </div>
           <hr>
-        </div>
+      </div>
     </div>
-
     <!-- jQuery -->
     <script
       src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -298,16 +354,6 @@
           items = {}, itemIds = [], curItemIdx = 0,
           categories = {}, categoryIds = [];
 
-      function hideAll() {
-        $( ".container" ).hide();
-      }
-
-      $('#nv-dashboard').click(function() { hideAll(); $('#cn-dashboard').show(); $('.navbar-toggle').click();});
-      $('#nv-auction').click(function() { hideAll(); $('#cn-auction').show(); $('.navbar-toggle').click(); });
-      $('#nv-settings').click(function() { hideAll(); $('#cn-settings').show(); $('.navbar-toggle').click(); });
-      $('#nv-profile').click(function() { hideAll(); $('#cn-profile').show(); $('.navbar-toggle').click(); });
-      $('#nv-help').click(function() { hideAll(); $('#cn-help').show(); $('.navbar-toggle').click(); });
-
       $('#item-left-btn').click(function() {
         if (curItemIdx === 0) curItemIdx = itemIds.length;
         displayItem(itemIds[--curItemIdx]);
@@ -323,18 +369,11 @@
         $('.timeline-title').html(id + ' - ' + items[id].profile.Item);
         // $('#tl-body').html('');
         //$('#tl-date').html(' ' + item.status.timestamp.split('T')[1].split('+')[0]);
-        $('#tl-auction').html('Bid: $' + items[id].auction.CurrentBid + '&nbsp;&nbsp;');
+        $('#tl-auction').html('Make $' + items[id].auction.CurrentBid + ' Bid');
       }
 
       function displayCategories(id, item) {
       }
-
-      $(document).ready(function(){
-        hideAll();
-        $('#myCarousel').carousel({
-           interval : false
-        });
-      });
 
       byatec.connect("https://byatc-potofcoffee2go.c9users.io");
       

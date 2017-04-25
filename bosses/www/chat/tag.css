@@ -6,7 +6,8 @@
  */
 
 body {
-    padding-top: 70px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
+    padding: 10px 10px 10px 10px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
+    background-color: aliceblue;
 }
 
 .thumb {
@@ -20,38 +21,6 @@ footer {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
-#tl-auction {
-    font-size: 1.2em;
-}
-
-.label {
-    font-size: .8em;
-}
-
-@media screen and (min-width: 1024px) {
-.itemtext{
-    height:100px;
-    }
-}      
-
-@media screen and (max-width: 800px) {
-.itemtext{
-    height:60px;
-   }
-}
-
-@media screen and (max-width: 600px) {
-.itemtext{
-    height:40px;
-   }
-}
-
-
-.timeline {
-    list-style: none;
-    padding: 20px 0 20px;
-    position: relative;
-}
 
     .timeline:before {
         top: 0;
