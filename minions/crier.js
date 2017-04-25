@@ -73,14 +73,14 @@ Crier.prototype.gearSockets = function gearWebsockets(boss, cb) {
         var crier = web.minion.crier;
 
         /// #### Standard Messages
-        socket.on('disconnect', () => console.log('onDisconnect: ' + socket.id));
+        socket.on('disconnect', () => web.winston.info('onDisconnect: ' + socket.id));
         /// #### Crier Minion Messages
         socket.on('Watch', (message) => crier.onWatch(socket, message));
         socket.on('Unwatch', (message) => crier.onUnwatch(socket, message));
 
         // - Send a 'Connected' message back to the client
         crier.emitConnected(socket);
-        console.log('connected: ' + socket.id);
+        web.winston.info('connected: ' + socket.id);
     });
     cb(null, 'Crier added Socket Topics Watch and Unwatch');
 };
@@ -95,10 +95,10 @@ Crier.prototype.onWatch = function onWatch(socket, msg) {
         request({url: web.cfg.kingdom.website + msg.resource, method: 'GET', json: true},
             (err, response, json) => socket.emit('Watch', err ? err : json));
 
-        console.log('onWatch: ' + socket.id + ' joined resource - ' + msg.resource);
+        web.winston.info('onWatch: ' + socket.id + ' joined resource - ' + msg.resource);
     }
     else {
-        console.log('onWatch: ' + socket.id + ' resource to join was not specified');
+        web.winston.info('onWatch: ' + socket.id + ' resource to join was not specified');
     }
 };
 
@@ -106,10 +106,10 @@ Crier.prototype.onWatch = function onWatch(socket, msg) {
 Crier.prototype.onUnwatch = function onUnwatch(socket, msg) {
     if (msg.resource) {
         socket.leave(msg.resource);
-        console.log('onUnwatch: ' + socket.id + ' left resource - ' + msg.resource);
+        web.winston.info('onUnwatch: ' + socket.id + ' left resource - ' + msg.resource);
     }
     else {
-        console.log('onUnwatch: ' + socket.id + ' resource to leave was not specified ');
+        web.winston.info('onUnwatch: ' + socket.id + ' resource to leave was not specified ');
     }
 };
 

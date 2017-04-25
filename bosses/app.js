@@ -26,7 +26,7 @@ var asTheQueenCommands = {
         switch (bossName) {
             case 'cyborg': cyborg.gearBoss(web, bossName, (err, results) => {
                 cb(err, results);
-                console.log(util.inspect(results, { showHidden: false, depth: null }));
+                web.winston.info(util.inspect(results, { showHidden: false, depth: null }));
             }); break;
             case 'ninja': ninja.gearBoss(web, bossName, cb); break;
             case 'pirate': pirate.gearBoss(web, bossName, cb); break;
@@ -38,11 +38,11 @@ var asTheQueenCommands = {
 
 /// Spark up web server
 const web = require('./server')(asTheQueenCommands);
-console.log('Web Server created');
+web.winston.info('Web Server created');
 
 /// Gear up paths to Default Web Site and Error handling 
 web.minion.angel.gearTrailingRoutes(path.resolve(__dirname + '/www'));
-console.log('Default routes are active');
+web.winston.info('Default routes are active');
 
 
 // Listen for requests from Her Majesty

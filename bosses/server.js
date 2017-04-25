@@ -8,6 +8,9 @@ const
     path = require('path'),
     env = process.env,
 
+// Logger    
+    winston = require('winston'),
+    
 // Middleware
     bodyParser = require("body-parser"),
 
@@ -90,7 +93,7 @@ module.exports = function (asTheQueenCommands) {
             env.OPENSHIFT_NODEJS_PORT || env.PORT || 3000,
             env.OPENSHIFT_NODEJS_IP || env.IP || 'localhost',
             () => {
-                console.log('Web Server waiting for commands from Her Majesty');
+                web.winston.info('Web Server waiting for commands from Her Majesty');
             }
         );
    }
@@ -108,6 +111,7 @@ module.exports = function (asTheQueenCommands) {
         },
         listen: listen,
         ios: ios,
+        winston: winston,
         webhook: webhook,
         trello: trello,
         spreadsheets: spreadsheets,
