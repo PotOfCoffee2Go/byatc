@@ -4,6 +4,7 @@
 const
     path = require('path'),
     request = require('request'),
+    alasql = require('alasql'),
     gearbox = require('./#gearing/gearbox'),
     
     MinionError = gearbox.MinionError,
@@ -11,7 +12,8 @@ const
 
 
 // Expressjs web server
-var web = null;
+var web = null,
+    chatDb = new alasql.Database();
     
 function Crier (Web) {
     web = Web;
@@ -120,6 +122,20 @@ Crier.prototype.emitConnected = function emitConnected(socket) {
     prayer.data = {crier: 'connected'};
     socket.emit('Connected', prayer);
 };
+
+Crier.prototype.gearChat = function gearChat(boss, cb) {
+    chatDb.exec('CREATE TABLE one (two INT)');
+    cb(null, 'Connected to Chat database');
+};
+
+Crier.prototype.onInsertChat = function onInsertChat(req, res, next, prayer) {
+    var data = [{a:1,b:1,c:1},{a:1,b:2,c:1},{a:1,b:3,c:1}, {a:2,b:1,c:1}];
+    prayer.data = alasql('SELECT a, COUNT(*) AS bcnt FROM ? GROUP BY a',[data]);
+    web.logger.info('', prayer);
+    web.sendJson(null, res, prayer);
+};
+
+
 
 
 module.exports = Crier;

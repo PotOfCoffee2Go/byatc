@@ -34,6 +34,8 @@ module.exports = {
     
         async.series([
             callback => web.minion.constable.checkCredentials(boss, callback),
+            callback => web.minion.architect.gearChat(boss, callback),
+            callback => web.minion.angel.gearPirateRestResources(boss, callback),
         ], (err, results) => cb(err, results));
         
     }

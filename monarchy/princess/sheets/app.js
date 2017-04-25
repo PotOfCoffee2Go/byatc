@@ -1,9 +1,7 @@
 'use strict';
 
-var fs = require('fs');
-var readline = require('readline');
-var google = require('googleapis');
-var googleAuth = require('google-auth-library');
+var google = require('googleapis'),
+    googleAuth = require('google-auth-library');
 
 var auth = null;
 

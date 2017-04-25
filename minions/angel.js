@@ -173,19 +173,27 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
 
 Angel.prototype.gearNinjaRestResources = function gearNinjaRestResources(cb) {
     var restPath = '';
-        //  Process REST requests from frontends
-        restPath  = '/ninja/clerk/bid/*';
-        web.routes.restRouter.post(restPath, (req, res, next) => {
-            var prayer = web.minion.angel.invokePrayer(req, res, next);
-            web.minion.clerk.onBid(req, res, next, prayer);
-        });
-        cb(null,'ninja Angel added REST resource Post ' + restPath+
-                    ' which calls clerk onBid()');
+    //  Process REST requests from frontends
+    restPath  = '/ninja/clerk/bid/*';
+    web.routes.restRouter.post(restPath, (req, res, next) => {
+        var prayer = web.minion.angel.invokePrayer(req, res, next);
+        web.minion.clerk.onBid(req, res, next, prayer);
+    });
+    cb(null,'ninja Angel added REST resource Post ' + restPath+
+                ' which calls clerk onBid()');
 
 };
 
 Angel.prototype.gearPirateRestResources = function gearPirateRestResources(boss, cb) {
-
+    var restPath = '';
+    //  Process REST requests from frontends
+    restPath  = '/pirate/crier/chat*';
+    web.routes.restRouter.get(restPath, (req, res, next) => {
+        var prayer = web.minion.angel.invokePrayer(req, res, next);
+        web.minion.crier.onInsertChat(req, res, next, prayer);
+    });
+    cb(null,'pirate Angel added REST resource Post ' + restPath+
+                ' which calls crier onInsertChat()');
 };
 
 

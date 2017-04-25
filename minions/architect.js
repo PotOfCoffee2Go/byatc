@@ -8,7 +8,7 @@ const
     request = require('request'),
     JsonDB = require('node-json-db'),
     gearbox = require('./#gearing/gearbox'),
-    
+
     MinionError = gearbox.MinionError,
     minionName = 'architect';
 
@@ -97,6 +97,12 @@ Architect.prototype.gearAuction = function gearAuction(boss, cb) {
     async.parallel([
         callback => getAuctionList(boss, 'guests', callback),
         callback => getAuctionList(boss, 'items', callback)
+    ], (err, results) => cb(err, results));
+};
+
+Architect.prototype.gearChat = function gearChat(boss, cb) {
+    async.parallel([
+        callback => web.minion.crier.gearChat(boss, callback),
     ], (err, results) => cb(err, results));
 };
 
