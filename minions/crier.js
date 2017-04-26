@@ -123,16 +123,43 @@ Crier.prototype.emitConnected = function emitConnected(socket) {
     socket.emit('Connected', prayer);
 };
 
-Crier.prototype.gearChat = function gearChat(boss, cb) {
-    chatDb.exec('CREATE TABLE one (two INT)');
-    cb(null, 'Connected to Chat database');
+Crier.prototype.gearChatRoom = function gearChatRoom(room, cb) {
+    // chatDb.exec('CREATE TABLE chat (Id SERIAL, c_from STRING, c_to STRING, c_msg STRING)');
+    cb(null, 'pirate Crier added Chat room ' + room.alias);
 };
 
-Crier.prototype.onInsertChat = function onInsertChat(req, res, next, prayer) {
-    var data = [{a:1,b:1,c:1},{a:1,b:2,c:1},{a:1,b:3,c:1}, {a:2,b:1,c:1}];
-    prayer.data = alasql('SELECT a, COUNT(*) AS bcnt FROM ? GROUP BY a',[data]);
+Crier.prototype.onGetFromRoomsDb = function onGetFromRoomsDb(req, res, next, prayer) {
+    web.logger.info('Got to onGetFromRoomsDb')
+    prayer.data = { result: 'Got to onGetFromRoomsDb' }
+    web.sendJson(null, res, prayer);
+    /*
+    chatDb.exec('SELECT * FROM chat', [], function(res){
+        web.logger.info('', prayer);
+        web.sendJson(null, res, prayer);
+    });
+    */
+};
+
+Crier.prototype.onPostToRoomsDb = function onPostToRoomsDb(req, res, next, prayer) {
+    web.logger.info('Got to onPostToRoomsDb')
+    prayer.data = { result: 'Got to onPostToRoomsDb' }
+    web.sendJson(null, res, prayer);
+    /*
+    chatDb.exec('INSERT INTO chat VALUES', [], function(result){
+        web.logger.info('', prayer);
+        web.sendJson(null, res, prayer);
+    });
+    */
+};
+
+Crier.prototype.onDeleteFromRoomsDb = function onDeleteFromRoomsDb(req, res, next, prayer) {
+    web.logger.info('Got to onDeleteFromRoomsDb')
+    prayer.data = { result: 'Got to onDeleteFromRoomsDb' }
+    web.sendJson(null, res, prayer);
+    /*
     web.logger.info('', prayer);
     web.sendJson(null, res, prayer);
+    */
 };
 
 

@@ -101,9 +101,14 @@ Architect.prototype.gearAuction = function gearAuction(boss, cb) {
 };
 
 Architect.prototype.gearChat = function gearChat(boss, cb) {
-    async.parallel([
-        callback => web.minion.crier.gearChat(boss, callback),
-    ], (err, results) => cb(err, results));
+    // Array of rooms to store and retrieve messages
+    async.mapSeries(web.cfg.chat.rooms, function(room, callback) {
+        // dbname, true = auto save, true = pretty
+        room.db = new JsonDB(boss.dbdir + '/' + web.cfg.chat.database + room.alias, true, true);
+
+        web.minion.crier.gearChatRoom(room, callback);
+        
+    }, (err, results) => {cb(err, results);});            
 };
 
 

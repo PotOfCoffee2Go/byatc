@@ -59,7 +59,7 @@ module.exports = {
     //  Rarely needed by Frontend sites - but handy for sophisticated frontends that interface
     //   directly to the Trello boards
     trello: { 
-        database: 'trello', // Database name prefix results in ('trello' + sheet.alias + '.json')
+        database: 'trello', // Database name prefix results in ('trello' + board.alias + '.json')
         team: {shortname: 'onyxbreezy'}, // Under what team to create the Trello boards
         boards: [], // [Added at runtime] Trello boards - info on each board
         template: { 
@@ -67,4 +67,13 @@ module.exports = {
             board: {} // [Added at runtime] cards used as template for new cards
         },
     },
+
+    chat: {
+        database: 'chat', // Database name prefix results in ('chat' + room.alias + '.json')
+        rooms:[
+            { alias: 'guests'},
+            { alias: 'items'},
+            { alias: 'auction'},
+        ]
+    }
 };
