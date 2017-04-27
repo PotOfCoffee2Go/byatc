@@ -33,7 +33,7 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
             minion: path[2],
             method: req.method,
             location: decodeURI(fullUrl.href),
-            timestamp: moment().format()
+            timestamp: new Date()
             },
         error: null
     };
@@ -53,7 +53,7 @@ Angel.prototype.socketPrayer = function socketPrayer(message) {
             minion: path[2],
             method: message.method,
             location: null,
-            timestamp: moment().format()
+            timestamp: new Date()
             },
         error: null
     };

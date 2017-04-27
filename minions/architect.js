@@ -101,14 +101,20 @@ Architect.prototype.gearAuction = function gearAuction(boss, cb) {
 };
 
 Architect.prototype.gearChat = function gearChat(boss, cb) {
-    // Array of rooms to store and retrieve messages
-    async.mapSeries(web.cfg.chat.rooms, function(room, callback) {
-        // dbname, true = auto save, true = pretty
-        room.db = new JsonDB(boss.dbdir + '/' + web.cfg.chat.database + room.alias, true, true);
 
-        web.minion.crier.gearChatRoom(room, callback);
+    async.series([
+        callback => web.minion.crier.gearAlasql(callback),
+        // Array of rooms to store and retrieve messages
+        callback =>
+            async.mapSeries(web.cfg.chat.rooms, function(room, callbackmap) {
+                // dbname, true = auto save, true = pretty
+                room.db = new JsonDB(boss.dbdir + '/' + web.cfg.chat.database + room.alias, true, true);
         
-    }, (err, results) => {cb(err, results);});            
+                web.minion.crier.gearChatRoom(room, callbackmap);
+                
+            }, (err, results) => {callback(err, results);})            
+    ], (err, results) => cb(err, results));
+
 };
 
 

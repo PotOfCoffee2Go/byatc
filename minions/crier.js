@@ -123,16 +123,52 @@ Crier.prototype.emitConnected = function emitConnected(socket) {
     socket.emit('Connected', prayer);
 };
 
+Crier.prototype.gearAlasql = function gearAlasql(cb) {
+    alasql.fn.crierIndexOf = (arr, val) => {
+        return arr.indexOf(val);
+    };
+    cb(null, 'pirate Crier added custom functions to alasql');
+};
+
 Crier.prototype.gearChatRoom = function gearChatRoom(room, cb) {
-    // chatDb.exec('CREATE TABLE chat (Id SERIAL, c_from STRING, c_to STRING, c_msg STRING)');
+    // Using the room alias, create array to hold messages
+    room.db.push('/' + room.alias, []);
     cb(null, 'pirate Crier added Chat room ' + room.alias);
 };
 
 Crier.prototype.onGetFromRoomsDb = function onGetFromRoomsDb(req, res, next, prayer) {
+    var
+        result = [],
+        pathList = prayer.resource.split('/'),
+        idfrom = pathList[4], idto = pathList[5],
+        room = web.cfg.chat.rooms.find(r => r.alias === pathList[3]); // guests,items,auction
+    try {
+        var msgs = room.db.getData('/' + room.alias);
+        if (idfrom === '*' && idto )
+            result = alasql('SELECT * FROM ? AS msgs WHERE crierIndexOf(idsTo,?) >= 0',
+                [msgs, idto]);
+        else if (idfrom && idto)
+            result = alasql('SELECT * FROM ? AS msgs WHERE idFrom = ? AND crierIndexOf(idsTo,?) >= 0',
+                [msgs, idfrom, idto]);
+        else if (idfrom)
+            result = alasql('SELECT * FROM ? AS msgs WHERE idFrom = ?', [msgs, idfrom]);
+        else
+            result = msgs;
+
+    } catch(err) {
+        var error = new MinionError(minionName, 'Can not get data from chat' + pathList[3] + '.json', 101, err);
+        web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+        return;
+    }
+    prayer.data = result;
+    web.sendJson(null, res, prayer);
+
+
+    /*
     web.logger.info('Got to onGetFromRoomsDb')
     prayer.data = { result: 'Got to onGetFromRoomsDb' }
     web.sendJson(null, res, prayer);
-    /*
+
     chatDb.exec('SELECT * FROM chat', [], function(res){
         web.logger.info('', prayer);
         web.sendJson(null, res, prayer);
@@ -141,10 +177,31 @@ Crier.prototype.onGetFromRoomsDb = function onGetFromRoomsDb(req, res, next, pra
 };
 
 Crier.prototype.onPostToRoomsDb = function onPostToRoomsDb(req, res, next, prayer) {
+    var
+        msg = req.body.data,
+        newData =  {idsTo: msg.to, idFrom: msg.from, msg: msg.msg, time: new Date()},
+        pathList = prayer.resource.split('/'),
+        room = web.cfg.chat.rooms.find(r => r.alias === pathList[3]); // guests,items,auction
+    try {
+        room.db.push('/' + room.alias + '[]', newData, true);
+    } catch(err) {
+        var error = new MinionError(minionName, 'Can not post data to chat' + pathList[3] + '.json', 101, err);
+        web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+        return;
+    }
+    prayer.data = newData;
+    web.sendJson(null, res, prayer);
+
+    // Let server send the response before sending to the watchers
+    var resource = prayer.resource;
+    process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
+
+
+    /*
     web.logger.info('Got to onPostToRoomsDb')
     prayer.data = { result: 'Got to onPostToRoomsDb' }
     web.sendJson(null, res, prayer);
-    /*
+
     chatDb.exec('INSERT INTO chat VALUES', [], function(result){
         web.logger.info('', prayer);
         web.sendJson(null, res, prayer);
