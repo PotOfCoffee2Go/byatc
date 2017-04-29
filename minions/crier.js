@@ -84,9 +84,8 @@ Crier.prototype.gearSockets = function gearWebsockets(boss, cb) {
         crier.emitConnected(socket);
         web.logger.info('connected: ' + socket.id);
     });
-    cb(null, 'Crier added Socket Topics Watch and Unwatch');
+    cb(null, [boss.name + ' crier added Socket Topics Watch and Unwatch']);
 };
-
 
 // - Got Watch request
 Crier.prototype.onWatch = function onWatch(socket, msg) {
@@ -127,13 +126,16 @@ Crier.prototype.gearAlasql = function gearAlasql(cb) {
     alasql.fn.crierIndexOf = (arr, val) => {
         return arr.indexOf(val);
     };
-    cb(null, 'pirate Crier added custom functions to alasql');
+    cb(null, 'pirate crier added custom functions to alasql');
 };
 
 Crier.prototype.gearChatRoom = function gearChatRoom(room, cb) {
+    if (room.db.getData('/' + room.alias).length > 0)
+        return cb(null, 'pirate crier kept previous Chat room ' + room.alias);
+
     // Using the room alias, create array to hold messages
     room.db.push('/' + room.alias, []);
-    cb(null, 'pirate Crier added Chat room ' + room.alias);
+    cb(null, 'pirate crier added Chat room ' + room.alias);
 };
 
 Crier.prototype.onGetFromRoomsDb = function onGetFromRoomsDb(req, res, next, prayer) {
@@ -162,18 +164,6 @@ Crier.prototype.onGetFromRoomsDb = function onGetFromRoomsDb(req, res, next, pra
     }
     prayer.data = result;
     web.sendJson(null, res, prayer);
-
-
-    /*
-    web.logger.info('Got to onGetFromRoomsDb')
-    prayer.data = { result: 'Got to onGetFromRoomsDb' }
-    web.sendJson(null, res, prayer);
-
-    chatDb.exec('SELECT * FROM chat', [], function(res){
-        web.logger.info('', prayer);
-        web.sendJson(null, res, prayer);
-    });
-    */
 };
 
 Crier.prototype.onPostToRoomsDb = function onPostToRoomsDb(req, res, next, prayer) {
@@ -197,26 +187,17 @@ Crier.prototype.onPostToRoomsDb = function onPostToRoomsDb(req, res, next, praye
     process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
 
 
-    /*
-    web.logger.info('Got to onPostToRoomsDb')
-    prayer.data = { result: 'Got to onPostToRoomsDb' }
-    web.sendJson(null, res, prayer);
-
-    chatDb.exec('INSERT INTO chat VALUES', [], function(result){
-        web.logger.info('', prayer);
-        web.sendJson(null, res, prayer);
-    });
-    */
 };
 
 Crier.prototype.onDeleteFromRoomsDb = function onDeleteFromRoomsDb(req, res, next, prayer) {
     web.logger.info('Got to onDeleteFromRoomsDb')
     prayer.data = { result: 'Got to onDeleteFromRoomsDb' }
     web.sendJson(null, res, prayer);
-    /*
-    web.logger.info('', prayer);
-    web.sendJson(null, res, prayer);
-    */
+
+        // Let server send the response before sending to the watchers
+    var resource = prayer.resource;
+    process.nextTick(() => web.minion.crier.broadcast('DELETE ' + resource));
+
 };
 
 

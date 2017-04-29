@@ -40,6 +40,34 @@ Architect.prototype.gearSheets = function gearSheets(boss, cb) {
     }, (err, results) => {cb(err, results);});            
 };
 
+Architect.prototype.loadFromSources = function loadFromSources (boss, cb) {
+    if (web.cfg.kingdom.reload) {
+        // Clear the boss working database directory
+        fs.emptyDirSync(boss.dbdir);
+    
+        // Start up tasks which this boss is responible
+        async.series([
+            callback => web.minion.architect.rousePrincessTrello(callback),
+            callback => web.minion.architect.gearSheets(boss, callback),
+            callback => web.minion.architect.gearTrello(boss, callback),
+            callback => web.minion.clerk.gearDatabases(callback),
+            callback => web.minion.architect.gearTrelloBoards(callback),
+        ], (err, results) => cb(err, results));
+    }
+    else {
+        var assigned = [];
+        // assign existing databases
+        web.cfg.spreadsheets.sheets.forEach((sheet) => {
+            sheet.db = new JsonDB(boss.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
+            assigned.push(boss.name + ' assigned database ' + web.cfg.spreadsheets.database + sheet.alias + '.json');
+        });
+
+        cb(null, [boss.name + ' restart is using existing database files', assigned]);
+    }
+        
+};
+
+
 Architect.prototype.rousePrincessTrello = function rousePrincessTrello(cb) {
     web.minion.constable.givePrincessTrelloCredentials();
     web.trello.rousePrincessTrello(web.cfg, (err, results) => cb(err, results));

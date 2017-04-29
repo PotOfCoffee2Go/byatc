@@ -30,7 +30,7 @@ module.exports = {
         web.bosses[bossName] = boss;
         
         // Clear the boss working database directory
-        fs.emptyDirSync(boss.dbdir);
+        // fs.emptyDirSync(boss.dbdir); // do not clear - keep existing messages
     
         async.series([
             callback => web.minion.constable.checkCredentials(boss, callback),

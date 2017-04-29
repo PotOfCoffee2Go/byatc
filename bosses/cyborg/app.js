@@ -25,21 +25,13 @@ module.exports = {
     gearBoss: (web, bossName, cb) => {  
         web.bosses[bossName] = boss;
 
-        // Clear the boss working database directory
-        fs.emptyDirSync(boss.dbdir);
-
         // Start up tasks which this boss is responible
-        async.series([ /* 
+        async.series([
             callback => web.minion.constable.checkCredentials(boss, callback),
-            callback => web.minion.architect.rousePrincessTrello(callback),
-            callback => web.minion.architect.gearSheets(boss, callback),
-            callback => web.minion.architect.gearTrello(boss, callback),
-            callback => web.minion.clerk.gearDatabases(callback),
-            callback => web.minion.architect.gearTrelloBoards(callback),
+            callback => web.minion.architect.loadFromSources(boss, callback),
             callback => web.minion.angel.gearCyborgRestResources(boss, callback),
             callback => web.minion.crier.gearSockets(boss, callback),
-
-            callback => web.minion.crier.relayQueenCommandToNinja(boss, callback),*/
+            callback => web.minion.crier.relayQueenCommandToNinja(boss, callback),
             callback => web.minion.crier.relayQueenCommandToPirate(boss, callback),
         ], (err, results) => cb(err, results))
     }
