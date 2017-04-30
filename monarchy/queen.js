@@ -1,49 +1,43 @@
 'use strict';
 /*
 DO NOT MODIFY THIS FILE IN THE REPO!
-
-Copy 'queen.js' into a directory on your LOCAL MACHINE which has node installed
-  (https://nodejs.org/en/)
-
-Place the bosses web addresses and keys into the kingdom object below - save
+Copy into a directory on your LOCAL MACHINE
+Place the bosses web addresses and keys into the kingdom below - save
 Thus, the only place where the keys to the kingdom reside is in
-    your copy of queen.js on your local machine ;)
+    this copy of queen.js on your local machine ;)
 
-From a command prompt in the directory you put 'queen.js' - run
-$ npm install request
-
-Then run from command prompt when ready to start up the bosses (advisors?)
-
-$ node queen
-
-You should see a messge indicating the system is running or error message if
-one has occured.
-
-Note: If you believe the keys have been compromised - log onto Trello, Google
-  Sheets, Twitter, etc and remove 'byatc auction system' from your 'app'
-  authorization list and re-authenticate with a new set of credentials.
-
+Run from command prompt on your local machine to start up the bosses
+ex: $ node queen
 */
 
 var kingdom = {
-    website: '',
+//    website: 'https://byatc-potofcoffee2go.c9users.io',
+  website: 'https://byatc-potofcoffee2go.rhcloud.com',
+    reload: true, // Use existing files
     keys: {
+        sheets: {
+            clientSecret: '',
+            token: ''
+        },
         trello: {
             key: '',
             token: ''
         },
-        sheets: {
-            clientSecret: '',
-            token: ''
+        twitter: {
+            key: '',
+            sercret: '',
+            access_token: '',
+            access_token_secret: ''
         }
     } 
 }
 
 const // Modules
+    util = require('util'),
     request = require('request');
 
 
-function startAdvisors() {
+function startBosses() {
 
 
     console.log('website is at: %s', kingdom.website);
@@ -52,16 +46,18 @@ function startAdvisors() {
         url:kingdom.website + '/queen/commands/cyborg/startMachines',
         method: 'POST',
         json: {kingdom:kingdom}},
-        function (err, httpResponse, body) { 
+        function (err,httpResponse,body) { 
             if (err) {
                 console.log(err);
             }
             else {
-                console.log(body);
+                console.log(util.inspect(body, { showHidden: false, depth: null }));
             }
         }
     );
 }
 
-startAdvisors();
+startBosses();
+
+//process.exit(0);
 
