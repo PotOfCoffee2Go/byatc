@@ -130,8 +130,9 @@ Crier.prototype.gearAlasql = function gearAlasql(cb) {
 };
 
 Crier.prototype.gearChatRoom = function gearChatRoom(room, cb) {
-    if (room.db.getData('/' + room.alias).length > 0)
-        return cb(null, 'pirate crier kept previous Chat room ' + room.alias);
+    if (web.cfg.kingdom.reload === false)
+        if (room.db.getData('/' + room.alias).length > 0)
+            return cb(null, 'pirate crier kept previous Chat room ' + room.alias);
 
     // Using the room alias, create array to hold messages
     room.db.push('/' + room.alias, []);
