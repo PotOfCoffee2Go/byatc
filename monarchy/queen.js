@@ -11,8 +11,8 @@ ex: $ node queen
 */
 
 var kingdom = {
-//    website: 'https://byatc-potofcoffee2go.c9users.io',
-  website: 'https://byatc-potofcoffee2go.rhcloud.com',
+    website: 'https://byatc-potofcoffee2go.c9users.io',
+//  website: 'https://byatc-potofcoffee2go.rhcloud.com',
     reload: true, // Use existing files
     keys: {
         sheets: {

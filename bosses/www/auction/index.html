@@ -19,6 +19,10 @@
     <link href="index.css" rel="stylesheet">
 
     <style type="text/css">
+
+.panel-primary > .panel-heading {
+     background-color: #194719 !important;
+}
       #tl-auction {
         font-size: 1.3em;
         text-align:center;
@@ -100,7 +104,7 @@
         <span class="label label-default">Chat</span>
         <span class="label label-primary">Help</span>
       </div>
-      <div id="myCarousel" class="carousel" data-ride="carousel" data-interval="false">
+      <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
           <!-- Carousel indicators -->
           <ol class="carousel-indicators">
               <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -130,7 +134,7 @@
               <div class="item">
                   <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/wine.png" alt="Third Slide">
                   <div class="carousel-caption">
-                    Wine
+                    Wine &amp; Spirits
                   </div>
               </div>
               <div class="item">
@@ -188,9 +192,8 @@
           <div class="timeline-body">
             <p id="tl-body"></p>
           </div>
-          <div class="timeline-heading">
+          <div class="timeline-heading hidden">
             <h4 class="timeline-title itemtext"></h4>
-            <h4><span class="label label-success">Buy Now for $</span></h4>
           </div>
           
           <p> </p>
@@ -207,9 +210,9 @@
                         <span class="glyphicon glyphicon-comment" data-toggle="tooltip" title="Comment about this item"></span>
                       </a>
                     </div>
-                    <span id="tl-auction"></span>
+                    <span></span>
                     &nbsp;
-                    <a id="tl-bid-btn" type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseBid">
+                    <a id="tl-bid-btn" type="button" class="hidden btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseBid">
                       <span class="glyphicon glyphicon-chevron-down" data-toggle="tooltip" title="Bid on  this item"></span>
                     </a>
 
@@ -221,12 +224,14 @@
                   </div>
               <div class="panel-collapse collapse" id="collapseBid">
                   <div class="panel-body">
-                      <p><b>Bid on this item</b></p>
+                      <p id="tl-bid-item-desc"><b>Bid on this item</b></p>
                       <div class="panel-footer">
+                          <span id="tl-auction" style="font-size: 16px;"></span>
+                        <h4><span id="tl-buy-now" class="label label-success pull-right" style="height: 30px; text-align: center; vertical-align: middle; line-height: 24px;">Buy Now for $</span></h4>
                         <div class="input-group">
-                            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." value="130" />
+                            <input id="btn-bid-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
                             <span class="input-group-btn">
-                                <button class="btn btn-success btn-sm" id="btn-bid">
+                                <button id="btn-bid" class="btn btn-success btn-sm" style="margin-right: 24px;">
                                   Bid&nbsp;
                                 </button>
                             </span>
@@ -264,10 +269,10 @@
               </div>
               <div class="panel-collapse collapse" id="collapseChat">
                   <div class="panel-body">
-                      <p><b>Comment on this item</b></p>
+                      <p id="tl-chat-item-desc"><b>Comment on this item</b></p>
                       <div class="panel-footer">
                         <div class="input-group">
-                            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." value="" />
+                            <input id="btn-chat-input" type="text" class="form-control input-sm" placeholder="Type your message here..." value="" />
                             <span class="input-group-btn">
                                 <button id="btn-send" class="btn btn-warning btn-sm">
                                   Send
@@ -276,19 +281,20 @@
                         </div>
                       </div>
                       <ul class="chat">
-                          <li class="left clearfix"><span class="chat-img pull-left">
+                          <li class="left clearfix">
+                            <span class="chat-img pull-left">
                               <img src="https://placehold.it/50/55C1E7/fff&text=JS" alt="User Avatar" class="img-circle" />
-                          </span>
-                              <div class="chat-body clearfix">
-                                  <div class="header">
-                                      <strong class="primary-font">Jack Sparrow</strong> <small class="pull-right text-muted">
-                                          <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
-                                  </div>
-                                  <p>
-                                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                                      dolor, quis ullamcorper ligula sodales.
-                                  </p>
-                              </div>
+                            </span>
+                            <div class="chat-body clearfix">
+                                <div class="header">
+                                    <strong class="primary-font">Jack Sparrow</strong> <small class="pull-right text-muted">
+                                        <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
+                                </div>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
+                                    dolor, quis ullamcorper ligula sodales.
+                                </p>
+                            </div>
                           </li>
                           <li class="right clearfix"><span class="chat-img pull-right">
                               <img src="https://placehold.it/50/FA6F57/fff&text=JB" alt="User Avatar" class="img-circle" />
@@ -365,8 +371,7 @@
       /* global $ byatec */
       var guests = {},
           cats = {}, catIds = [], curCatIdx = 0,
-          items = {}, itemIds = [], curItemIdx = 0,
-          categories = {}, categoryIds = [];
+          items = {}, itemIds = [], curItemIdx = 0;
 
       $('#item-left-btn').click(function() {
         if (curItemIdx === 0) curItemIdx = itemIds.length;
@@ -379,7 +384,16 @@
       });
 
       $('#tl-chat-btn').click(function() {
-        $('#collapseBid').collapse('hide');
+        if ($('#collapseChat').hasClass('in')) {
+//          $('#collapseChat').collapse('hide');
+          $('#collapseBid').collapse('show');
+        }
+        else {
+          $('#collapseBid').collapse('hide');
+        }
+        // $('#collapseBid').hasClass('in');//Will return true if uncollapsed
+        // $('#collapseBid').hasClass('collapsing');//Will return true if in the process of collapsing
+        // $('#collapseBid').hasClass('collapse');//Will return true if collapsed
       });
 
       $('#tl-bid-btn').click(function() {
@@ -404,7 +418,17 @@
         $('.timeline-title').html(id + ' - ' + items[id].profile.Item);
         // $('#tl-body').html('');
         //$('#tl-date').html(' ' + item.status.timestamp.split('T')[1].split('+')[0]);
-        $('#tl-auction').html('Make a $' + items[id].auction.CurrentBid + ' Bid');
+        $('#tl-auction').html('Next bid is at $<b>' + items[id].auction.CurrentBid + '</b> - more is awesome!');
+        $('#tl-buy-now').html('Buy now for $' + items[id].auction.BuyPrice);
+        $('#btn-bid-input').val(items[id].auction.CurrentBid);
+        
+        $('#tl-bid-item-desc').fadeOut('fast', function() {
+          $('#tl-bid-item-desc').html('<span style="font-size: 20px;">' + id + ' - ' + items[id].profile.Item + '</span>');
+          $('#tl-bid-item-desc').fadeIn('fast');
+        });
+        
+        $('#tl-chat-item-desc').html('<b> Comment about ' + items[id].profile.Item + '</b>');
+        
       }
 
       function displayCategories(id) {
@@ -415,8 +439,8 @@
         displayItem(itemIds[curItemIdx]);
       }
 
-      // byatec.connect("https://byatc-potofcoffee2go.c9users.io");
-      byatec.connect("https://byatc-potofcoffee2go.rhcloud.com");
+      byatec.connect("https://byatc-potofcoffee2go.c9users.io");
+      // byatec.connect("https://byatc-potofcoffee2go.rhcloud.com");
       
       byatec.on('Connected', function (msg) {
         console.log('onConnected', msg);
@@ -440,21 +464,22 @@
       });
 
       $(document).ready(function() {  
-           $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip({delay: {show: 4500, hide: 100}});
+        $('#collapseBid').collapse('show');
 
-					//Enable swiping...
-					$(".carousel-inner").swipe( {
-						//Generic swipe handler for all directions
-						swipeLeft:function(event, direction, distance, duration, fingerCount) {
-							$(this).parent().carousel('next'); 
-						},
-						swipeRight: function() {
-							$(this).parent().carousel('prev'); 
-						},
-						//Default is 75px, set to 0 for demo so any distance triggers swipe
-						threshold:0
-					});
-				});
+        //Enable swiping...
+        $(".carousel-inner").swipe( {
+          //Generic swipe handler for all directions
+          swipeLeft:function(event, direction, distance, duration, fingerCount) {
+          $(this).parent().carousel('next'); 
+          },
+          swipeRight: function() {
+            $(this).parent().carousel('prev'); 
+          },
+          //Default is 75px, set to 0 for demo so any distance triggers swipe
+          threshold:0
+          });
+      });
 
 
     </script>
