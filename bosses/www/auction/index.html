@@ -99,9 +99,9 @@
         <!-- <span class="label label-danger">alice</span>
         <span class="label label-primary">story</span>
         <span class="label label-warning">Favorites</span>  -->
-        <span class="label label-info">Categories</span>
+        <span class="label label-info">Auction</span>
         <span class="label label-success">Your Bids</span>
-        <span class="label label-default">Chat</span>
+        <span class="label label-default">Chat Rooms</span>
         <span class="label label-primary">Help</span>
       </div>
       <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
@@ -181,10 +181,10 @@
               </div>
           </div>
           <!-- Carousel controls -->
-          <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+          <a id="carousel-control-left" class="carousel-control left" href="#myCarousel" data-slide="prev">
               <span class="glyphicon glyphicon-chevron-left"></span>
           </a>
-          <a class="carousel-control right" href="#myCarousel" data-slide="next">
+          <a id="carousel-control-right" class="carousel-control right" href="#myCarousel" data-slide="next">
               <span class="glyphicon glyphicon-chevron-right"></span>
           </a>
       </div>
@@ -203,7 +203,7 @@
                   <div class="panel-heading" id="accordion">
                     <div class="pull-left">
                       <a id="item-left-btn" type="button" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-menu-left" data-toggle="tooltip" title="Previous item in this category"></span>
+                        <span class="glyphicon glyphicon-arrow-left" data-toggle="tooltip" title="Previous item in this category"></span>
                       </a>
                       &nbsp;
                       <a id="tl-chat-btn" type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseChat">
@@ -217,8 +217,12 @@
                     </a>
 
                     <div class="pull-right">
+                      <a id="tl-alarm-btn" type="button" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-bell" data-toggle="tooltip" title="Watch this item"></span>
+                      </a>
+                      &nbsp;
                       <a id="item-right-btn" type="button" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-menu-right" data-toggle="tooltip" title="Next Item in this category"></span>
+                        <span class="glyphicon glyphicon-arrow-right" data-toggle="tooltip" title="Next Item in this category"></span>
                       </a>
                     </div>
                   </div>
@@ -227,7 +231,7 @@
                       <p id="tl-bid-item-desc"><b>Bid on this item</b></p>
                       <div class="panel-footer">
                           <span id="tl-auction" style="font-size: 16px;"></span>
-                        <h4><span id="tl-buy-now" class="label label-success pull-right" style="height: 30px; text-align: center; vertical-align: middle; line-height: 24px;">Buy Now for $</span></h4>
+                        <h4><span id="tl-buy-now" class="label label-success pull-right" style="color: #F5F5F5; height: 30px; text-align: center; vertical-align: middle; line-height: 24px;">Buy Now for $</span></h4>
                         <div class="input-group">
                             <input id="btn-bid-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
                             <span class="input-group-btn">
@@ -325,7 +329,7 @@
                               </div>
                           </li>
                           <li class="right clearfix"><span class="chat-img pull-right">
-                              <img src="https://placehold.it/50/FA6F57/fff&text=RGB" alt="User Avatar" class="img-circle" />
+                              <img src="https://placehold.it/50/FA6F57/fff&text=JB" alt="User Avatar" class="img-circle" />
                           </span>
                               <div class="chat-body clearfix">
                                   <div class="header">
@@ -401,12 +405,12 @@
       });
 
       // Enable Carousel Controls
-      $('.left').click(function() {
+      $('#carousel-control-left').click(function() {
         curCatIdx--;
         if (curCatIdx < 0) curCatIdx = catIds.length - 1;
         displayCategories(catIds[curCatIdx]);
       });
-      $(".right").click(function() {
+      $('#carousel-control-right').click(function() {
         curCatIdx++;
         if (curCatIdx >= catIds.length) curCatIdx = 0;
         displayCategories(catIds[curCatIdx]);
@@ -418,16 +422,16 @@
         $('.timeline-title').html(id + ' - ' + items[id].profile.Item);
         // $('#tl-body').html('');
         //$('#tl-date').html(' ' + item.status.timestamp.split('T')[1].split('+')[0]);
-        $('#tl-auction').html('Next bid is at $<b>' + items[id].auction.CurrentBid + '</b> - more is awesome!');
+        $('#tl-auction').html('Next bid is at $<b>' + items[id].auction.CurrentBid + '</b> or better');
         $('#tl-buy-now').html('Buy now for $' + items[id].auction.BuyPrice);
         $('#btn-bid-input').val(items[id].auction.CurrentBid);
         
         $('#tl-bid-item-desc').fadeOut('fast', function() {
-          $('#tl-bid-item-desc').html('<span style="font-size: 20px;">' + id + ' - ' + items[id].profile.Item + '</span>');
+          $('#tl-bid-item-desc').html('<span style="font-size: 18px;"><b>' + id + ' - ' + items[id].profile.Item + '</b></span>');
           $('#tl-bid-item-desc').fadeIn('fast');
         });
         
-        $('#tl-chat-item-desc').html('<b> Comment about ' + items[id].profile.Item + '</b>');
+        $('#tl-chat-item-desc').html('<b> Comment about: ' + items[id].profile.Item + '</b>');
         
       }
 
@@ -464,7 +468,7 @@
       });
 
       $(document).ready(function() {  
-        // $('[data-toggle="tooltip"]').tooltip({delay: {show: 4500, hide: 100}});
+        $('[data-toggle="tooltip"]').tooltip({delay: {show: 2500, hide: 100}});
         $('#collapseBid').collapse('show');
 
         //Enable swiping...

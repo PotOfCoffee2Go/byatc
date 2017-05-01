@@ -264,9 +264,9 @@ function getBoardListsFromSheets(cfg, cb) {
     
     var cards = Object.keys(sheetcards);
     cards.forEach(function(idCard) {
-        let table = 'Table ' + sheetcards[idCard].profile.Seat;
+        let table = 'Table ' + sheetcards[idCard].profile.Seating;
         let list = boardlists.find(l => l.name === table);
-        if (!list && sheetcards[idCard].profile.Seat.length > 0) {
+        if (!list && sheetcards[idCard].profile.Seating.length > 0) {
             boardlists.push({id: null, name: table});
         }
     });
@@ -467,9 +467,9 @@ function addNewGuestBoardCards(cfg, cb) {
     
     cards.forEach(function(idCard) {
         if (!sheetcards[idCard].trello) {
-            let table = 'Table ' + sheetcards[idCard].profile.Seat;
+            let table = 'Table ' + sheetcards[idCard].profile.Seating;
             let idList = boardlists.find(l => l.name === table).id;
-            if (idList && sheetcards[idCard].profile.Seat.length > 0) {
+            if (idList && sheetcards[idCard].profile.Seating.length > 0) {
                 api.push('post.cards',
                     {idList: idList,
                     name: sheetcards[idCard].profile.id + ' - ' + 
