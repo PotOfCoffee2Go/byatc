@@ -128,50 +128,67 @@ Angel.prototype.gearTrelloWebhook = function gearTrelloWebhook(boss, board) {
 };
 
 Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss, cb) {
-    // Array of 'sheets' with databases for chef and clerk
-    async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
-        var restPath = '';
-        var restResources = [];
+    async.series([
+        // Array of rooms to store and retrieve messages
+        callback =>
+            // Array of 'sheets' with databases for chef and clerk
+            async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callbackmap) {
+                var restPath = '';
+                var restResources = [];
+        
+                //  Process REST requests from frontends
+                restPath  = '/' + boss.name + '/chef/' + sheet.alias + '*';
+                if (sheet.db) {
+                    web.routes.restRouter.get(restPath, (req, res, next) => {
+                        var prayer = web.minion.angel.invokePrayer(req, res, next);
+                        web.minion.chef.onGetFromSheetsDb(req, res, next, prayer);
+                    });
+                    restResources.push(boss.name + ' angel added REST method GET ' + restPath + 
+                                        ' which calls chef onGetFromSheetsDb()');
+        
+                    restPath  = '/' + boss.name + '/clerk/' + sheet.alias + '*';
+                    web.routes.restRouter.post(restPath, (req, res, next) => {
+                        var prayer = web.minion.angel.invokePrayer(req, res, next);
+                        web.minion.clerk.onPostToSheetsDb(req, res, next, prayer);
+                    });
+                    restResources.push(boss.name + ' angel added REST method POST ' + restPath + 
+                                        ' which calls clerk onPostToSheetsDb()');
+        
+                    web.routes.restRouter.delete(restPath, (req, res, next) => {
+                        var prayer = web.minion.angel.invokePrayer(req, res, next);
+                        web.minion.clerk.onDeleteFromSheetsDb(req, res, next, prayer);
+                    });
+                    restResources.push(boss.name + ' angel added REST method DELETE ' + restPath + 
+                                        ' which calls clerk onDeleteFromSheetsDb()');
+                }
+                else {
+                    if (sheet.rows) {
+                        restPath  = '/' + boss.name + '/chef/' + sheet.alias;
+                        web.routes.restRouter.get(restPath, (req, res, next) => {
+                            var prayer = web.minion.angel.invokePrayer(req, res, next);
+                            web.minion.chef.onGetAuctionRows(req, res, next, prayer);
+                        });
+                        restResources.push(boss.name + ' angel added REST method GET ' + restPath +
+                                           ' which calls chef onGetAuctionRows()');
+                    }
+                }
+                
+                callbackmap(null, restResources);
+                
+            }, (err, results) => {callback(err, results);}),
 
-        //  Process REST requests from frontends
-        restPath  = '/' + boss.name + '/chef/' + sheet.alias + '*';
-        if (sheet.db) {
-            web.routes.restRouter.get(restPath, (req, res, next) => {
-                var prayer = web.minion.angel.invokePrayer(req, res, next);
-                web.minion.chef.onGetFromSheetsDb(req, res, next, prayer);
-            });
-            restResources.push(boss.name + ' angel added REST method GET ' + restPath + 
-                                ' which calls chef onGetFromSheetsDb()');
-
-            restPath  = '/' + boss.name + '/clerk/' + sheet.alias + '*';
+        // Guest logi
+        callback => {
+            var restPath  = '/' + boss.name + '/constable/guests/login';
             web.routes.restRouter.post(restPath, (req, res, next) => {
                 var prayer = web.minion.angel.invokePrayer(req, res, next);
-                web.minion.clerk.onPostToSheetsDb(req, res, next, prayer);
+                web.minion.constable.onPostGuestLogin(req, res, next, prayer);
             });
-            restResources.push(boss.name + ' angel added REST method POST ' + restPath + 
-                                ' which calls clerk onPostToSheetsDb()');
-
-            web.routes.restRouter.delete(restPath, (req, res, next) => {
-                var prayer = web.minion.angel.invokePrayer(req, res, next);
-                web.minion.clerk.onDeleteFromSheetsDb(req, res, next, prayer);
-            });
-            restResources.push(boss.name + ' angel added REST method DELETE ' + restPath + 
-                                ' which calls clerk onDeleteFromSheetsDb()');
-        }
-        else {
-            if (sheet.rows) {
-                restPath  = '/' + boss.name + '/chef/' + sheet.alias;
-                web.routes.restRouter.get(restPath, (req, res, next) => {
-                    var prayer = web.minion.angel.invokePrayer(req, res, next);
-                    web.minion.chef.onGetAuctionRows(req, res, next, prayer);
-                });
-                restResources.push(boss.name + ' angel added REST method GET ' + restPath +
-                                   ' which calls chef onGetAuctionRows()');
-            }
-        }
-        callback(null, restResources);
         
-    }, (err, results) => cb(err, results));
+            callback(null, boss.name + ' angel added REST method POST ' + restPath + 
+                                ' which calls constable onPostGuestLogin()');
+        }
+    ], (err, results) => cb(err, results));
 };
 
 Angel.prototype.gearNinjaRestResources = function gearNinjaRestResources(cb) {

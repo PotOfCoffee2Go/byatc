@@ -36,7 +36,18 @@ Constable.prototype.checkCredentials = function checkCredentials(boss, cb) {
     else {
         cb(null, 'Constable verified boss ' + boss.name + ' credentials');
     }
-}
+};
+
+Constable.prototype.onPostGuestLogin = function onPostGuestLogin(req, res, next, prayer) {
+    /*
+    
+    
+    
+    */
+    prayer.data = req.body;
+    web.sendJson(null, res, prayer);
+};
+
 
 module.exports = Constable;
 
