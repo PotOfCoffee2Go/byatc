@@ -37,6 +37,18 @@
         text-align:center;
       }
       
+      .guest-auction {
+        font-size: 1.2em;
+        margin: 2px 2px 2px 2px;
+        white-space: nowrap;
+        text-align:center;
+      }
+      
+      .dropdown-menu {
+          left: 50% !important;
+          margin-left: -70px;
+      }
+
       #accordion {
         text-align:center;
       }
@@ -93,59 +105,29 @@
 </head>
 
 <body>
-  <div id="modal-login">
-    <p class="text-center">
-        <button class="btn btn-default" data-toggle="modal" data-target="#loginModal">Login</button>
-    </p>
-    
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="Login" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h5 class="modal-title">Login</h5>
-                </div>
-    
-                <div class="modal-body">
-                    <!-- The form is placed inside the body of modal -->
-                    <form id="loginForm" method="post" class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-xs-3 control-label">Username</label>
-                            <div class="col-xs-5">
-                                <input type="text" class="form-control" name="username" />
-                            </div>
-                        </div>
-    
-                        <div class="form-group">
-                            <label class="col-xs-3 control-label">Password</label>
-                            <div class="col-xs-5">
-                                <input type="password" class="form-control" name="password" />
-                            </div>
-                        </div>
-    
-                        <div class="form-group">
-                            <div class="col-xs-5 col-xs-offset-3">
-                                <button type="submit" class="btn btn-primary">Login</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-  </div>
 
     <div id="cn-auction" class="container">
+
+    <div class="guest-auction">
+      <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <span id="guest-name"></span>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><a href="#">Checkout</a></li>
+          <li><a href="/auction/login.html">Log out</a></li>
+          <!-- <li role="separator" class="divider"></li> -->
+        </ul>
+      </div>
+    </div>
+
       <div class="btn-labels">
         <!-- <span class="label label-danger">alice</span>
         <span class="label label-primary">story</span>
         <span class="label label-warning">Favorites</span>  -->
         <span class="label label-info">Auction</span>
-        <span class="label label-success">Your Bids</span>
+        <span class="label label-success">Favorites</span>
         <span class="label label-default">Chat Rooms</span>
         <span class="label label-primary">Help</span>
       </div>
@@ -429,8 +411,13 @@
     <script src="touchswipe.js"></script>
 
     <script>
-      /* global $ byatec */
-      var guests = {},
+      /* global $ byatec localStorage */
+      var authKey = localStorage.getItem('BYATEC_KEY');
+      if (!authKey) {
+        window.location.href = "/auction/login.html";
+      }
+      
+      var guests = {}, curGuest = {},
           cats = {}, catIds = [], curCatIdx = 0,
           items = {}, itemIds = [], curItemIdx = 0;
 
@@ -446,7 +433,6 @@
 
       $('#tl-chat-btn').click(function() {
         if ($('#collapseChat').hasClass('in')) {
-//          $('#collapseChat').collapse('hide');
           $('#collapseBid').collapse('show');
         }
         else {
@@ -505,15 +491,17 @@
       
       byatec.on('Connected', function (msg) {
         console.log('onConnected', msg);
-        byatec.watch("/cyborg/chef/guests/G0270");
-        byatec.watch("/cyborg/chef/items/by/category");
+        byatec.watch('/cyborg/chef/guests/' + localStorage.getItem('BYATEC_GUEST'));
+        byatec.watch('/cyborg/chef/items/by/category');
         // byatec.watch("/cyborg/chef/categories");
       });
       
       byatec.on('Watch', function (msg) {
         var path = msg.resource.split('/');
         if (path[3] === 'guests') {
-          guests[path[4]] = msg.data[path[4]];
+          console.log(msg.data[path[4]]);
+          curGuest = msg.data[path[4]];
+          $('#guest-name').html('<b>' + curGuest.auction.Name + '</b>');
         }
         else if (path[3] === 'items') {
           cats = msg.data;

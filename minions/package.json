@@ -21,6 +21,7 @@
   "dependencies": {
     "alasql": "^0.3.9",
     "marked": "^0.3.6",
-    "moment-timezone": "^0.5.11"
+    "moment-timezone": "^0.5.11",
+    "uuid": "^3.0.1"
   }
 }

@@ -4,7 +4,7 @@
 var byatec = byatec || {};
 
 (function (ns) {
-    /* global io */
+    /* global io localStorage */
 
     ns.connect = function byatec_connect(url) {
 
@@ -52,7 +52,7 @@ var byatec = byatec || {};
             return {
                 resource: resource,
                 data: data,
-                status: null,
+                status: {key: localStorage.getItem('BYATEC_KEY')},
                 error: null
             };
         };

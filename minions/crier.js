@@ -93,7 +93,8 @@ Crier.prototype.onWatch = function onWatch(socket, msg) {
         var path = msg.resource.split('/'),
             room = path[3] + '/' + path[4];
         socket.join(room);
-        request({url: web.cfg.kingdom.website + msg.resource, method: 'GET', json: true},
+        request({url: web.cfg.kingdom.website + msg.resource, method: 'GET', json: true,
+                headers: {'Authorization': 'BYATEC ' + msg.status.key}},
             (err, response, json) => socket.emit('Watch', err ? err : json));
 
         web.logger.info('onWatch: ' + socket.id + ' joined resource - ' + msg.resource);

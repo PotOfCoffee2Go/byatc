@@ -20,6 +20,12 @@ function Angel (Web) {
 
 // Prayer is the payload for REST and/or Websocket responses
 Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
+    var guestkey = null,
+        authHeader = req.headers.authorization;
+    if (authHeader) {
+        guestkey = web.minion.constable.verifyGuestKey(authHeader);
+    }
+
     var fullUrl = web.minion.angel.getFullURL(req, res, next);
     var path = fullUrl.pathname.split('/');
     // Create the prayer - assume it will be forfilled
@@ -29,6 +35,7 @@ Angel.prototype.invokePrayer = function invokePrayer(req, res, next) {
         status: {
             code: 200,
             text: '200 - OK',
+            guest: (guestkey) ? guestkey.guest : null,
             boss: path[1],
             minion: path[2],
             method: req.method,
@@ -65,6 +72,7 @@ Angel.prototype.errorPrayer = function errorPrayer(err, prayer) {
         resource: prayer.resource,
         data: {},
         status: {
+            key: prayer.status.key,
             code: 418,
             text: '418 - I\'m a teapot',
             boss: prayer.boss,
@@ -177,7 +185,7 @@ Angel.prototype.gearCyborgRestResources = function gearCyborgRestResources(boss,
                 
             }, (err, results) => {callback(err, results);}),
 
-        // Guest logi
+        // Guest login
         callback => {
             var restPath  = '/' + boss.name + '/constable/guests/login';
             web.routes.restRouter.post(restPath, (req, res, next) => {
