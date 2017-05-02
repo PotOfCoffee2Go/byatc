@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Start Bootstrap Template</title>
+    <title>Onyx and Breezy Auction</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -20,6 +20,26 @@
 
     <style type="text/css">
 
+      .panel-primary > .panel-heading {
+        background-image: linear-gradient(to bottom, #5bc0de 0, #95d6e9 100%);
+      }
+
+      .carousel-control.right {
+        background-image: linear-gradient(to right, rgba(39, 155, 190, .0001) 0, rgba(39, 155, 190, .5) 100%);
+      }
+
+      .carousel-control.left {
+        background-image: linear-gradient(to right, rgba(39, 155, 190, .5) 0, rgba(39, 155, 190, .0001) 100%);
+      }
+
+      .tl-checkbox {
+        padding: 0 0 0 0;
+      }
+
+      #tl-item-count {
+        color: black;
+      }
+      
       #tl-auction {
         font-size: 1.3em;
         text-align:center;
@@ -115,6 +135,7 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><a href="#">Settings</a></li>
           <li><a href="#">Checkout</a></li>
           <li><a href="/auction/login.html">Log out</a></li>
           <!-- <li role="separator" class="divider"></li> -->
@@ -219,8 +240,24 @@
           <div class="timeline-body">
             <p id="tl-body"></p>
           </div>
-          <div class="timeline-heading hidden">
-            <h4 class="timeline-title itemtext"></h4>
+          
+          
+          <div class="timeline-heading collapse">
+            <!-- <h4 class="timeline-title itemtext">Search: </h4> -->
+            <div class="text-center">
+              <span class="pull-left">Search Items... </span>
+              Found: 0
+              <label class="tl-checkbox btn pull-right"><input type="checkbox" autocomplete="off" />This category</label>
+            </div>
+            <p></p>
+            <div class="input-group">
+            <input id="btn-search-input" type="text" class="form-control input-sm" placeholder="Your search text..." />
+                <span class="input-group-btn">
+                    <button id="btn-send" class="btn btn-warning btn-sm">
+                      Search
+                    </button>
+                </span>
+            </div>
           </div>
           
           <p> </p>
@@ -237,15 +274,10 @@
                         <span class="glyphicon glyphicon-comment" data-toggle="tooltip" title="Comment about this item"></span>
                       </a>
                     </div>
-                    <span></span>
-                    &nbsp;
-                    <a id="tl-bid-btn" type="button" class="hidden btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseBid">
-                      <span class="glyphicon glyphicon-chevron-down" data-toggle="tooltip" title="Bid on  this item"></span>
-                    </a>
-
+                    <span id="tl-item-count">&nbsp;</span>
                     <div class="pull-right">
-                      <a id="tl-alarm-btn" type="button" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-bell" data-toggle="tooltip" title="Watch this item"></span>
+                      <a id="tl-search-btn" type="button" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-search" data-toggle="tooltip" title="Search for items"></span>
                       </a>
                       &nbsp;
                       <a id="item-right-btn" type="button" class="btn btn-default btn-xs">
@@ -423,12 +455,23 @@
 
       $('#item-left-btn').click(function() {
         if (curItemIdx === 0) curItemIdx = itemIds.length;
+        $('#tl-item-count').html('-&nbsp;' + curItemIdx + '&nbsp;-');
         displayItem(itemIds[--curItemIdx]);
         });
 
       $('#item-right-btn').click(function() {
         if (curItemIdx === itemIds.length-1) curItemIdx = -1;
+        $('#tl-item-count').html('-&nbsp;' + (curItemIdx + 2) + '&nbsp;-');
         displayItem(itemIds[++curItemIdx]);
+      });
+
+      $('#tl-search-btn').click(function() {
+        if ($('.timeline-heading').hasClass('in')) {
+          $('.timeline-heading').collapse('hide');
+        }
+        else {
+          $('.timeline-heading').collapse('show');
+        }
       });
 
       $('#tl-chat-btn').click(function() {
@@ -483,6 +526,7 @@
         items = cats[id].items;
         itemIds = Object.keys(cats[id].items);
         curItemIdx = 0;
+        $('#tl-item-count').html('-&nbsp;1&nbsp;-');
         displayItem(itemIds[curItemIdx]);
       }
 
@@ -521,10 +565,16 @@
         $(".carousel-inner").swipe( {
           //Generic swipe handler for all directions
           swipeLeft:function(event, direction, distance, duration, fingerCount) {
-          $(this).parent().carousel('next'); 
+            $(this).parent().carousel('next'); 
+            curCatIdx++;
+            if (curCatIdx >= catIds.length) curCatIdx = 0;
+            displayCategories(catIds[curCatIdx]);
           },
           swipeRight: function() {
             $(this).parent().carousel('prev'); 
+            curCatIdx--;
+            if (curCatIdx < 0) curCatIdx = catIds.length - 1;
+            displayCategories(catIds[curCatIdx]);
           },
           //Default is 75px, set to 0 for demo so any distance triggers swipe
           threshold:0
