@@ -1,3 +1,13 @@
+/*
+ * /minions/architect.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file creates the objects, files, and structures required by
+ * the byatec auction system.
+ *
+ */
+
 'use strict';
 
 (function() {

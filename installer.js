@@ -1,3 +1,17 @@
+/*
+ * /installer.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file installs the nodejs modules required of the
+ * byatec auction system.
+ * The file is started by npm given 'npm install' command
+ * from the project directory.
+ *
+ */
+
+'use strict';
+
 const spawnSync = require('child_process').spawnSync;
 
 console.log('');

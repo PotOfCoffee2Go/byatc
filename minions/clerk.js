@@ -1,3 +1,13 @@
+/*
+ * /minions/clerk.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file handles RESTful 'POST/PUT' requests by updating the 
+ * byatec auction system databases.
+ *
+ */
+
 'use strict';
 
 (function() {

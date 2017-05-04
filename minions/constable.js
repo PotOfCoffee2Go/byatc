@@ -1,3 +1,13 @@
+/*
+ * /minions/constable.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file handles credentials, roles, and user authorization to
+ * byatec auction system resources.
+ *
+ */
+
 'use strict';
 
 (function() {

@@ -1,3 +1,15 @@
+/*
+ * /config.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file along with /monarchy/queen.js provides the configuration
+ * parameters to the byatec auction system
+ *
+ */
+
+'use strict';
+
 module.exports = {
     kingdom: {}, // [Added at runtime] Credentials/Keys to the kingdom from Her Majesty
 

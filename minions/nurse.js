@@ -1,3 +1,13 @@
+/*
+ * /minions/nurse.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file handles invalid resource requests and errors
+ * that might occur in the byatec auction system web server.
+ *
+ */
+
 'use strict';
 
 (function() {

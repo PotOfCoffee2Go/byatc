@@ -1,4 +1,16 @@
-'use strict';
+/*
+ * /monarchy/queen.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file holds the credentials to web based services and
+ * sends RESTful request to start up the auction system by
+ * providing those credentials. The file runs from the auction
+ * administrator's local machine to insure the security of the
+ * keys, tokens, and secrets of the web services.
+ *
+ */
+
 /*
 DO NOT MODIFY THIS FILE IN THE REPO!
 Copy into a directory on your LOCAL MACHINE
@@ -9,6 +21,8 @@ Thus, the only place where the keys to the kingdom reside is in
 Run from command prompt on your local machine to start up the bosses
 ex: $ node queen
 */
+
+'use strict';
 
 var kingdom = {
     website: 'https://byatc-potofcoffee2go.c9users.io',
@@ -25,7 +39,7 @@ var kingdom = {
         },
         twitter: {
             key: '',
-            sercret: '',
+            secret: '',
             access_token: '',
             access_token_secret: ''
         }

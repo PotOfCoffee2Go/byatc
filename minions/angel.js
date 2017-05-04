@@ -1,3 +1,13 @@
+/*
+ * /minions/angel.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file creates the resource paths of the web server(s), standardizes
+ * message structure and routes to function to process the requests
+ *
+ */
+
 'use strict';
 
 (function() {
@@ -90,11 +100,6 @@
     //    ie: https://host/path?querystring#hash part from the url
     // Indicates socket.io by setting protocol and host to https://socketio
     Angel.prototype.getFullURL = function getFullURL(req, res, next) {
-        // When request is a string is from socket.io
-        if (typeof req.resource === 'string') {
-            return url.parse('https://' + hostname + req.resource, true);
-        }
-
         // Is a RESTful (express) request
         return url.parse(req.protocol + 's://' + req.get('host') + req.originalUrl);
     };

@@ -1,3 +1,14 @@
+/*
+ * /minions/crier.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file handles broadcasting changes that occur in the
+ * byatec auction system databases to clients watching for 
+ * current updates.
+ *
+ */
+
 'use strict';
 
 (function() {

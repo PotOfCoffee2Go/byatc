@@ -1,3 +1,12 @@
+/*
+ * /installer.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file is currently not used - may be removed. Stay tuned.
+ *
+ */
+
 'use strict';
 
 require('pkginfo')(module, 'name', 'version', 'description');

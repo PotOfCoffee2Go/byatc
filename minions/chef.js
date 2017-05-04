@@ -1,3 +1,13 @@
+/*
+ * /minions/chef.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file handles RESTful 'GET' requests by building the response
+ * by quering the byatec auction system databases.
+ *
+ */
+
 'use strict';
 
 (function() {

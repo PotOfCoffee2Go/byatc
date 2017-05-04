@@ -1,3 +1,12 @@
+/*
+ * /bosses/server.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file creates the web server of the byatec auction system
+ *
+ */
+
 'use strict';
 (function() {
 
@@ -8,7 +17,7 @@
         // Logger    
         Winston = require('winston'),
 
-        // Middleware
+        // Middleware to parse body content
         bodyParser = require("body-parser"),
 
         // Princess Trello
@@ -16,13 +25,13 @@
         trello = require('../monarchy/princess/trello/app'),
 
         // Princess Sheets
-        spreadsheets = require('../monarchy/princess/sheets/app');
+        spreadsheets = require('../monarchy/princess/sheets/app'),
 
-    // Configuration
-    var appDir = path.dirname(require.main.filename),
+        // Configuration
+        appDir = path.dirname(require.main.filename),
         cfg = require(appDir + '/../config.js');
 
-    // Helper to send JSON responses
+    // Helper to send JSON responses to RESTful requests
     function sendJson(err, res, data) {
         res.setHeader('Cache-Control', 'no-cache, no-store');
         if (err) {
@@ -35,8 +44,7 @@
         }
     }
 
-    module.exports = (asTheQueenCommands) => {
-
+    module.exports = (asHerMajestyCommands) => {
         // Console logger
         var logger = new Winston.Logger({
             transports: [
@@ -72,7 +80,7 @@
         app.post('/queen/commands/:boss/:cmd', (req, res, next) => {
             res.type('text');
             cfg.kingdom = req.body.kingdom;
-            asTheQueenCommands[req.params.cmd](req.params.boss, function(err, reply) {
+            asHerMajestyCommands[req.params.cmd](req.params.boss, function(error, reply) {
                 res.send(JSON.stringify(reply, null, 2));
             });
         });
@@ -107,37 +115,35 @@
             );
         }
 
+        // The web object contains references to all object in the app
         var web = {
-            boss: {
-                name: 'unassigned'
-            },
-            bosses: {},
-            cfg: cfg,
-            express: express,
-            app: app,
-            minion: null,
-            routes: {
+            bosses: {}, // RESTful tasks are logically organized by bosses
+            cfg: cfg, // Configuration from appdir config.js file
+            express: express, // ExpressJS 
+            app: app, // ExpressJS instance
+            minion: null, // The Minions - see below
+            routes: { // Web Server paths
                 restRouter: restRouter,
                 trailingRouter: trailingRouter,
             },
-            listen: listen,
-            ios: ios,
-            logger: logger,
-            webhook: webhook,
-            trello: trello,
+            listen: listen, // Initiate listening for routes/paths
+            ios: ios, // Server side Socket.io
+            logger: logger, // Winston loggers
+            webhook: webhook, // Trello webhook processing
+            trello: trello, // Trello and Google Sheets interface
             spreadsheets: spreadsheets,
-            sendJson: sendJson
+            sendJson: sendJson // Function to respond to RESTful requests
         };
 
-        // Minions live here
+        // Create and assign the Minions
         web.minion = {
-            angel: new(require('../minions/angel'))(web),
-            architect: new(require('../minions/architect'))(web),
-            chef: new(require('../minions/chef'))(web),
-            clerk: new(require('../minions/clerk'))(web),
-            constable: new(require('../minions/constable'))(web),
-            crier: new(require('../minions/crier'))(web),
-            nurse: new(require('../minions/nurse'))(web)
+            angel: new(require('../minions/angel'))(web), // Handles and routes RESTful messages
+            architect: new(require('../minions/architect'))(web), // Orchestrate object creation 
+            chef: new(require('../minions/chef'))(web), // Constructs RESTful 'GET' content
+            clerk: new(require('../minions/clerk'))(web), // Updates from RESTful 'POST/PUT' requests
+            constable: new(require('../minions/constable'))(web), // Credentials, Roles, Authorization
+            crier: new(require('../minions/crier'))(web), // Broadcast information to clients
+            nurse: new(require('../minions/nurse'))(web) // Unknown requests and error handling
         };
 
         return web;

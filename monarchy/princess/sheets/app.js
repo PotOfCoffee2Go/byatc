@@ -1,3 +1,15 @@
+/*
+ * /monarchy/princess/sheets/app.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file accesses Google Sheets spreadsheets using the 
+ * parameters from /config.js. The data from the sheets are
+ * used to build the databases and create/update Trello
+ * boards of the byatec auction system.
+ *
+ */
+
 'use strict';
 
 var google = require('googleapis'),
