@@ -48,11 +48,14 @@ var byatec = byatec || {};
             error: {name and message of error } or null if no error
         }
         */
-        var payload = function(resource, data) {
+        var payload = function(method, resource, data) {
             return {
                 resource: resource,
                 data: data,
-                status: {key: localStorage.getItem('BYATEC_KEY')},
+                status: {
+                    key: localStorage.getItem('BYATEC_KEY'),
+                    method: method ? method : 'GET', 
+                },
                 error: null
             };
         };
@@ -62,8 +65,9 @@ var byatec = byatec || {};
             ns.socket.emit(message, payload);
         };
         
-        ns.watch = function byatec_watch(resource) {ns.emit('Watch', payload(resource));};
-        ns.unwatch = function byatec_unwatch(resource) {ns.emit('Unwatch', payload(resource));};
+        ns.restful = function byatec_Restful(method, resource) {ns.emit('Restful', payload(method, resource));};
+        ns.watch = function byatec_watch(resource) {ns.emit('Watch', payload('GET', resource));};
+        ns.unwatch = function byatec_unwatch(resource) {ns.emit('Unwatch', payload('GET', resource));};
 
     };
 })(byatec);

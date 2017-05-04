@@ -88,6 +88,23 @@ Crier.prototype.gearSockets = function gearWebsockets(boss, cb) {
 };
 
 // - Got Watch request
+Crier.prototype.onRestful = function onRestful(socket, msg) {
+    if (msg.resource) {
+        var path = msg.resource.split('/'),
+            room = path[3] + '/' + path[4];
+        socket.join(room);
+        request({url: web.cfg.kingdom.website + msg.resource, method: msg.status.method, json: true,
+                headers: {'Authorization': 'BYATEC ' + msg.status.key}},
+            (err, response, json) => socket.emit('Restful', err ? err : json));
+
+        web.logger.info('onWatch: ' + socket.id + ' joined resource - ' + msg.resource);
+    }
+    else {
+        web.logger.info('onWatch: ' + socket.id + ' resource to join was not specified');
+    }
+};
+
+// - Got Watch request
 Crier.prototype.onWatch = function onWatch(socket, msg) {
     if (msg.resource) {
         var path = msg.resource.split('/'),
