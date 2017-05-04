@@ -6,9 +6,9 @@ var google = require('googleapis'),
 var auth = null;
 
 function setCredentials(sheetKeys) {
-    
+
     var credentials = JSON.parse(sheetKeys.clientSecret);
-    
+
     var clientSecret = credentials.installed.client_secret;
     var clientId = credentials.installed.client_id;
     var redirectUrl = credentials.installed.redirect_uris[0];
@@ -16,7 +16,7 @@ function setCredentials(sheetKeys) {
     var oauth2Client = new gauth.OAuth2(clientId, clientSecret, redirectUrl);
 
     oauth2Client.credentials = JSON.parse(sheetKeys.token);
-    auth = oauth2Client;    
+    auth = oauth2Client;
 }
 
 function csvToObjects(lines) {
@@ -30,7 +30,7 @@ function csvToObjects(lines) {
             data.profile = {};
             for (let c = 0; c < lines[l].length; c++) {
                 var value = lines[l][c];
-                data.profile[columns[c]] = value;          
+                data.profile[columns[c]] = value;
             }
             // add object to output
             records[data.profile.id] = data;
@@ -46,19 +46,19 @@ function gearSheet(sheet, cb) {
         spreadsheetId: sheet.id,
         range: sheet.range,
         valueRenderOption: 'UNFORMATTED_VALUE',
-        }, (err, response) => {
-            if (err)
-                cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
-            else {
-                sheet.rows = response.values;
-                sheet.db.push('/', csvToObjects(response.values));
-                cb(err, 'Princess Sheets loaded spreadsheet -' + sheet.name + '- range -' + sheet.range + '- into DB ' + sheet.alias + '.json');
-            }
+    }, (err, response) => {
+        if (err)
+            cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
+        else {
+            sheet.rows = response.values;
+            sheet.db.push('/', csvToObjects(response.values));
+            cb(err, 'Princess Sheets loaded spreadsheet -' + sheet.name + '- range -' + sheet.range + '- into DB ' + sheet.alias + '.json');
+        }
     });
 }
 
 module.exports = {
-    setCredentials:setCredentials,
+    setCredentials: setCredentials,
     gearSheet: gearSheet
 };
 

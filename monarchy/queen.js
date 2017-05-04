@@ -12,7 +12,7 @@ ex: $ node queen
 
 var kingdom = {
     website: 'https://byatc-potofcoffee2go.c9users.io',
-//  website: 'https://byatc-potofcoffee2go.rhcloud.com',
+    //  website: 'https://byatc-potofcoffee2go.rhcloud.com',
     reload: true, // Use existing files
     keys: {
         sheets: {
@@ -29,7 +29,7 @@ var kingdom = {
             access_token: '',
             access_token_secret: ''
         }
-    } 
+    }
 }
 
 const // Modules
@@ -43,21 +43,25 @@ function startBosses() {
     console.log('website is at: %s', kingdom.website);
 
     request({
-        url:kingdom.website + '/queen/commands/cyborg/startMachines',
-        method: 'POST',
-        json: {kingdom:kingdom}},
-        function (err,httpResponse,body) { 
+            url: kingdom.website + '/queen/commands/cyborg/startMachines',
+            method: 'POST',
+            json: {
+                kingdom: kingdom
+            }
+        },
+        function(err, httpResponse, body) {
             if (err) {
                 console.log(err);
             }
             else {
-                console.log(util.inspect(body, { showHidden: false, depth: null }));
+                console.log(util.inspect(body, {
+                    showHidden: false,
+                    depth: null
+                }));
             }
         }
     );
 }
 
 startBosses();
-
-//process.exit(0);
 

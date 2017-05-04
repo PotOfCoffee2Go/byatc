@@ -1,151 +1,173 @@
 'use strict';
 
-(function () {
+(function() {
 
-const
-    fs = require('fs-extra'),
-    async = require('async'),
-    request = require('request'),
-    JsonDB = require('node-json-db'),
-    gearbox = require('./#gearing/gearbox'),
+    const
+        fs = require('fs-extra'),
+        async = require('async'),
+        request = require('request'),
+        JsonDB = require('node-json-db'),
+        gearbox = require('./#gearing/gearbox'),
 
-    MinionError = gearbox.MinionError,
-    minionName = 'architect';
+        MinionError = gearbox.MinionError,
+        minionName = 'architect';
 
-// Expressjs web server
-var web = null; // assigned later
+    // Expressjs web server
+    var web = null; // assigned later
 
-function Architect (Web) {
-    web = Web;
-}
-
-
-// Intercom communication between bosses
-Architect.prototype.gearIntercom = function gearIntercom(boss, cb) {
-    // Todo: Intercom system
-    cb(null,['Boss intercom started']);
-};
-
-// Get data for auction from google sheets
-Architect.prototype.gearSheets = function gearSheets(boss, cb) {
-    web.minion.constable.givePrincessSheetsCredentials();
-
-    // Array of sheets to collect data from
-    async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
-        // dbname, true = auto save, true = pretty
-        sheet.db = new JsonDB(boss.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
-
-        web.spreadsheets.gearSheet(sheet, callback);
-        
-    }, (err, results) => {cb(err, results);});            
-};
-
-Architect.prototype.loadFromSources = function loadFromSources (boss, cb) {
-    if (web.cfg.kingdom.reload) {
-        // Clear the boss working database directory
-        fs.emptyDirSync(boss.dbdir);
-    
-        // Start up tasks which this boss is responible
-        async.series([
-            callback => web.minion.architect.rousePrincessTrello(callback),
-            callback => web.minion.architect.gearSheets(boss, callback),
-            callback => web.minion.architect.gearTrello(boss, callback),
-            callback => web.minion.clerk.gearDatabases(callback),
-            callback => web.minion.architect.gearTrelloBoards(callback),
-        ], (err, results) => cb(err, results));
+    function Architect(Web) {
+        web = Web;
     }
-    else {
-        var assigned = [];
-        // assign existing databases
-        web.cfg.spreadsheets.sheets.forEach((sheet) => {
+
+
+    // Intercom communication between bosses
+    Architect.prototype.gearIntercom = function gearIntercom(boss, cb) {
+        // Todo: Intercom system
+        cb(null, ['Boss intercom started']);
+    };
+
+    // Get data for auction from google sheets
+    Architect.prototype.gearSheets = function gearSheets(boss, cb) {
+        web.minion.constable.givePrincessSheetsCredentials();
+
+        // Array of sheets to collect data from
+        async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
+            // dbname, true = auto save, true = pretty
             sheet.db = new JsonDB(boss.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
-            assigned.push(boss.name + ' assigned database ' + web.cfg.spreadsheets.database + sheet.alias + '.json');
+
+            web.spreadsheets.gearSheet(sheet, callback);
+
+        }, (err, results) => {
+            cb(err, results);
         });
+    };
 
-        cb(null, [boss.name + ' restart is using existing database files', assigned]);
+    Architect.prototype.loadFromSources = function loadFromSources(boss, cb) {
+        if (web.cfg.kingdom.reload) {
+            // Clear the boss working database directory
+            fs.emptyDirSync(boss.dbdir);
+
+            // Start up tasks which this boss is responible
+            async.series([
+                callback => web.minion.architect.rousePrincessTrello(callback),
+                callback => web.minion.architect.gearSheets(boss, callback),
+                callback => web.minion.architect.gearTrello(boss, callback),
+                callback => web.minion.clerk.gearDatabases(callback),
+                callback => web.minion.architect.gearTrelloBoards(callback),
+            ], (err, results) => cb(err, results));
+        }
+        else {
+            var assigned = [];
+            // assign existing databases
+            web.cfg.spreadsheets.sheets.forEach((sheet) => {
+                sheet.db = new JsonDB(boss.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
+                assigned.push(boss.name + ' assigned database ' + web.cfg.spreadsheets.database + sheet.alias + '.json');
+            });
+
+            cb(null, [boss.name + ' restart is using existing database files', assigned]);
+        }
+
+    };
+
+
+    Architect.prototype.rousePrincessTrello = function rousePrincessTrello(cb) {
+        web.minion.constable.givePrincessTrelloCredentials();
+        web.trello.rousePrincessTrello(web.cfg, (err, results) => cb(err, results));
+    };
+
+
+    // Build the Trello interface
+    Architect.prototype.gearTrello = function gearTrello(boss, cb) {
+        var whresults = [];
+        // Array of boards to collect data from
+        async.mapSeries(web.cfg.trello.boards, function(board, callback) {
+            // dbname, true = auto save, true = pretty
+            board.db = new JsonDB(boss.dbdir + '/' + web.cfg.trello.database + board.alias, true, true);
+
+            // Add the paths that will be used by the Trello WebHooks
+            whresults = whresults.concat(web.minion.angel.gearTrelloWebhook(boss, board));
+
+            web.trello.gearBoard(board, callback);
+
+        }, (err, results) => {
+            results = whresults.concat(results);
+            cb(err, results);
+        });
+    };
+
+
+    Architect.prototype.gearTrelloBoards = function gearTrelloBoards(cb) {
+        web.trello.gearTrelloBoards(web.cfg, (err, results) => {
+            cb(err, results);
+        });
+    };
+
+    function unassignable(boss, listName, cb) {
+        cb(new Error(boss.name + ' could not assign auction list' + listName));
     }
-        
-};
 
+    function getAuctionList(boss, listName, cb) {
+        if (listName === 'guests') {
+            var guests = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
+            if (!guests) {
+                unassignable(boss, listName, cb);
+                return;
+            }
+            let guestList = guests.rows;
+            if (!guestList) {
+                unassignable(boss, listName, cb);
+                return;
+            }
+            web.minion.clerk.setGuestList(guestList);
+        }
+        else if (listName === 'items') {
+            var items = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
+            if (!items) {
+                unassignable(boss, listName, cb);
+                return;
+            }
+            let itemList = items.rows;
+            if (!itemList) {
+                unassignable(boss, listName, cb);
+                return;
+            }
+            web.minion.clerk.setItemList(itemList);
+        }
+        else {
+            unassignable(boss, listName, cb);
+            return;
+        }
 
-Architect.prototype.rousePrincessTrello = function rousePrincessTrello(cb) {
-    web.minion.constable.givePrincessTrelloCredentials();
-    web.trello.rousePrincessTrello(web.cfg, (err, results) => cb(err, results));
-};
-
-
-// Build the Trello interface
-Architect.prototype.gearTrello = function gearTrello(boss, cb) {
-    var whresults = [];
-    // Array of boards to collect data from
-    async.mapSeries(web.cfg.trello.boards, function(board, callback) {
-        // dbname, true = auto save, true = pretty
-        board.db = new JsonDB(boss.dbdir + '/' + web.cfg.trello.database + board.alias, true, true);
-
-        // Add the paths that will be used by the Trello WebHooks
-        whresults = whresults.concat(web.minion.angel.gearTrelloWebhook(boss, board));
-
-        web.trello.gearBoard(board, callback);
-
-    }, (err, results) => {
-        results = whresults.concat(results);
-        cb(err, results);
-    });            
-};   
-
-
-Architect.prototype.gearTrelloBoards = function gearTrelloBoards(cb) {
-    web.trello.gearTrelloBoards(web.cfg, (err, results) => {cb(err, results);});
-};
-
-function unassignable(boss, listName, cb) {
-    cb(new Error(boss.name + ' could not assign auction list' + listName));
-}
-function getAuctionList(boss, listName, cb) {
-    if (listName === 'guests') {
-        var guests = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
-        if (!guests) {unassignable(boss, listName, cb); return;}
-        let guestList = guests.rows;
-        if (!guestList) {unassignable(boss, listName, cb); return;}
-        web.minion.clerk.setGuestList(guestList);
+        cb(null, boss.name + ' architect gave clerk the auction ' + listName + ' list');
     }
-    else if (listName === 'items') {
-        var items = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
-        if (!items) {unassignable(boss, listName, cb); return;}
-        let itemList = items.rows;
-        if (!itemList) {unassignable(boss, listName, cb); return;}
-        web.minion.clerk.setItemList(itemList);
-    }
-    else  {unassignable(boss, listName, cb); return;}
 
-    cb(null, boss.name + ' architect gave clerk the auction ' + listName + ' list');
-}
+    Architect.prototype.gearAuction = function gearAuction(boss, cb) {
+        async.parallel([
+            callback => getAuctionList(boss, 'guests', callback),
+            callback => getAuctionList(boss, 'items', callback)
+        ], (err, results) => cb(err, results));
+    };
 
-Architect.prototype.gearAuction = function gearAuction(boss, cb) {
-    async.parallel([
-        callback => getAuctionList(boss, 'guests', callback),
-        callback => getAuctionList(boss, 'items', callback)
-    ], (err, results) => cb(err, results));
-};
+    Architect.prototype.gearChat = function gearChat(boss, cb) {
 
-Architect.prototype.gearChat = function gearChat(boss, cb) {
-
-    async.series([
-        callback => web.minion.crier.gearAlasql(callback),
-        // Array of rooms to store and retrieve messages
-        callback =>
+        async.series([
+            callback => web.minion.crier.gearAlasql(callback),
+            // Array of rooms to store and retrieve messages
+            callback =>
             async.mapSeries(web.cfg.chat.rooms, function(room, callbackmap) {
                 // dbname, true = auto save, true = pretty
                 room.db = new JsonDB(boss.dbdir + '/' + web.cfg.chat.database + room.alias, true, true);
-        
+
                 web.minion.crier.gearChatRoom(room, callbackmap);
-                
-            }, (err, results) => {callback(err, results);})            
-    ], (err, results) => cb(err, results));
 
-};
+            }, (err, results) => {
+                callback(err, results);
+            })
+        ], (err, results) => cb(err, results));
+
+    };
 
 
-module.exports = Architect;
+    module.exports = Architect;
 
 })();

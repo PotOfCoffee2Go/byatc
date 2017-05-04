@@ -3,7 +3,7 @@
 // Assign namespace to hold auction data and functions
 var byatec = byatec || {};
 
-(function (ns) {
+(function(ns) {
     /* global io localStorage */
 
     ns.connect = function byatec_connect(url) {
@@ -14,11 +14,17 @@ var byatec = byatec || {};
         }
 
         // Connect to server and get our socket
-        ns.socket = io.connect(url, {reconnect: false});
+        ns.socket = io.connect(url, {
+            reconnect: false
+        });
 
-        ns.on = function(event, listener) {ns.socket.on(event, listener); };
-        ns.off = function(event, listener) { ns.socket.removeListener(event, listener); };
-        
+        ns.on = function(event, listener) {
+            ns.socket.on(event, listener);
+        };
+        ns.off = function(event, listener) {
+            ns.socket.removeListener(event, listener);
+        };
+
         // Implement Catch-all -wildcard(*) feature- for byatec custom messages
         //  only catches byatec custom events (not regular socket.io events)
         //  http://stackoverflow.com/questions/10405070/socket-io-client-respond-to-all-events-with-one-handler
@@ -37,7 +43,7 @@ var byatec = byatec || {};
             console.log('***', event, msg);
         });
         */
-        
+
         // Custom socket.io events
         /*
         All byatec custom socket.io emits and on events contain :
@@ -54,7 +60,7 @@ var byatec = byatec || {};
                 data: data,
                 status: {
                     key: localStorage.getItem('BYATEC_KEY'),
-                    method: method ? method : 'GET', 
+                    method: method ? method : 'GET',
                 },
                 error: null
             };
@@ -64,10 +70,16 @@ var byatec = byatec || {};
         ns.emit = function byatec_emit(message, payload) {
             ns.socket.emit(message, payload);
         };
-        
-        ns.restful = function byatec_Restful(method, resource) {ns.emit('Restful', payload(method, resource));};
-        ns.watch = function byatec_watch(resource) {ns.emit('Watch', payload('GET', resource));};
-        ns.unwatch = function byatec_unwatch(resource) {ns.emit('Unwatch', payload('GET', resource));};
+
+        ns.restful = function byatec_Restful(method, resource) {
+            ns.emit('Restful', payload(method, resource));
+        };
+        ns.watch = function byatec_watch(resource) {
+            ns.emit('Watch', payload('GET', resource));
+        };
+        ns.unwatch = function byatec_unwatch(resource) {
+            ns.emit('Unwatch', payload('GET', resource));
+        };
 
     };
 })(byatec);

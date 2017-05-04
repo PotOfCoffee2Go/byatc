@@ -16,13 +16,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <style type="text/css">
-        /*
-         * Specific styles of signin component
-         */
-        /*
-         * General styles
-         */
-        body, html {
+        body,
+        html {
             height: 100%;
             background-repeat: no-repeat;
             background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
@@ -41,10 +36,10 @@
             user-select: none;
             cursor: default;
         }
-        
         /*
          * Card component
          */
+        
         .card {
             background-color: #F7F7F7;
             /* just in case there no content*/
@@ -69,10 +64,10 @@
             -webkit-border-radius: 50%;
             border-radius: 50%;
         }
-        
         /*
          * Form styles
          */
+        
         .profile-name-card {
             font-size: 16px;
             font-weight: bold;
@@ -120,13 +115,15 @@
         .form-signin .form-control:focus {
             border-color: rgb(104, 145, 162);
             outline: 0;
-            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(104, 145, 162);
-            box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(104, 145, 162);
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgb(104, 145, 162);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgb(104, 145, 162);
         }
+        
         .btn-primary {
             /* background-color: #337ab7; */
             background-image: none;
         }
+        
         .btn.btn-signin {
             /*background-color: #4d90fe;*/
             /*background-color: rgb(104, 145, 162); */
@@ -145,19 +142,19 @@
             transition: all 0.218s; */
         }
         
-
         .forgot-password {
             color: rgb(104, 145, 162);
         }
         
         .forgot-password:hover,
         .forgot-password:active,
-        .forgot-password:focus{
+        .forgot-password:focus {
             color: rgb(12, 97, 33);
-        }        
+        }
     </style>
 
 </head>
+
 <body>
     <!--
     you can substitue the span of reauth email for a input with the email and
@@ -178,47 +175,40 @@
                     </label>
                 </div>
                 <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
-            </form><!-- /form -->
+            </form>
+            <!-- /form -->
             <a href="#" class="forgot-password">
                 Forgot the password?
             </a>
-        </div><!-- /card-container -->
-    </div><!-- /container -->
+        </div>
+        <!-- /card-container -->
+    </div>
+    <!-- /container -->
 
 
     <!-- jQuery -->
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.min.js"
-      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-      crossorigin="anonymous"></script>
-  
-    <!-- Bootstrap Core JavaScript -->
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-      crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
-    <script> /* global $ localStorage*/
-    
-        $(function(){
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script>
+        /* global $ localStorage*/
+
+        $(function() {
             // DOM ready
-        
+
             // Test data
             // testLocalStorageData();
             localStorage.clear();
             // Load profile if it exits
             loadProfile();
 
-            $('form[name=signinform]').submit(function(){
+            $('form[name=signinform]').submit(function() {
                 var formval = $(this).serializeArray();
                 var loginObj = {};
                 loginObj[formval[0].name] = formval[0].value;
                 loginObj[formval[1].name] = formval[1].value;
-                /*
-                $.post($(this).attr('action'), loginObj, function(jsonr) {
-                  alert(JSON.stringify(jsonr, null, 2));
-                }, 'json');Authorization: <type> <credentials>
-*/
                 $.ajax({
                     type: 'POST',
                     url: $(this).attr('action'),
@@ -231,23 +221,24 @@
                             window.location.href = "/auction";
                             return false;
                         }
-                        else
+                        else {
                             localStorage.removeItem('BYATEC_KEY');
                             localStorage.removeItem('BYATEC_GUEST');
+                        }
                     },
                     dataType: 'json',
-                    contentType:"application/json; charset=utf-8",
+                    contentType: "application/json; charset=utf-8",
                     headers: {
-                        'Authorization':'BYATEC ' + localStorage.getItem('BYATEC_KEY')
+                        'Authorization': 'BYATEC ' + localStorage.getItem('BYATEC_KEY')
                     }
-    
+
                 });
                 console.log(loginObj);
                 return false;
             });
 
         });
-        
+
         /**
          * Function that gets the data of the profile in case
          * thar it has already saved in localstorage. Only the
@@ -256,36 +247,38 @@
          * A not existing key in localstorage return null
          *
          */
-        function getLocalProfile(callback){
-            var profileImgSrc      = localStorage.getItem("PROFILE_IMG_SRC");
-            var profileName        = localStorage.getItem("PROFILE_NAME");
+        function getLocalProfile(callback) {
+            var profileImgSrc = localStorage.getItem("PROFILE_IMG_SRC");
+            var profileName = localStorage.getItem("PROFILE_NAME");
             var profileReAuthEmail = localStorage.getItem("PROFILE_REAUTH_EMAIL");
-        
-            if(profileName !== null
-                    && profileReAuthEmail !== null
-                    && profileImgSrc !== null) {
+
+            if (profileName !== null &&
+                profileReAuthEmail !== null &&
+                profileImgSrc !== null) {
                 callback(profileImgSrc, profileName, profileReAuthEmail);
             }
         }
-        
+
         /**
          * Main function that load the profile if exists
          * in localstorage
          */
         function loadProfile() {
-            if(!supportsHTML5Storage()) { return false; }
+            if (!supportsHTML5Storage()) {
+                return false;
+            }
             // we have to provide to the callback the basic
             // information to set the profile
             getLocalProfile(function(profileImgSrc, profileName, profileReAuthEmail) {
                 //changes in the UI
-                $("#profile-img").attr("src",profileImgSrc);
+                $("#profile-img").attr("src", profileImgSrc);
                 $("#profile-name").html(profileName);
                 $("#reauth-email").html(profileReAuthEmail);
                 $("#inputUsername").hide();
                 $("#remember").hide();
             });
         }
-        
+
         /**
          * function that checks if the browser supports HTML5
          * local storage
@@ -295,11 +288,12 @@
         function supportsHTML5Storage() {
             try {
                 return 'localStorage' in window && window['localStorage'] !== null;
-            } catch (e) {
+            }
+            catch (e) {
                 return false;
             }
         }
-        
+
         /**
          * Test data. This data will be safe by the web app
          * in the first successful login of a auth user.
@@ -309,13 +303,15 @@
          * @returns {boolean}
          */
         function testLocalStorageData() {
-            if(!supportsHTML5Storage()) { return false; }
-            localStorage.setItem("PROFILE_IMG_SRC", "//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" );
+            if (!supportsHTML5Storage()) {
+                return false;
+            }
+            localStorage.setItem("PROFILE_IMG_SRC", "//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120");
             localStorage.setItem("PROFILE_NAME", "César Izquierdo Tello");
             localStorage.setItem("PROFILE_REAUTH_EMAIL", "oneaccount@gmail.com");
         }
-        
-</script>
+    </script>
 
 </body>
+
 </html>

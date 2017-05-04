@@ -1,22 +1,22 @@
 'use strict';
 
-(function () {
-const
-    path = require('path'),
-    gearbox = require('./#gearing/gearbox'),
-    
-    MinionError = gearbox.MinionError,
-    minionName = 'nurse';
+(function() {
+    const
+        path = require('path'),
+        gearbox = require('./#gearing/gearbox'),
+
+        MinionError = gearbox.MinionError,
+        minionName = 'nurse';
 
 
-// Expressjs web server
-var web = null;
-    
-function Nurse (Web) {
-    web = Web;
-}
+    // Expressjs web server
+    var web = null;
 
-Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next) {
+    function Nurse(Web) {
+        web = Web;
+    }
+
+    Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next) {
         var fullUrl = web.minion.angel.getFullURL(req, res, next);
         web.logger.info('Nurse got the critical WebSite patient -' + fullUrl.pathname + '- doa :(');
 
@@ -37,7 +37,7 @@ Nurse.prototype.criticalSiteCare = function criticalSiteCare(req, res, next) {
             res.status(404).sendFile(__dirname, '../bosses/www/pages/notfound.html');
         }
     }
-    
-module.exports = Nurse;
+
+    module.exports = Nurse;
 
 })();
