@@ -1,3 +1,13 @@
+/*
+ * /monarchy/princess/trello/webhook.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file processes webhook requests from Trello that are
+ * of interest to the byatec auction system.
+ *
+ */
+
 'use strict';
 
 (function() {

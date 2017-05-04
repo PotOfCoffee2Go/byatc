@@ -1,22 +1,32 @@
+/*
+ * /monarchy/princess/trello/api.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file interfaces to Trello with JSON command settings
+ * from /monarchy/princess/trello/api.json. Included is a
+ * limiter to stay within Trello rate limit.
+ *
+ */
+
 'use strict';
 
 (function() {
 
-    const fs = require('fs'),
-        request = require('request');
+    const
+        fs = require('fs'),
+        request = require('request'),
+        api = JSON.parse(fs.readFileSync(__dirname + '/api.json', "utf8")),
 
-    const api = JSON.parse(fs.readFileSync(__dirname + '/api.json', "utf8"));
+        // Event emitter to throttle updates to trello
+        //   so as not to over run the rate limit
+        EventEmitter = require('events'),
+        myEmitter = new EventEmitter();
 
-    // Trello key and token
-    var keys = null;
 
-    // FIFO queue of messages that will be sent to Trello
-    var trelloEntries = [];
-
-    // Using an event emitter to throttle updates to trello
-    //   so does not over run the Trello rate limit
-    const EventEmitter = require('events');
-    const myEmitter = new EventEmitter();
+    var
+        keys = null, // Trello key and token
+        trelloEntries = []; // FIFO queue of messages to Trello
 
     // When we get a 'CallTrello' event get entry from fifo queue and send
     myEmitter.on('CallTrello', () => {
@@ -27,18 +37,18 @@
         }
     });
 
-    var limiterId = null;
+    var intervalId = null;
 
     function limiter(ms) {
         ms = ms || 250; // Four calls per second
         var x = 0;
-        limiterId = setInterval(() => {
+        intervalId = setInterval(() => {
             myEmitter.emit('CallTrello');
             if (++x === 4) {
                 x = 0;
                 if (trelloEntries.length === 0) {
-                    clearInterval(limiterId);
-                    limiterId = null;
+                    clearInterval(intervalId);
+                    intervalId = null;
                 }
             }
         }, ms);
@@ -47,8 +57,9 @@
 
     // Validate the request has all the required fields
     function validateData(tapi, data, cb) {
-        var result = true;
-        var uriFields = getUriFields(tapi.url);
+        var result = true,
+            uriFields = getUriFields(tapi.url);
+
         uriFields.forEach((field) => {
             if (typeof data[field] === 'undefined') {
                 cb(new Error('Missing required field "' + field + '" in data'));
@@ -108,7 +119,7 @@
                 token: keys.token,
             },
             headers: {
-                'User-Agent': 'Request-Promise'
+                'User-Agent': 'byatec'
             },
             json: true // Automatically parses the JSON string in the response
         };
@@ -191,14 +202,14 @@
         },
         // Push request on the FIFO queue
         getToken: () => {
-            return keys.token
+            return keys.token;
         },
         // Push request on the FIFO queue
         push: push,
         // Send requests that are on the FIFO queue
         send: (ms) => {
             ms = ms || null;
-            if (!limiterId) limiter(ms);
+            if (!intervalId) limiter(ms);
         }
     };
 

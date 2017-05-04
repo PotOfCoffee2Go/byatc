@@ -47,7 +47,7 @@ module.exports = {
                 range: 'Auctioneer!A2:K1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Guest DB
-                fields: {
+                fields: {  // fields in sheet Auctioneer!A2:K1000
                     'id': 0,
                     'FullName': 1,
                     'Table': 2,
@@ -67,7 +67,7 @@ module.exports = {
                 range: 'Auction_Items!F2:S1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Item DB
-                fields: {
+                fields: { // fields in sheet Auction_Items!F2:S1000
                     'id': 0,
                     'Active': 1,
                     'OpenBid': 2,
@@ -79,9 +79,9 @@ module.exports = {
                     'CurrentBid': 8,
                     'BidQtySold': 9,
                     'BuyQtySold': 10,
-                    'Bids': 11,
-                    'Bidder': 12,
-                    'Time': 13
+                    'Bidder': 11,
+                    'Time': 12,
+                    'Bids': 13
                 }
             }
         ]

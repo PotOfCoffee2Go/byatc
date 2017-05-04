@@ -1,5 +1,5 @@
 /*
- * /installer.js
+ * /launch.js
  * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
  * License: MIT
  *

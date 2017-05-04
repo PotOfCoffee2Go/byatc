@@ -1,3 +1,14 @@
+/*
+ * /monarchy/princess/trello/app.js
+ * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
+ * License: MIT
+ *
+ * This file accesses Trello boards using the parameters
+ * from /config.js. The data from Google Sheets is
+ * used to build the Trello boards of the byatec auction system.
+ *
+ */
+
 'use strict';
 
 (function() {
