@@ -1,6 +1,6 @@
-## byatc
+## byatec
 
-**B**est **Y**ielding **A**uction **T**ool **C**reated
+**B**est **Y**ielding **A**uction **T**ool **E**ver **C**reated
 
 -----
 
@@ -11,7 +11,7 @@ Three servers - one that access Trello boards for customer and item administrati
 
 ### The Minions acknowledge there are three bosses!
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/cyborg.svg" height="48" width="48" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ninja.svg" height="48" width="48" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/pirate.svg" height="48" width="48" />
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/cyborg.svg" height="48" width="48" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/ninja.svg" height="48" width="48" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/pirate.svg" height="48" width="48" />
 
 Bosses are full blown Nodejs express Web Site/REST/Websocket servers. The servers are the main entry point for processing requests from web frontends.<br /><br />
 
@@ -29,15 +29,15 @@ There is a browser side API `<script src="https://server/you/are/using/api.js" t
 
 #### 'Cyborg' - Auction Administration
 
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/cyborg.svg" height="80" width="80" align="left">
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/cyborg.svg" height="80" width="80" align="left">
  <p>On startup - requests all interesting data from cards and comments for boards on Trello. The minions use the data to create a JSON database representing the cards and comments on the boards. If not already created, board level webhooks are created on Trello. Trello sends update events of user interaction with the Trello boards via the webhooks. Using the board and card ids given by the webhooks, Cyborg commands the minions to request all interesting info for that card from Trello. The Minions update the JSON database with the response from Trello.</p>
 
 #### 'Ninja' - Runs the Auction
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ninja.svg" height="80" width="80" align="left">
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/ninja.svg" height="80" width="80" align="left">
  <p>Auction specific Frontends, web sites, and/or web pages connect via Websockets (for dynamic updates of auction item bid price updates). Bids can be placed via the RESTful or the WebSocket (socket.io) interface. Various item setup options available such as open, reserve, and incremental price.</p>
 
 #### 'Pirate' - Payment Checkout
 
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/pirate.svg" height="80" width="80" align="left">
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/pirate.svg" height="80" width="80" align="left">
  <p>Interfaces to Paypal/Credit Card Processors, Banks, etc. for payment of won auction items. Produces invoices, receipts, statements, and financials for non-profit or for-profit organizations.</p>
 <br />

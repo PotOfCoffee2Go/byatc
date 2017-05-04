@@ -1,12 +1,12 @@
-## byatc
+## byatec
 
-**B**est **Y**ielding **A**uction **T**ool **C**reated
+**B**est **Y**ielding **A**uction **T**ool **E**ver **C**reated
 
 -----
 
 ### The Minion Gearing
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/steamhouse256.png" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/steamhouse256.png" align="left">
 
 Gearing -
 

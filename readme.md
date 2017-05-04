@@ -20,7 +20,7 @@ year's Event. If you wish to watch the project as it is being built you can visi
 which is updated weekly with the tasks as they are being ( or not being ;) done.
 
 For those interested (or wishing to contribute) to the code being written - visit the GitHub repository 
-[byatc](https://github.com/PotOfCoffee2Go/byatc). The server side code-base is expected to 
+[byatec](https://github.com/PotOfCoffee2Go/byatc). The server side code-base is expected to 
 be completed by May 1st, 2017 - at which time the REST API and WebSocket documentation for front-end development
 to the auction will be available.
 
@@ -37,7 +37,7 @@ As commanded by Her Majesty, the Queen :
 #### Her Majesty
 `/monarchy/queen.js`
 
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/queen.svg" height="110" width="110" align="left">
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/queen.svg" height="110" width="110" align="left">
  <br />The Queen - has Princesses and trusted Advisors to run the yearly <b>Kingdom Gala Event</b>, which, along with
  guests dancing, rubbing elbows, networking, and partying; a live auction of rare and exquisite items are put up for bid.
  Princesses and advisors live to do as the Queen commands and make available to guests items for auction by cell phone.
@@ -50,7 +50,7 @@ items, guest seating arrangements, etc.<br /><br />
 
 #### Princesses
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesstrello.svg" height="64" width="64" align="left"><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesssheets.svg" height="64" width="64" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/princesstrello.svg" height="64" width="64" align="left"><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/princesssheets.svg" height="64" width="64" align="left">
  
  <br /> <br /> <br /> Under the Queen are the Princesses who are given the task of insuring that the yearly 
  <b>Kingdom's Gala Event</b> runs smoothly. The Princesses gather auction information and send guests updates
@@ -59,7 +59,7 @@ items, guest seating arrangements, etc.<br /><br />
 -----
 
 #### Princess Trello
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesstrello.svg" height="80" width="80" align="left">
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/princesstrello.svg" height="80" width="80" align="left">
  Princess Trello - monitors the activities of auction guests, if a guest gets on the wrong side of the Queen, they
  could be excluded from bidding on items up for auction (It is nice to be the Queen). By setting flags on the auction
  <a href="https://trello.com/">Trello</a> boards one controls guest access to the auction. <br /><br /><br />
@@ -68,7 +68,7 @@ items, guest seating arrangements, etc.<br /><br />
 
 
 #### Princess Sheets
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/princesssheets.svg" height="80" width="80" align="left">
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/princesssheets.svg" height="80" width="80" align="left">
  Princess Sheets - is responsible for all information about guests and items up for bid. When the auction starts
  Princess Sheets gives the guest and item list to the Advisors' - who register guests and puts 
  items on the auction block. She also updates the financial reports for items won at auction.
@@ -83,7 +83,7 @@ items, guest seating arrangements, etc.<br /><br />
 
 ### Auction Advisors
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/cyborg.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ninja.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/pirate.svg" height="64" width="64" />
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/cyborg.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/ninja.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/pirate.svg" height="64" width="64" />
 
 Her Majesty calls them "Advisors" thus maintaining a resemblance of royality - but the minions and rest of the kingdom 
 call them <b>bosses</b>, so we shall too.
@@ -97,7 +97,7 @@ call them <b>bosses</b>, so we shall too.
 ### 'Cyborg' - Auction Administrator
 `/bosses/cyborg directory`
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/cyborg.svg" height="80" width="80" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/cyborg.svg" height="80" width="80" align="left">
 When the Queen commands for the auction to begin, Cyborg kicks Ninja and Pirate in the butt - get ready for work! Gear the 
 machinery and fire up the steam engines! Princess Sheets provides the data about auction guests and items.
 Princess Trello creates the boards used to monitor the auction. Cyborg's architect sets up the intercom system
@@ -106,7 +106,7 @@ between the bosses. A flury of activity occurs among each boss's minions prepari
 ### 'Ninja' - Auctioneer
 `/bosses/ninja directory`
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/ninja.svg" height="80" width="80" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/ninja.svg" height="80" width="80" align="left">
 The Auctioneer gargles and clears his throat - readying for auction. His minions run around gathering and writing on
 blackboards each item's status; starting, incremental, and buy-now prices. Ready to take the bids from guests of the
 Queen's Gala Event.
@@ -116,7 +116,7 @@ Queen's Gala Event.
 ### 'Pirate' - Auction Accountant
 `/bosses/pirate directory`
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/pirate.svg" height="80" width="80" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/pirate.svg" height="80" width="80" align="left">
 Although is of questionable character, the Queen commands via cyborg that 'Pirate' is to handle the Checkout
 process for items purchased during the event. The Pirate insures he can communicate to Paypal, Credit Card Processors, Banks, etc.
 to process payment of items won on auction. He prepares minions to produce invoices, receipts, statements, and financial
@@ -126,7 +126,7 @@ reports for distribution to Princess Sheets... Then goes back to bed.
 -------
 
 ### The Minions
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/angel.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/nurse.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/architect.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/chef.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/clerk.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/crier.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/constable.svg" height="64" width="64" />
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/angel.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/nurse.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/architect.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/chef.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/clerk.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/crier.svg" height="64" width="64" /><img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/constable.svg" height="64" width="64" />
 
 -------
 Similar to bosses - the Minions 'think' they exist in a physical universe; but sadly they are just Nodejs Modules. 
@@ -135,9 +135,9 @@ open-source teams! ;( undoubtably resulting in a ton of GitHub issues - Minions 
 known to be all that developer friendly ).
 
 Each Minion represents a task required of their boss. For example, the *Cyborg* boss *architect* 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/architect.svg" height="16" width="16" align="bottom"/> 
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/architect.svg" height="16" width="16" align="bottom"/> 
 minion may be totally different code from the *Pirate* boss *architect* 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/architect.svg" height="16" width="16" align="bottom"/> 
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/architect.svg" height="16" width="16" align="bottom"/> 
 minion. So each minion performs the basic tasks required, but are custom coded for the boss they represent.
 
 -------
@@ -146,7 +146,7 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 
 <br />
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/angel.svg" height="64" width="64" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/angel.svg" height="64" width="64" align="left">
  <p><b>angel</b> - Requests: make a request and pray it gets done.</p>
 
 <br />
@@ -155,7 +155,7 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 
 <br />
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/nurse.svg" height="64" width="64" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/nurse.svg" height="64" width="64" align="left">
  <p><b>nurse</b> - System health: handles all errors thrown by system and insures data validation, integrity, and consistancy.</p>
 
 <br />
@@ -164,7 +164,7 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 
 <br />
  
- <img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/architect.svg" height="64" width="64" align="left">
+ <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/architect.svg" height="64" width="64" align="left">
  <p><b>architect</b> - Object creation and destruction: creates, initializes, and deletes system objects and elements.</p>
 
 <br />
@@ -173,7 +173,7 @@ minion. So each minion performs the basic tasks required, but are custom coded f
  
 <br />
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/chef.svg" height="64" width="64" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/chef.svg" height="64" width="64" align="left">
  <p><b>chef</b> - Reporting: performs data query, calculation, and report generation.</p>
 
 <br />
@@ -182,7 +182,7 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 
 <br />
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/clerk.svg" height="64" width="64" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/clerk.svg" height="64" width="64" align="left">
  <p><b>clerk</b> - Database Management: store and access information for princesses, bosses, and minions.</p>
 
 <br />
@@ -191,14 +191,14 @@ minion. So each minion performs the basic tasks required, but are custom coded f
  
 <br />
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/crier.svg" height="64" width="64" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/crier.svg" height="64" width="64" align="left">
  <p><b>town crier</b> - Announces up-to-date news about the auction, guests, and item bid prices.</p>
 
 <br />
 
  `/minion/crier.js`
 
-<img src="https://s3.amazonaws.com/potofcoffee2go/byatc/images/constable.svg" height="64" width="64" align="left">
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/constable.svg" height="64" width="64" align="left">
  <p><b>constable</b> - Security: Verifies guest credentials, controls and ensures data access rights are enforced.</p>
 
 <br />

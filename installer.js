@@ -15,7 +15,7 @@
 const spawnSync = require('child_process').spawnSync;
 
 console.log('');
-console.log('Install byatc monarchy');
+console.log('Install byatec monarchy');
 console.log('');
 spawnSync('npm', ['i'], {
   env: process.env,
@@ -24,7 +24,7 @@ spawnSync('npm', ['i'], {
 });
 
 console.log('');
-console.log('Install byatc bosses');
+console.log('Install byatec bosses');
 console.log('');
 spawnSync('npm', ['i'], {
   env: process.env,
@@ -33,7 +33,7 @@ spawnSync('npm', ['i'], {
 });
 
 console.log('');
-console.log('Install byatc minions');
+console.log('Install byatec minions');
 console.log('');
 spawnSync('npm', ['i'], {
   env: process.env,
@@ -50,7 +50,7 @@ function checkErr(err) {
 };
 
 console.log('');
-console.log('Copy readme.md files to byatc server bosses/www directory with overwrite');
+console.log('Copy readme.md files to byatec server bosses/www directory with overwrite');
 console.log('');
 fs.copySync('./readme.md', './bosses/www/docs/index.md', {
   overwrite: true
