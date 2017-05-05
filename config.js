@@ -15,6 +15,7 @@ module.exports = {
 
     websockets: true, // Enable socket.io
 
+    //  Google Spreadsheet Databases - contains guests, items and categories
     spreadsheets: {
         database: '', // Database name prefix results in ('sheets' + alias + '.json')
         sheets: [
@@ -98,10 +99,12 @@ module.exports = {
         boards: [], // [Added at runtime] Trello boards - info on each board
         template: {
             name: 'Auction Templates',
-            board: {} // [Added at runtime] cards used as template for new cards
+            board: {} // [Added at runtime] cards as templates for creating cards
         },
     },
 
+
+    // Contains the chat rooms for guests, items, and auction bids
     chat: {
         database: 'chat', // Database name prefix results in ('chat' + room.alias + '.json')
         rooms: [{

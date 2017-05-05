@@ -1,0 +1,474 @@
+FORMAT: 1A
+HOST: https://byatc-potofcoffee2go.c9users.io
+
+# Byatec Auction API
+
+byatec - **B**est **Y**ielding **A**uction **T**ool **E**ver **C**reated
+
+The introductory [byatec documentation](https://byatc-potofcoffee2go.rhcloud.com/docs) explains some background in the design of the auction system. Byatec is designed to run a **live** auction hosted by an organization during an event.
+
+The byatec server(s) are fully functional servers capable of handling HTTP RESTful requests, Websockets, delivery of web sites, upload apps, etc. The servers can run on local machines that have internet access or are just as comfortable running on cloud [nodejs](https://nodejs.org/en/) workspaces/VMs available from [Cloud9](https://c9.io/?redirect=0), [rackspace](https://www.rackspace.com/en-us), [OpenShift](https://www.openshift.com/), [AWS](https://aws.amazon.com/?nc2=h_lg), etc. The servers require https protocol for encryption - as all internet activity should be anyway - for free! (like that is ever gonna happen.)
+
+The server has even run on a [BeagleBoard](http://beagleboard.org/) -  albeit with limited number of guests and items ;) 
+
+----
+
+## API
+
+**Client Frontend API**
+
+In most cases the byatec.js script will take care of the underlying details in making RESTful requests to the byatec servers. This documentation is for those that wish to make those requests themselves without the using /js/byatec.js or adding functionality not included in /js/byatec.js.
+
+The Client Frontend API is mostly concerned with providing auction guests access to the items up for auction, messaging to other guests, and monitoring items of interest.
+
+**Administrative Frontend API**
+
+The admin API is used by Frontends designed for people that control the auction. These REST requests allow the adding of guests and items to the auction, removing bids, changing passwords, suspending guests from bidding, suspend bidding on an item, modifying categories, and other adminstrative tasks. Most of these requests are processed by to the *clerk* minion which access is restricted by the *constable* minion.
+
+**Internal API**
+
+The internal API is used between the bosses of the auction system. This API might be used by add-on software to extend auction system functionality.
+
+**This document focuses on the Client Frontend API.**
+
+----
+
+## Structure ##
+
+The structure of the system, code, and API is based on a Victorian era monarchy which organizes the what and where (who?) tasks are performed. Not only has this structure been effective but is fun too! Especially those that get into steampunk!
+
+All REST request URI paths start with `/{boss}/{minion}/...`
+
+There are three *bosses*: **cyborg**, **ninja**, and **pirate**. All REST request paths will start with one of those three. Cyborg is the database administrator, ninja is the auctioneer, while pirate does the checkout processing (don't ask) with the banks.
+
+There are six databases maintained by the system, three by cyborg, two by ninja and one by the pirate. The databases are built by reading the data from spreadsheets on [Google Sheets](https://www.google.com/sheets/about/). [Trello](https://trello.com/) boards are created using the spreadsheet data which consolidates the spreadsheet 'tabular' information into *trello cards* for easier access by people monitoring the auction.
+
+The data in ninja and pirate's databases is *compressed* as arrays of arrays, thus not all that friendly; although accessable, are of little interest to Client Frontend Sites. Luckily, the same data is readily available in cyborg's JSON databases. Plus, cyborg's databases are monitored by the town *crier* minion which broadcasts updates whenever a change occurs.
+
+Cyborg is the main Administrator of the auction system. All REST requests from Client Frontend Sites will inevitably begin with `/cyborg/`. Cyborg will direct requests to other bosses when necessary. 
+
+Under the bosses are seven minions which perform the tasks required of the bosses. The most common minions for requests from Client Frontend Sites are the **constable** which authenticates guests, the **chef** has commonly used queries into the databases, and the town **crier** who broadcasts the news when a change occurs to a guest or item.
+
+The other minions *angel*, *nurse*, and *architect* are not directly accessable via REST request. The only command allowed by auction Guests to *clerk* is to POST a bid on an item. 
+
+Since most of the time Client Frontend Sites are accessing data stored in cyborg's databases, the most commonly used requests will begin with `/cyborg/chef/...`.
+
+::: warning
+
+There is a major difference between the *chef* and *clerk*. The *clerk* is capable of updating and deleting database records and objects. The *constable* will not allow requests GET, POST or DELETE to the *clerk* from auction **Guests** other than to post a bid. The *chef* however NEVER modifies any database regardless of the request method GET, POST, DELETE, PATCH, ... whatever! So all requests to the *chef* are safe. Client Frontend systems should always use the *chef* minion when accessing databases.
+
+:::
+
+----
+
+## Requests
+
+The three cyborg databases are *guests*, *items*, and *categories*. Guests contains information about each guest registered to bid in the auction. Items contains the items up for bid and/or purchase. Categories are the list of categories which an item is assigned.
+
+Though the auction system is pretty good at figuring it out, if responses (especially errors) come back in other than JSON format, is probably because your **Accept:** header is not `application/json` or Accept has multiple mime types. Since the servers deliver web sites, html, css, js, images, text, json, etc. it can sometimes get lost in the vast array of default mime types. Specifying **Accept: application/json** header (with just the single application/json mime type) on REST requests will eliminate most of the issues. 
+
+The unique identifier for guests begin with **G** - G0123, Items begin with **I** - I0123, while categories begin with **C** - C001. These are case sensitive and required to be uppercase if used in requests.
+
+To access data in the databases, do something like `/cyborg/chef/guests`, replacing 'guests' with 'items' or 'categories' as required. Note that this request will respond with *all* guests!
+
+::: warning
+The auction system does NOT fragment responses into *pages* that are so popular with other APIs. This is because paging through results is a PITA for both the Server and Frontend. If a request for all **Items** is requested - then be prepared to swallow the response containing **all data for all items from the Items database**. Probably not wise to make such a request if running your Frontend on a cell phone. ;(  Enlist the *chef* to query the databases for what you need.
+:::
+
+The querystring portion of the request (stuff after the optional '?') is not used and ignored by the auction system. Some REST requests are sensitive to a trailing '/' (slash) at the end of the request. If you get an error on a request that looks valid, insure it does not have a trailing slash. The *chef* is particularly touchy about having everything perfect. That being said, in a majority of cases URLs will work with or without a trailing slash.
+
+----
+
+**Constable Minion**
+
+The *constable* is an old crusty character who has been on the force for quite some time and takes his job very seriously. He would never forgive me if I did not mention that all GET requests are NOT secure - never use a key, token, secret on on a GET request! Access to the system requires username/password login credentials which generate an authorization token issued by the constable. The token is required to establish a WebSocket connection and must be in the Authorization: header of all RESTful requests.
+
+Access to the web sites hosted by the auction system do not require authentication (much to the chagrin of the constable).
+
+All requests (other than the login request) require an **Authorization:** header value in the HTTPS request.  Both authorized guest *id* and *Authorization* token are returned in the response to a successsful guest login request `/cyborg/constable/guests/login`.
+
+::: note
+
+That being said, the authentication for WebSockets differs and is performed during the socket connection phase. Once a WebSocket *socket* is authorized, data transfer will be considered authorized until that *socket* disconnects. Socket reconnects (in the event of network issues) are considered already authorized. Possible security issue? 
+
+:::
+
+ The response to `/cyborg/constable/guests/login` upon successful login will contain the value to place in the Authorization: header for all future requests. That Guest's id is also returned which is associated with the Authorization token.
+
+ Note that Her Majesty the Queen can turn off authentication checks - which can be handy for debugging and testing.
+
+----
+
+**Chef Minion**
+
+The request `/cyborg/chef/guests/G0253` will return (removed some of the fields for briefness sake) the following in the response *data* field (see [Responses](#header-responses) below for more info about the response layout) :
+
+```json
+{
+    "data": {
+        "google": {
+          "id": "G0253",
+          "starting_table": 27,
+          "checkout_id": "G0254",
+          "first_name": "James",
+          "last_name": "Kauffman"
+        },
+        "trello": {
+          "id": "58ebfa70484b63ff47b5fa69",
+          "name": "G0253 - James Kauffman",
+          "labels": {
+            "green": {
+              "id": "58e9e115ced82109ff1c63a9",
+              "idBoard": "58e9e11574278c71a4293e0f",
+              "name": "Player",
+              "color": "green"
+            }
+          },
+          "attached": {
+            "Golf.png": {
+              "url": "https://trello-attachments.s3...6d1053/Golf.png",
+              "name": "Golf.png",
+              "id": "58f5dc6538d33a17cd8ff7a9"
+            }
+          }
+        },
+        "auction": {
+          "id": "G0253",
+          "fullname": "James Kauffman",
+          "table": 27,
+          "bids": 0,
+          "won": 0,
+          "due": 0
+        },
+        "checkout": {
+          "id": "G0253",
+          "provider": "PayPal",
+          "reference": "E45-RE42-TX",
+          "amount": 310,
+          "status": "success"
+        }
+    }
+}
+```
+
+This request resulted in all the data for guest G0253; in this case James Kauffman. Notice that there are four main objects for a guest - *google*, *trello*, *auction*, and *checkout*. The *google* object contains the information from the google 'guests' spreadsheet; the *trello* object contains data of interest on James' trello 'card', *auction* contains current auction related information from ninja, while *checkout* contains payment information from pirate.
+
+A request can be sent to the *chef* asking for more specific information by drilling down into the database. For example the request `/cyborg/chef/guests/G0253/google` is similar to the one above, but is asking for only the *google* object for guest G0253.
+
+```json
+{
+  "data": {
+    "id": "G0253",
+    "starting_table": 27,
+    "checkout_id": "G0254",
+    "first_name": "James",
+    "last_name": "Kauffman"
+  }
+}
+```
+
+You can drill down to a specific field if you wish - `/cyborg/chef/guests/G0253/google/last_name`
+
+```json
+{
+    "data": "Kauffman"
+}
+```
+
+The Items database works the similarly - `/cyborg/chef/items/I0290` - (again, edited some fields out for briefness).
+
+```json
+{
+  "data": {
+    "google": {
+      "id": "I0290",
+      "Category": "C009",
+      "Item": 2100,
+      "Donation": "Signed Jack Nicklaus Masters Golf Tournament Scorecard",
+      "Sponsorship": false
+    },
+    "trello": {
+      "id": "58ec066572db15e60ef82d4b",
+      "name": "I0290 - Signed Jack Nicklaus Masters Golf Tournament Scorecard",
+      "labels": {
+        "green": {
+          "color": "green",
+          "name": "Ready",
+          "id": "58ea51fbced82109ff1cfb1a",
+        }
+      },
+      "attached": {
+        "Golf.png": {
+          "url": "https://trello-attachments.s3...Golf.png",
+          "name": "Golf.png",
+          "id": "58f5f34675a01307b4da041e",
+        }
+      }
+    },
+    "category": {
+      "id": "C009",
+      "Parent": "C009",
+      "Code": "F",
+      "Name": "Famous",
+      "Description": "Famous Desc"
+    },
+    "auction": {
+      "id": "I0290",
+      "OpenBid": 600,
+      "Increment": 50,
+      "BuyPrice": 0,
+      "BuyOnly?": false,
+      "Active?": true,
+    }
+  }
+}
+
+```
+The Items record is very similar to the Guests record with the exception of a *category* object - which as you can imagine, is the category of this item. Also like the Guest database, the request can drill down to get specific information `/cyborg/chef/items/I0290/category`
+
+```json
+{
+  "data": {
+    "category": {
+      "id": "C009",
+      "Parent": "C009",
+      "Code": "F",
+      "Name": "Famous",
+      "Description": "Famous Desc"
+    }
+}
+
+```
+
+The *chef* can perform simple queries based on the URL. By replacing the item id ('I0290' in our example above) with either the word 'find' or 'select', *chef* will return all records that match the rest of the fields in the URL. 'Find' returns the complete record that matches the request, while 'select' returns only the field requested. Examples are worth a thousand words ...
+
+This time we will query the **items** database for all items that are in category C006, like so: `/cyborg/chef/items/find/category/id/C006`
+
+```json
+{
+  "data": {
+    "I0235": {
+      "google": {
+        "id": "... google stuff ..."
+      },
+      "trello": {
+        "id": "... trello stuff ..."
+      },
+      "category": {
+        "id": "C006",
+        "Parent": "C006",
+        "Code": "E",
+        "Name": "Electronics",
+        "Description": "Electronics Desc"
+      },
+      "auction": {
+        "id": "... auction stuff ..."
+       }
+    },
+    "I0236": {
+      "google": {
+        "id": "... google stuff ..."
+      },
+      "trello": {
+        "id": "... trello stuff ..."
+      },
+      "category": {
+        "id": "C006",
+        "Parent": "C006",
+        "Code": "E",
+        "Name": "Electronics",
+        "Description": "Electronics Desc"
+      },
+      "auction": {
+        "id": "... auction stuff ..."
+      }
+    }
+}
+
+```
+
+The result is two item records that are in category C006. Because 'find' was used the complete matching records were returned. Instead of 'find' the word 'select' can be used which only returns the item id and fields selected : 
+`/cyborg/chef/items/select/category/id/C006`
+
+```json
+{
+  "data": {
+    "I0235": {
+      "category": {
+        "id": "C006"
+      }
+    },
+    "I0236": {
+      "category": {
+        "id": "C006"
+      }
+    }
+}
+
+```
+These results can be POSTed to *chef* to perform further queries on these two items.
+
+
+The categories database works in a similar fashion. So that is pretty much how to use *cyborg's chef* minion. In a nutshell, *chef* allows access to cyborg's databases.
+
+----
+
+**Cyborg's Chef Minion**
+
+The *chef* minion is similar to *clerk*. While *clerk* provides direct access to the databases, *chef* performs commonly used summation, consolidation, and reporting of the data that is in cyborg's databases. For example, to get the list of all items under a category, the Client Frontend would have to request all items from the Items database and select the items with that category. Requesting a complete list of items from *clerk* would not be network friendly. Instead, the Frontend can ask the *chef* to serve up the list of items in that category.
+
+There are a set of common reports that the *chef* can process. See the API details below for the reports currently available.
+
+----
+
+**Cyborg's Town Crier Minion**
+
+The town *crier* minion watches for changes that occur in Guests and Items databases. The Frontend can request to watch for updates to guests and/or items. When a change happens, the data relating to that change is broadcast to the Frontend. The easiest way to watch/unwatch for changes is to use the /js/byatec.js script which handles the ugly details of the websocket connection required to watch for updates.
+
+----
+
+
+## Responses
+
+The server responds with the same layout for all resource requests - regardless if responding via HTTP or Websockets. The layout is designed to be both HTTP and Websockets friendly.
+
+All JSON responses have the following layout:
+
+
+```json
+{
+  "boss": "cyborg",
+  "minion": "clerk",
+  "resource": "/cyborg/clerk/guests/G0001",
+  "data": {},
+  "location": "https://byatc-potofcoffee2go.c9users.io:80/...",
+  "status": {
+    "code": 200,
+    "text": "200 - OK"
+  },
+  "error": null
+}
+
+```
+
+**boss** and **minion** are self explainatory.
+
+**resource** is the path of the resource that was requested.
+
+**data** contains the resulting content of the resource requested or null if error encountered.
+
+**location** is the full URI address of the resource including protocol://domain/resource path/...
+
+**status** is a HTTP status code.
+
+**error** contains error information or null if no error encountered.
+
+::: note
+The **actual** HTTP Response Status Code for RESTful responses will always be 200 OK - even if an error is encountered. So let's say a resource is Not Found. The HTTP Response Status Code will NOT be 404 - Not Found! The server always responds with 200 - OK. To check for errors, query the *"error"* field in the response body.
+
+For example :
+
+```javascript
+    if (response.body.error !== null) {
+        // look into contents of response.body.error for error details
+    }
+
+```
+
+It is possible to get network related HTTP Response Status Codes. For example, between the client and server are a bunch of network gearing like proxies, load balancers, etc.  They may response with 301 or 302 (redirects) or possibly 503 (service unavailable) ;(  These are outside of the byatec servers' control.
+
+:::
+
+```json
+{
+  "boss": "cyborg",
+  "minion": "clerk",
+  "resource": "/cyborg/clerk/guest/G01",
+  "data": null,
+  "location": null,
+  "status": {
+    "code": 418,
+    "text": "418 - I'm a teapot"
+  },
+  "error": {
+    "name": "MinionError",
+    "minion": "nurse",
+    "message": "Resource not found",
+    "inner": null,
+    "id": 210
+  }
+}
+```
+
+
+
+# Group Guests
+Guests are the people that bid for items up for auction.
+
+## Important Info
+Descriptions may also contain sub-headings and **more Markdown**.
+
+## Guest List [/cyborg/clerk/guests]
+Guest list description
+
+### List all Guests [GET]
+Get a list of all guests.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: auth-token
+
+
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Authorization: auth-token
+    + Body
+
+            {
+              "boss": "cyborg",
+              "minion": "clerk",
+              "resource": "/cyborg/clerk/guests/G0001",
+              "data": {
+                "google": {
+                  "id": "G0001",
+                  "starting_table": 1,
+                  "checkout_id": "G0001",
+                  "first_name": "Neil",
+                  "last_name": "Herbsman",
+                  "email": "fred@farkle",
+                  "username": "neil"
+                },
+                "trello": {
+                  "id": "58ec2bf3f6fa03a612a08f3d",
+                  "name": "G0001 - Neil Herbsman",
+                  "labels": {
+                    
+                  },
+                  "attached": {
+                    
+                  }
+                },
+                "auction": {
+                  "id": "G0001",
+                  "fullname": "Neil Herbsman",
+                  "table": 1,
+                  "bids": 12,
+                  "won": 4,
+                  "due": 4,
+                  "shipping": 2,
+                  "tax": 1,
+                  "paid": 2
+                }
+              },
+              "location": "https://byatc-potofcoffee2go.c9users.io:80/cyborg/clerk/guests/G0001",
+              "status": {
+                "code": 200,
+                "text": "200 - OK"
+              },
+              "error": null
+            }

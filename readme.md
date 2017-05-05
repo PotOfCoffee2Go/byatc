@@ -4,33 +4,31 @@
 
 -----
 
-[Onyx & Breezy Foundation](http://www.onyxandbreezy.org/) was created by Wanda and Mark Shefts to cherish
-the memory of Onyx and Breezy to benefit the welfare of animals. All activities are volunteer, guaranteeing 
-100% of contributions go to fulfill the goals of the Foundation dedicated to rescue animals from kill shelters;
-provide food, medicine and supplies; support foster groups and sanctuaries; as well as 
-assisting individuals where medical hardship is present.
+Byatec is a live event auction system that reads guest, item, and category 
+information from Google Sheets spreadsheets. The data from the sheets is used to 
+create Trello Boards to assist in organizing guest RSVPs, seating arrangements,
+item categories and uploading of item and category images.
 
-Yearly, the Foundation has a Gala Event to increase awareness to the needs of animals. During the event,
-items donated to the Foundation are put up for auction. Items in the past range from limited edition artwork,
-a 'Signed Jack Nicklaus Masters Golf Tournament Scorecard', to a 'Pink Icing Cup Cake Microbead Pillow'!
+The hierarchy of the system is designed based on a Victorian Era Monarchy. Although
+on first look, seems silly - it does organize the different tasks required by the
+auction system. Not only effective but is fun too! Especially those that get into 
+steampunk!
 
-The Foundation is building a mobile-ready online auction system to be used during this 
-year's Event. If you wish to watch the project as it is being built you can visit 
-[Oynx and Breezy Auction Development](https://trello.com/b/RpqBtWv2/onyx-and-breezy-auction-development) which
-which is updated weekly with the tasks as they are being ( or not being ;) done.
-
-For those interested (or wishing to contribute) to the code being written - visit the GitHub repository 
-[byatec](https://github.com/PotOfCoffee2Go/byatc). The server side code-base is expected to 
-be completed by May 1st, 2017 - at which time the REST API and WebSocket documentation for front-end development
-to the auction will be available.
+For technical info goto the documentation on the sample 
+[byatec system api](https://byatc-potofcoffee2go.c9users.io/api).
 
 -----
 
-**Introduction stuff aside!**. Now, for some real SteamPunk fun! The Onyx and Breezy Auction takes place in the Victorian era
-- back in the age of gears, wheels, wires, sprockets, and such. The auction operation (and code itself) is organized
-As commanded by Her Majesty, the Queen :
+Install by `npm install byatec -g`. This will install a default configuraton which
+will run using data from sample Google spreadsheets. The system is functional but
+can not update the spreadsheets or build the Trello boards until the configuraton
+is updated with credentials, keys, and secrets allowing access to your Google and
+Trello accounts.
+
+
 
 -----
+
 
 ### 'Monarchy'
 
