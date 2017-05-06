@@ -40,7 +40,10 @@
             });
         }
         else {
-            res.json(data);
+            if (data.status && data.status.code)
+                res.status(data.status.code).json(data);
+            else
+                res.status(200).json(data);
         }
     }
 

@@ -4,8 +4,11 @@ FORMAT: 1A
 Byatec API is an auction service designed for Live Events. Guest and Item data for the event is stored on Google Sheets.
 
 ## Error States
-The auction system API always returns a HTTP Response Status Code of 200 OK. To determine if an error has occured check
-the 'error' field in the response described below.
+The auction system API returns either a HTTP Response Status Code of 200 OK or 418 - I'm a teapot.
+To determine the error that has occured check the 'error' field in the response described below.
+
+You might also get other codes, such as 301, 302, etc; but those are not from the auction system but
+normally from network proxies and such.
 
 ## Media Types
 Where applicable this API uses the JSON media-type to represent resources states and affordances.
@@ -53,11 +56,37 @@ Authentication is performed by giving a username and password to the login reque
                 "minion": "constable",
                 "method": "POST",
                 "location": "https://byatc-potofcoffee2go.c9users.io:80/cyborg/constable/guests/login",
-                "timestamp": "2017-05-06T09:34:46.302Z",
-                "key": "18b3ba23-62e8-4636-8257-8dcf5825439c"
+                "timestamp": "2017-05-06T10:11:28.328Z",
+                "token": "4974a954-d165-48fb-abe3-a157fd5f4e30"
               },
               "error": null
             }
+
+
++ Response 418 (application/json)
+
+    + Headers
+
+    + Body
+
+            {
+              "resource": "/cyborg/constable/guests/login",
+              "data": {},
+              "status": {
+                "code": 418,
+                "text": "418 - I'm a teapot",
+                "location": null,
+                "timestamp": "2017-05-06T10:58:32.628Z"
+              },
+              "error": {
+                "name": "MinionError",
+                "minion": "constable",
+                "message": "Can not validate guest login",
+                "inner": null,
+                "id": 101
+              }
+            }
+            
 
 
 # Group Bosses

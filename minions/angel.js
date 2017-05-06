@@ -154,7 +154,8 @@
                 if (sheet.db) {
                     web.routes.restRouter.get(restPath, (req, res, next) => {
                         var prayer = web.minion.angel.invokePrayer(req, res, next);
-                        web.minion.chef.onGetFromSheetsDb(req, res, next, prayer);
+                        if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                            web.minion.chef.onGetFromSheetsDb(req, res, next, prayer);
                     });
                     restResources.push(boss.name + ' angel added REST method GET ' + restPath +
                         ' which calls chef onGetFromSheetsDb()');
@@ -162,14 +163,16 @@
                     restPath = '/' + boss.name + '/clerk/' + sheet.alias + '*';
                     web.routes.restRouter.post(restPath, (req, res, next) => {
                         var prayer = web.minion.angel.invokePrayer(req, res, next);
-                        web.minion.clerk.onPostToSheetsDb(req, res, next, prayer);
+                        if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                            web.minion.clerk.onPostToSheetsDb(req, res, next, prayer);
                     });
                     restResources.push(boss.name + ' angel added REST method POST ' + restPath +
                         ' which calls clerk onPostToSheetsDb()');
 
                     web.routes.restRouter.delete(restPath, (req, res, next) => {
                         var prayer = web.minion.angel.invokePrayer(req, res, next);
-                        web.minion.clerk.onDeleteFromSheetsDb(req, res, next, prayer);
+                        if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                            web.minion.clerk.onDeleteFromSheetsDb(req, res, next, prayer);
                     });
                     restResources.push(boss.name + ' angel added REST method DELETE ' + restPath +
                         ' which calls clerk onDeleteFromSheetsDb()');
@@ -179,7 +182,8 @@
                         restPath = '/' + boss.name + '/chef/' + sheet.alias;
                         web.routes.restRouter.get(restPath, (req, res, next) => {
                             var prayer = web.minion.angel.invokePrayer(req, res, next);
-                            web.minion.chef.onGetAuctionRows(req, res, next, prayer);
+                            if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                                web.minion.chef.onGetAuctionRows(req, res, next, prayer);
                         });
                         restResources.push(boss.name + ' angel added REST method GET ' + restPath +
                             ' which calls chef onGetAuctionRows()');
@@ -197,7 +201,8 @@
                 var restPath = '/' + boss.name + '/constable/guests/login';
                 web.routes.restRouter.post(restPath, (req, res, next) => {
                     var prayer = web.minion.angel.invokePrayer(req, res, next);
-                    web.minion.constable.onPostGuestLogin(req, res, next, prayer);
+                    if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                        web.minion.constable.onPostGuestLogin(req, res, next, prayer);
                 });
 
                 callback(null, boss.name + ' angel added REST method POST ' + restPath +
@@ -212,7 +217,8 @@
         restPath = '/ninja/clerk/bid/*';
         web.routes.restRouter.post(restPath, (req, res, next) => {
             var prayer = web.minion.angel.invokePrayer(req, res, next);
-            web.minion.clerk.onBid(req, res, next, prayer);
+            if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                web.minion.clerk.onBid(req, res, next, prayer);
         });
         cb(null, 'ninja Angel added REST resource Post ' + restPath +
             ' which calls clerk onBid()');
@@ -230,21 +236,24 @@
             if (room.db) {
                 web.routes.restRouter.get(restPath, (req, res, next) => {
                     var prayer = web.minion.angel.invokePrayer(req, res, next);
-                    web.minion.crier.onGetFromRoomsDb(req, res, next, prayer);
+                    if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                        web.minion.crier.onGetFromRoomsDb(req, res, next, prayer);
                 });
                 restResources.push(boss.name + ' angel added REST method GET ' + restPath +
                     ' which calls crier onGetFromRoomsDb()');
 
                 web.routes.restRouter.post(restPath, (req, res, next) => {
                     var prayer = web.minion.angel.invokePrayer(req, res, next);
-                    web.minion.crier.onPostToRoomsDb(req, res, next, prayer);
+                    if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                        web.minion.crier.onPostToRoomsDb(req, res, next, prayer);
                 });
                 restResources.push(boss.name + ' angel added REST method POST ' + restPath +
                     ' which calls crier onPostToRoomsDb()');
 
                 web.routes.restRouter.delete(restPath, (req, res, next) => {
                     var prayer = web.minion.angel.invokePrayer(req, res, next);
-                    web.minion.crier.onDeleteFromRoomsDb(req, res, next, prayer);
+                    if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                        web.minion.crier.onDeleteFromRoomsDb(req, res, next, prayer);
                 });
                 restResources.push(boss.name + ' angel added REST method DELETE ' + restPath +
                     ' which calls crier onDeleteFromRoomsDb()');
