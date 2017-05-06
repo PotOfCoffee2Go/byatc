@@ -13,8 +13,8 @@
 
   <script>
     /* global localStorage */
-    var authKey = localStorage.getItem('BYATEC_KEY');
-    if (!authKey) {
+    var token = localStorage.getItem('BYATEC_TOKEN');
+    if (!token) {
       window.location.href = "/auction/login.html";
     }
   </script>

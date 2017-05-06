@@ -17,7 +17,7 @@ The server has even run on a [BeagleBoard](http://beagleboard.org/) -  albeit wi
 
 **Client Frontend API**
 
-In most cases the byatec.js script will take care of the underlying details in making RESTful requests to the byatec servers. This documentation is for those that wish to make those requests themselves without the using /js/byatec.js or adding functionality not included in /js/byatec.js.
+In most cases the byatec.js script will take care of the underlying details in making RESTful requests to the byatec servers. This documentation is for those wishing to add functionality not included in /js/byatec.js.
 
 The Client Frontend API is mostly concerned with providing auction guests access to the items up for auction, messaging to other guests, and monitoring items of interest.
 
@@ -27,7 +27,7 @@ The admin API is used by Frontends designed for people that control the auction.
 
 **Internal API**
 
-The internal API is used between the bosses of the auction system. This API might be used by add-on software to extend auction system functionality.
+The internal API is used between the bosses of the auction system. This API might be used by add-on software to extend auction system features.
 
 **This document focuses on the Client Frontend API.**
 
@@ -39,7 +39,10 @@ The structure of the system, code, and API is based on a Victorian era monarchy 
 
 All REST request URI paths start with `/{boss}/{minion}/...`
 
-There are three *bosses*: **cyborg**, **ninja**, and **pirate**. All REST request paths will start with one of those three. Cyborg is the database administrator, ninja is the auctioneer, while pirate does the checkout processing (don't ask) with the banks.
+There are three *bosses*: **cyborg**, **ninja**, and **pirate**. Each boss can be run as a separate server. They communicate
+via REST requests. They can also run as a single process.
+
+All REST request paths will start with one of those three. Cyborg is the database administrator, ninja is the auctioneer, while pirate does the checkout processing (don't ask) with the banks.
 
 There are six databases maintained by the system, three by cyborg, two by ninja and one by the pirate. The databases are built by reading the data from spreadsheets on [Google Sheets](https://www.google.com/sheets/about/). [Trello](https://trello.com/) boards are created using the spreadsheet data which consolidates the spreadsheet 'tabular' information into *trello cards* for easier access by people monitoring the auction.
 
@@ -408,7 +411,7 @@ Guests are the people that bid for items up for auction.
 ## Important Info
 Descriptions may also contain sub-headings and **more Markdown**.
 
-## Guest List [/cyborg/clerk/guests]
+## Guest List [/cyborg/chef/guests]
 Guest list description
 
 ### List all Guests [GET]

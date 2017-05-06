@@ -69,16 +69,16 @@
             prayer.status.guest = prayer.data.id;
             var guestkey = web.minion.constable.verifyGuestKey(prayer);
             if (guestkey) {
-                prayer.status.key = guestkey.key;
+                prayer.status.token = guestkey.token;
                 web.sendJson(null, res, prayer);
                 return;
             }
         }
 
         if (dbresult.length) {
-            prayer.status.key = uuidV4();
+            prayer.status.token = uuidV4();
             keys.push({
-                key: prayer.status.key,
+                token: prayer.status.token,
                 guest: prayer.data.id
             });
             web.sendJson(null, res, prayer);
@@ -90,16 +90,16 @@
     };
 
     Constable.prototype.verifyGuestKey = function verifyGuestKey(prayer) {
-        var key = null,
+        var token = null,
             guest = null;
         if (typeof prayer === 'string') {
-            key = prayer.split(' ')[1];
+            token = prayer.split(' ')[1];
         }
         else {
-            key = prayer.status.key;
+            token = prayer.status.token;
             guest = prayer.status.guest;
         }
-        var guestkey = alasql('SELECT * FROM ? AS keys WHERE key = ? OR guest = ?', [keys, key, guest]);
+        var guestkey = alasql('SELECT * FROM ? AS keys WHERE token = ? OR guest = ?', [keys, token, guest]);
         return guestkey.length ? guestkey[0] : null;
     };
 

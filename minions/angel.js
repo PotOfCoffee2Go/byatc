@@ -82,7 +82,7 @@
             resource: prayer.resource,
             data: {},
             status: {
-                key: prayer.status.key,
+                token: prayer.status.token,
                 code: 418,
                 text: '418 - I\'m a teapot',
                 boss: prayer.boss,

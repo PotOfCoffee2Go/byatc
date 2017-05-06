@@ -59,7 +59,7 @@ var byatec = byatec || {};
                 resource: resource,
                 data: data,
                 status: {
-                    key: localStorage.getItem('BYATEC_KEY'),
+                    token: localStorage.getItem('BYATEC_TOKEN'),
                     method: method ? method : 'GET',
                 },
                 error: null

@@ -118,7 +118,7 @@
                     method: msg.status.method,
                     json: true,
                     headers: {
-                        'Authorization': 'BYATEC ' + msg.status.key
+                        'Authorization': 'BYATEC ' + msg.status.token
                     }
                 },
                 (err, response, json) => socket.emit('Restful', err ? err : json));
@@ -141,7 +141,7 @@
                     method: 'GET',
                     json: true,
                     headers: {
-                        'Authorization': 'BYATEC ' + msg.status.key
+                        'Authorization': 'BYATEC ' + msg.status.tokenm
                     }
                 },
                 (err, response, json) => socket.emit('Watch', err ? err : json));
