@@ -3,22 +3,74 @@ FORMAT: 1A
 # Byatec API
 Byatec API is an auction service designed for Live Events. Guest and Item data for the event is stored on Google Sheets.
 
-## Error States
-The auction system API returns either a HTTP Response Status Code of 200 OK or 418 - I'm a teapot.
-To determine the error that has occured check the 'error' field in the response described below.
-
-You might also get other codes, such as 301, 302, etc; but those are not from the auction system but
-normally from network proxies and such.
-
 ## Media Types
 Where applicable this API uses the JSON media-type to represent resources states and affordances.
 
 Requests with a message-body are using plain JSON to set or update resource states.
 
+HTML may be returned by the service running Byatec (
+[Cloud9](https://c9.io/?redirect=0), 
+[rackspace](https://www.rackspace.com/en-us),
+[OpenShift](https://www.openshift.com/),
+[AWS](https://aws.amazon.com/?nc2=h_lg), etc).
+Usually means there has been a malformed REST request or is Byatec not running on the service.
+
+## Protocols
+Both HTTPS [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) and WSS 
+[socket.io](https://socket.io/) protocols are supported. The URI and
+body contents are identical. To facilitate seamless JavaScript code transistion between HTTPS and WSS
+protocols, the HTTPS responses use either code 200 on success or 418 on error. 
+
+## Error States
+The Byatec API returns either a HTTP Response Status Code of 200 - OK or 418 - I'm a teapot.
+To determine the error on a HTTP 418 response, check the 'error' field in the response body
+described below.
+
+You might also get other codes, such as 301, 302, etc; but those are not from the auction system but
+normally from network proxies and such implemented between the client and server.
+
+# Group Resources
+
+## Health [/health]
+Indicates the health of the server by returning a HTTP status code 200
+
+## Retrieve API Health [GET]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "health": "ok"
+            }
+
+## Version [/version]
+API version information is obtained using `Retrieve API Version` request. The major version
+number indicates to expect significant changes in API that may not be compatible with
+prior major releases.
+
+## Retrieve API Version [GET]
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "version": "1.0.0"
+            }
+
 ## Authentication [/cyborg/constable/guests/login]
-Authentication is performed by giving a username and password to the login request returning an authorization token.
+In a production environment REST requests must be authorized using the 
+[HTTP Authorization Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) 
+with the value 'BYATEC token' where `token` is the token returned by the `Guest Authentication Token`
+request.
 
 ## Retrieve Guest Authentication Token [POST]
+Authentication is performed by giving a username and password to the login request returning an authorization token.
 
 + Request (application/json)
 
@@ -88,19 +140,177 @@ Authentication is performed by giving a username and password to the login reque
             }
             
 
+## Server Controls [/queen/commands/:boss/:cmd]
+The Byatec auction servers are controlled by API calls specifically designed to work
+in conjuction with the `/monarchy/queen.js` program. This program provides start,
+suspend, and shutdown commands as well as the keys, tokens, and secret values to
+internet resources such as Google and Trello.
 
-# Group Bosses
-Functionality is divided into three Bosses
+::: warning
+
+This is an **internal command** - to be used by `/monarchy/queen.js` only.
+
+RESTful requests described below will not be available until Her Majesty starts the servers
+
+:::
+
+## Her Majesty Commands [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
 
 
 
-## Cyborg
+## Other Server resources [/]
+
+Any resource request not serviced by the API will be considered a web page request 
+(html, css, js, etc) with the HTTP Status Codes and content appropriate for web browsers.
 
 
-## Ninja
+
+# Group Cyborg
+Functionality is divided into three Bosses which can run in a single process, as
+individual (forked) processes on the same server, or on separate web servers.
+
+Each request will reference a Boss followed by a minion `/{boss}/{minion}`.
+
+The Cyborg is the Administrator of the auction. It reads the contents from Google
+Sheets and builds the databases used by the auction. The most frequently accessed
+minion of Cyborg is the `chef` which accesses the guest, item, and category databases.
+
+The `clerk` minion allows update and delete of database records.
+
+## Guests [/cyborg/chef/guests/{id}]
+Get guest data from auction Guest Database
+
++ id
+
+## Retrieve Guest Data [GET]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
 
 
-## Pirate
+## Updating Guest Data [/cyborg/clerk/guests/{id}]
+
+## Update Guest Data [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
+
+## Remove Guest Data [DELETE]
+Remove a guest from to auction Guest Database
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
+
+## Items [/cyborg/chef/items/{id}]
+Get item data from auction Item Database
+
++ id
+
+## Retrieve Item Data [GET]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
+
+## Categories [/cyborg/chef/categories/{id}]
+Get category data from auction Category Database
+
++ id
+
+## Retrieve Category Data [GET]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
+
+# Group Ninja
+Functionality is divided into three Bosses which can run in a single process, as
+individual (forked) processes on the same server, or on separate web servers.
+
+Each request will reference a Boss followed by a minion `/{boss}/{minion}`.
+
+Ninja is the Auctioneer of the auction. It processes bids for items from guests
+and keeps track of the current auction statuses and values of guests and items.
+
+
 
 
 
