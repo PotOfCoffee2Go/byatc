@@ -201,7 +201,7 @@
                 var restPath = '/' + boss.name + '/constable/guests/login';
                 web.routes.restRouter.post(restPath, (req, res, next) => {
                     var prayer = web.minion.angel.invokePrayer(req, res, next);
-                    if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                    //if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
                         web.minion.constable.onPostGuestLogin(req, res, next, prayer);
                 });
 

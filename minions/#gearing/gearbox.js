@@ -270,9 +270,9 @@
         },
 
         auctionIntoGuestDatabase: function auctionIntoGuestDatabase(web, minionName, cb) {
-            // Merge the autioneer into the guests database
+            // Merge the auctioneer into the guests database
             var sheetAuctioneer, guestCards;
-            var alias = 'auction/guests';
+            var alias = 'auction/checkout';
 
             var cfgsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias);
             var cfgguest = web.cfg.spreadsheets.sheets.find(s => s.alias === 'guests');

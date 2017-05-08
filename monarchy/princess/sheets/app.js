@@ -69,9 +69,29 @@ function gearSheet(sheet, cb) {
     });
 }
 
+function updateSheet(sheet, cb) {
+    var sheets = google.sheets('v4');
+    sheets.spreadsheets.values.update({
+        auth: auth,
+        spreadsheetId: sheet.id,
+        range: sheet.range,
+        valueRenderOption: 'UNFORMATTED_VALUE',
+    }, (err, response) => {
+        if (err)
+            cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
+        else {
+            sheet.rows = response.values;
+            sheet.db.push('/', csvToObjects(response.values));
+            cb(err, 'Princess Sheets loaded spreadsheet -' + sheet.name + '- range -' + sheet.range + '- into DB ' + sheet.alias + '.json');
+        }
+    });
+}
+
+
 module.exports = {
     setCredentials: setCredentials,
-    gearSheet: gearSheet
+    gearSheet: gearSheet,
+    updateSheet: updateSheet
 };
 
 

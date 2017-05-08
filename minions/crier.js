@@ -3,9 +3,8 @@
  * Author: Kim McKinley (PotOfCoffee2Go) <kim@lrunit.net>
  * License: MIT
  *
- * This file handles broadcasting changes that occur in the
- * byatec auction system databases to clients watching for 
- * current updates.
+ * This file handles chat rooms and broadcasting changes that occur in the
+ * byatec auction system databases to clients watching for current updates.
  *
  */
 
@@ -141,7 +140,7 @@
                     method: 'GET',
                     json: true,
                     headers: {
-                        'Authorization': 'BYATEC ' + msg.status.tokenm
+                        'Authorization': 'BYATEC ' + msg.status.token
                     }
                 },
                 (err, response, json) => socket.emit('Watch', err ? err : json));
@@ -251,10 +250,10 @@
     };
 
     Crier.prototype.onDeleteFromRoomsDb = function onDeleteFromRoomsDb(req, res, next, prayer) {
-        web.logger.info('Got to onDeleteFromRoomsDb')
+        web.logger.info('Got to onDeleteFromRoomsDb');
         prayer.data = {
             result: 'Got to onDeleteFromRoomsDb'
-        }
+        };
         web.sendJson(null, res, prayer);
 
         // Let server send the response before sending to the watchers

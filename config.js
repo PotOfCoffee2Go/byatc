@@ -22,35 +22,41 @@ module.exports = {
             // Guests, Items, and Categories - used by frontend web sites
             {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
-                name: '2016 O&B Guest List', // Info only - the id is what google uses to open the sheet
+                name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'guests', // Name used in Database, REST, and Websocket requests - must be 'guests'
-                range: 'Auction_Guests!A1:H1000', // Sheet and Range of data
+                range: 'Guests!A2:I1000', // Sheet and Range of data
                 boardName: 'Auction Guests', // Name of board on Trello - create if not already on Trello
             }, {
-                id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
-                name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
+                id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
+                name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'items', // Name used in Database, REST, and Websocket requests - must be 'items'
-                range: 'Auction_Items!A2:E1000', // Sheet and Range of data
+                range: 'Items!A2:E1000', // Sheet and Range of data
                 boardName: 'Auction Items', // Name of board on Trello - create if not already on Trello
             }, {
-                id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
-                name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
+                id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
+                name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'categories', // Name used in Database, REST, and Websocket requests - must be 'categories'
                 range: 'Categories!A2:E100', // Sheet and Range of data
                 boardName: 'Auction Categories', // Name of board on Trello
+            }, {
+                id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
+                name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
+                alias: 'purchases', // Name used in Database, REST, and Websocket requests - must be 'purchases'
+                range: 'Purchases!A2:H1000', // Sheet and Range of data
+                boardName: '', // Name of board on Trello - '' = do not create
             },
 
             // Guest and Item information - used/updated by ninja as auction runs
             {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
-                name: '2016 O&B Guest List', // Info only - the id is what google uses to open the sheet
-                alias: 'auction/guests', // Name used in Database, REST, and Websocket requests - must be 'auction/guests'
-                range: 'Auctioneer!A2:K1000', // Sheet and Range of data
+                name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
+                alias: 'auction/checkout', // Name used in Database, REST, and Websocket requests - must be 'auction/guests'
+                range: 'Checkout!A2:K1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Guest DB
                 fields: {  // fields in sheet Auctioneer!A2:K1000
                     'id': 0,
-                    'FullName': 1,
+                    'Name': 1,
                     'Table': 2,
                     'Bids': 3,
                     'Wins': 4,
@@ -62,10 +68,10 @@ module.exports = {
                     'Paid': 10
                 }
             }, {
-                id: '1PScbPDA3tjMwP1hvXndCZC4Z3nmzT8dunkKRBOKM9Kc', // id of sheet on google sheets
-                name: '2016 O&B Item List', // Info only - the id is what google uses to open the sheet
+                id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
+                name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'auction/items', // Name used in Database, REST, and Websocket requests - must be 'auction/items'
-                range: 'Auction_Items!F2:S1000', // Sheet and Range of data
+                range: 'Items!F2:S1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Item DB
                 fields: { // fields in sheet Auction_Items!F2:S1000
