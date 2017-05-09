@@ -45,6 +45,8 @@
             //  Add the RESTful paths that begin with '/cyborg/'
             async.series([
                 callback => web.minion.constable.checkCredentials(boss, callback),
+                callback => web.minion.constable.givePrincessSheetsCredentials(boss, callback),
+                callback => web.minion.constable.givePrincessTrelloCredentials(boss, callback),
                 callback => web.minion.architect.loadFromSources(boss, callback),
                 callback => web.minion.angel.gearCyborgRestResources(boss, callback),
                 callback => web.minion.crier.gearSockets(boss, callback),

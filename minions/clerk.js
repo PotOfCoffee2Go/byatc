@@ -62,6 +62,39 @@
         process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
     };
 
+    Clerk.prototype.onPostToGoogleSheet = function onPostToSheet(req, res, next, prayer) {
+
+        var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items'); // guests,items,categories
+        web.spreadsheets.updateSheet(sheet, (err, response) => {
+            prayer.data = response;
+            web.sendJson(null, res, prayer);
+        });
+/*        
+        var
+            data = null,
+            newData = req.body.data,
+            pathList = prayer.resource.split('/'),
+            sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === pathList[3]), // guests,items,categories
+            dataPath = '/' + pathList.slice(4, pathList.length - 1).join('/');
+        try {
+            data = sheet.db.getData(dataPath);
+            data[pathList[pathList.length - 1]] = newData;
+            sheet.db.push(dataPath, data);
+        }
+        catch (err) {
+            var error = new MinionError(minionName, 'Can not get data from Db', 101, err);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+        prayer.data = newData;
+        web.sendJson(null, res, prayer);
+
+        // Let server send the response before sending to the watchers
+        var resource = prayer.resource;
+        process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
+*/
+    };
+
 
     Clerk.prototype.onDeleteFromSheetsDb = function onDeleteFromSheetsDb(req, res, next, prayer) {
         var
@@ -90,7 +123,7 @@
 
     Clerk.prototype.onBid = function onBid(req, res, next, prayer) {
         var error, ge, ie;
-        var guestsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/guests');
+        var guestsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/checkout');
         var itemsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items');
 
         try {

@@ -50,7 +50,7 @@ module.exports = {
             {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
-                alias: 'auction/checkout', // Name used in Database, REST, and Websocket requests - must be 'auction/guests'
+                alias: 'auction/checkout', // Name used in Database, REST, and Websocket requests - must be 'auction/checkout'
                 range: 'Checkout!A2:K1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Guest DB

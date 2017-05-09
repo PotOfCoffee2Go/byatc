@@ -293,8 +293,9 @@
 
             cfgguest.db.push('/', guestCards);
 
-            // Clear the auctioneer database
+            // Place the sheet rows into the auctioneer database
             cfgsheet.db.push('/', {});
+            cfgsheet.db.push('/', cfgsheet.rows);
 
             cb(null, 'Clerk merged auction info into Guest database');
         },
@@ -323,8 +324,10 @@
 
             cfgitem.db.push('/', itemCards);
 
-            // Clear the item auction info db
+            // Place the sheet rows into the auctioneer database
             cfgsheet.db.push('/', {});
+            cfgsheet.db.push('/', cfgsheet.rows);
+
 
             cb(null, 'Clerk merged auction info into Item database');
         },
@@ -334,8 +337,8 @@
             web.cfg.spreadsheets.sheets.forEach((sheet) => {
                 if (sheet.remove && sheet.remove === true) {
                     removedDbs.push(path.basename(sheet.db.filename));
-                    fs.unlinkSync(sheet.db.filename);
-                    sheet.db = null;
+                    //fs.unlinkSync(sheet.db.filename);
+                    //sheet.db = null;
                 }
             });
 

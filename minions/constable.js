@@ -32,15 +32,6 @@
 
     Constable.prototype.setQueensCredentials = function setQueensCredentials(creds) {};
 
-    Constable.prototype.givePrincessSheetsCredentials = function givePrincessSheetsCredentials() {
-        web.spreadsheets.setCredentials(web.cfg.kingdom.keys.sheets);
-    };
-
-    Constable.prototype.givePrincessTrelloCredentials = function givePrincessTrelloCredentials() {
-        web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
-        web.trello.setCredentials(web.cfg.kingdom.keys.trello);
-    };
-
     Constable.prototype.checkCredentials = function checkCredentials(boss, cb) {
         if (!web.cfg.kingdom.keys || !web.cfg.kingdom.keys.trello ||
             !web.cfg.kingdom.keys.trello.key.length > 5 || !web.cfg.kingdom.keys.trello.token.length > 5) {
@@ -49,6 +40,17 @@
         else {
             cb(null, 'Constable verified boss ' + boss.name + ' credentials');
         }
+    };
+
+    Constable.prototype.givePrincessSheetsCredentials = function givePrincessSheetsCredentials(boss, cb) {
+        web.spreadsheets.setCredentials(web.cfg.kingdom.keys.sheets);
+        cb(null, 'Princess Sheets credentials set');
+    };
+
+    Constable.prototype.givePrincessTrelloCredentials = function givePrincessTrelloCredentials(boss, cb) {
+        web.webhook.setCredentials(web.cfg.kingdom.keys.trello);
+        web.trello.setCredentials(web.cfg.kingdom.keys.trello);
+        cb(null, 'Princess Trello credentials set');
     };
 
     Constable.prototype.onPostGuestLogin = function onPostGuestLogin(req, res, next, prayer) {

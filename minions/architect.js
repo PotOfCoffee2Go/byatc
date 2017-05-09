@@ -38,8 +38,6 @@
 
     // Get data for auction from google sheets
     Architect.prototype.gearSheets = function gearSheets(boss, cb) {
-        web.minion.constable.givePrincessSheetsCredentials();
-
         // Array of sheets to collect data from
         async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
             // dbname, true = auto save, true = pretty
@@ -81,7 +79,6 @@
 
 
     Architect.prototype.rousePrincessTrello = function rousePrincessTrello(cb) {
-        web.minion.constable.givePrincessTrelloCredentials();
         web.trello.rousePrincessTrello(web.cfg, (err, results) => cb(err, results));
     };
 

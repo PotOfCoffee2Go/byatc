@@ -74,15 +74,24 @@ function updateSheet(sheet, cb) {
     sheets.spreadsheets.values.update({
         auth: auth,
         spreadsheetId: sheet.id,
-        range: sheet.range,
-        valueRenderOption: 'UNFORMATTED_VALUE',
+        range: "TestSheet!A1", // sheet.range,
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+            range: 'TestSheet!A1',
+            majorDimension: 'ROWS',
+            values: sheet.rows
+        },
     }, (err, response) => {
         if (err)
             cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
         else {
+            console.log(response);
+            /*
             sheet.rows = response.values;
             sheet.db.push('/', csvToObjects(response.values));
-            cb(err, 'Princess Sheets loaded spreadsheet -' + sheet.name + '- range -' + sheet.range + '- into DB ' + sheet.alias + '.json');
+            */
+            cb(err, response);
+
         }
     });
 }
