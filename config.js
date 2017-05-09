@@ -54,19 +54,6 @@ module.exports = {
                 range: 'Checkout!A2:K1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Guest DB
-                fields: {  // fields in sheet Auctioneer!A2:K1000
-                    'id': 0,
-                    'Name': 1,
-                    'Table': 2,
-                    'Bids': 3,
-                    'Wins': 4,
-                    'Buys': 5,
-                    'Won': 6,
-                    'Bought': 7,
-                    'Shipping': 8,
-                    'Tax': 9,
-                    'Paid': 10
-                }
             }, {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
@@ -74,22 +61,6 @@ module.exports = {
                 range: 'Items!F2:S1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Item DB
-                fields: { // fields in sheet Auction_Items!F2:S1000
-                    'id': 0,
-                    'Active': 1,
-                    'OpenBid': 2,
-                    'Increment': 3,
-                    'BidQtyLeft': 4,
-                    'BuyPrice': 5,
-                    'BuyOnly': 6,
-                    'BuyQtyLeft': 7,
-                    'CurrentBid': 8,
-                    'BidQtySold': 9,
-                    'BuyQtySold': 10,
-                    'Bidder': 11,
-                    'Time': 12,
-                    'Bids': 13
-                }
             }
         ]
     },

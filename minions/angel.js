@@ -160,7 +160,7 @@
                     restResources.push(boss.name + ' angel added REST method GET ' + restPath +
                         ' which calls chef onGetFromSheetsDb()');
 
-                    restPath = '/' + boss.name + '/clerk/' + 'updateSheet';
+                    restPath = '/' + boss.name + '/clerk/' + 'updategooglesheets';
                     web.routes.restRouter.post(restPath, (req, res, next) => {
                         var prayer = web.minion.angel.invokePrayer(req, res, next);
                         if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))

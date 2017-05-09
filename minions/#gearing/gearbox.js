@@ -288,9 +288,10 @@
 
             var gcards = Object.keys(guestCards);
             gcards.forEach(function(idCard) {
-                guestCards[idCard].auction = sheetAuctioneer[idCard].profile;
+                guestCards[idCard].checkout = sheetAuctioneer[idCard].profile;
             });
 
+            cfgguest.auctionColumns = cfgsheet.rows[0];
             cfgguest.db.push('/', guestCards);
 
             // Place the sheet rows into the auctioneer database
@@ -322,6 +323,7 @@
                 itemCards[idCard].auction = sheetAuction[idCard].profile;
             });
 
+            cfgitem.auctionColumns = cfgsheet.rows[0];
             cfgitem.db.push('/', itemCards);
 
             // Place the sheet rows into the auctioneer database

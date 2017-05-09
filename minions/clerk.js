@@ -30,6 +30,28 @@
         web = Web;
     }
 
+
+    function comparator(a, b) {
+        if (a[0] < b[0]) return -1;
+        if (a[0] > b[0]) return 1;
+        return 0;
+    }
+
+    // myArray = myArray.sort(Comparator);
+
+    function objectToArray(columns, obj) {
+        var arr = [];
+        columns.forEach((col) => {
+            arr.push(obj[col]);
+        });
+        return arr;
+    }
+
+    function buildSheetUpdate(sheetData) {
+        var ids = Object.keys(sheetData);
+
+    }
+
     Clerk.prototype.setGuestList = function setGuestList(list) {
         guestList = list;
     };
@@ -62,37 +84,52 @@
         process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
     };
 
-    Clerk.prototype.onPostToGoogleSheet = function onPostToSheet(req, res, next, prayer) {
+    Clerk.prototype.buildSheetValues = function buildSheetValues(alias, objName) {
+        var gsheetArr = [];
+        var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias); // guests,items,categories
 
-        var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items'); // guests,items,categories
-        web.spreadsheets.updateSheet(sheet, (err, response) => {
-            prayer.data = response;
-            web.sendJson(null, res, prayer);
+        var records = sheet.db.getData('/');
+        Object.keys(records).forEach((recordid) => {
+            gsheetArr.push(objectToArray(sheet.auctionColumns, records[recordid][objName]));
         });
-/*        
-        var
-            data = null,
-            newData = req.body.data,
-            pathList = prayer.resource.split('/'),
-            sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === pathList[3]), // guests,items,categories
-            dataPath = '/' + pathList.slice(4, pathList.length - 1).join('/');
-        try {
-            data = sheet.db.getData(dataPath);
-            data[pathList[pathList.length - 1]] = newData;
-            sheet.db.push(dataPath, data);
-        }
-        catch (err) {
-            var error = new MinionError(minionName, 'Can not get data from Db', 101, err);
-            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
-            return;
-        }
-        prayer.data = newData;
-        web.sendJson(null, res, prayer);
+        gsheetArr = gsheetArr.sort(comparator);
 
-        // Let server send the response before sending to the watchers
-        var resource = prayer.resource;
-        process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
-*/
+        gsheetArr.unshift(sheet.auctionColumns);
+        return gsheetArr;
+    };
+    
+
+
+    Clerk.prototype.onPostToGoogleSheet = function onPostToGoogleSheet(req, res, next, prayer) {
+        
+        var updateResults = {checkout: {}, auction: {}};
+        async.series([
+            callback => {
+                var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/checkout');
+                var values = web.minion.clerk.buildSheetValues('guests', 'checkout');
+                web.spreadsheets.updateSheet(sheet, values, (err, response) => {
+                    updateResults.checkout = response;
+                    callback(err, response);
+                });
+            },
+            callback => {
+                var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items');
+                var values = web.minion.clerk.buildSheetValues('items', 'auction');
+                web.spreadsheets.updateSheet(sheet, values, (err, response) => {
+                    updateResults.auction = response;
+                    callback(err, response);
+                });
+            },
+        ], (err, results) => {
+            if (err) {
+                var error = new MinionError(minionName, results, 101, err);
+                web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            }
+            else {
+                prayer.data = updateResults;
+                web.sendJson(null, res, prayer);
+            }
+        });
     };
 
 
@@ -127,8 +164,8 @@
         var itemsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items');
 
         try {
-            ge = guestsheet.fields;
-            ie = itemsheet.fields;
+            ge = guestsheet.fields; // <-- NO LONGER VALID
+            ie = itemsheet.fields; // <-- NO LONGER VALID
             var guest = guestsheet.find(g => g[0] === req.body.guestid);
             var item = itemsheet.find(i => i[0] === req.body.itemid);
 

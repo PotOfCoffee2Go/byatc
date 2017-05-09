@@ -595,7 +595,7 @@
       if (path[3] === 'guests') {
         console.log(msg.data[path[4]]);
         curGuest = msg.data[path[4]];
-        $('#guest-name').html('<b>' + curGuest.auction.Name + '</b>');
+        $('#guest-name').html('<b>' + curGuest.checkout.Name + '</b>');
       }
       else if (path[3] === 'items') {
         cats = msg.data;

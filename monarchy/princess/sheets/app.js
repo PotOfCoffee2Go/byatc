@@ -51,6 +51,8 @@ function csvToObjects(lines) {
     return records;
 }
 
+
+
 function gearSheet(sheet, cb) {
     var sheets = google.sheets('v4');
     sheets.spreadsheets.values.get({
@@ -69,30 +71,20 @@ function gearSheet(sheet, cb) {
     });
 }
 
-function updateSheet(sheet, cb) {
+function updateSheet(sheet, values, cb) {
     var sheets = google.sheets('v4');
     sheets.spreadsheets.values.update({
         auth: auth,
         spreadsheetId: sheet.id,
-        range: "TestSheet!A1", // sheet.range,
+        range: sheet.range,
         valueInputOption: 'USER_ENTERED',
         resource: {
-            range: 'TestSheet!A1',
+            range: sheet.range,
             majorDimension: 'ROWS',
-            values: sheet.rows
+            values: values
         },
     }, (err, response) => {
-        if (err)
-            cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
-        else {
-            console.log(response);
-            /*
-            sheet.rows = response.values;
-            sheet.db.push('/', csvToObjects(response.values));
-            */
-            cb(err, response);
-
-        }
+        cb(err, response);
     });
 }
 
