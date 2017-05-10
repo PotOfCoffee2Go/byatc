@@ -60,7 +60,7 @@
                 callback => web.minion.architect.rousePrincessTrello(callback),
                 callback => web.minion.architect.gearSheets(boss, callback),
                 callback => web.minion.architect.gearTrello(boss, callback),
-                callback => web.minion.clerk.gearDatabases(callback),
+                callback => web.minion.architect.gearDatabases(callback),
                 callback => web.minion.architect.gearTrelloBoards(callback),
             ], (err, results) => cb(err, results));
         }
@@ -109,51 +109,18 @@
         });
     };
 
-    function unassignable(boss, listName, cb) {
-        cb(new Error(boss.name + ' could not assign auction list' + listName));
-    }
-
-    function getAuctionList(boss, listName, cb) {
-        if (listName === 'guests') {
-            var guests = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
-            if (!guests) {
-                unassignable(boss, listName, cb);
-                return;
-            }
-            let guestList = guests.rows;
-            if (!guestList) {
-                unassignable(boss, listName, cb);
-                return;
-            }
-            web.minion.clerk.setGuestList(guestList);
-        }
-        else if (listName === 'items') {
-            var items = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/' + listName);
-            if (!items) {
-                unassignable(boss, listName, cb);
-                return;
-            }
-            let itemList = items.rows;
-            if (!itemList) {
-                unassignable(boss, listName, cb);
-                return;
-            }
-            web.minion.clerk.setItemList(itemList);
-        }
-        else {
-            unassignable(boss, listName, cb);
-            return;
-        }
-
-        cb(null, boss.name + ' architect gave clerk the auction ' + listName + ' list');
-    }
-
-    Architect.prototype.gearAuction = function gearAuction(boss, cb) {
-        async.parallel([
-            callback => getAuctionList(boss, 'guests', callback),
-            callback => getAuctionList(boss, 'items', callback)
+    Architect.prototype.gearDatabases = function gearDatabases(cb) {
+        async.series([
+            callback => gearbox.merge.trelloIntoGuestDatabase(web, minionName, callback),
+            callback => gearbox.merge.trelloIntoItemDatabase(web, minionName, callback),
+            callback => gearbox.merge.categoriesIntoItemDatabase(web, minionName, callback),
+            callback => gearbox.merge.trelloIntoCategoriesDatabase(web, minionName, callback),
+            callback => gearbox.merge.auctionIntoGuestDatabase(web, minionName, callback),
+            callback => gearbox.merge.auctionIntoItemDatabase(web, minionName, callback),
+            callback => gearbox.merge.removeDatabases(web, minionName, callback),
         ], (err, results) => cb(err, results));
     };
+
 
     Architect.prototype.gearChat = function gearChat(boss, cb) {
 

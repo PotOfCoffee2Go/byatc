@@ -107,6 +107,8 @@
 
 
     Constable.prototype.isGuestAuthorized = function isGuestAuthorized(req, res, next, prayer) {
+        if (!web.cfg.authenticate) return true;
+        
         if (!prayer.status.guest) {
             var error = new MinionError(minionName, 'Request not authorized.', 101, null);
             web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));

@@ -113,7 +113,7 @@
             web.minion.chef.onSelectFromSheetsDb(req, res, next, prayer);
             return;
         }
-        if (prayer.resource.split('/')[3] === 'items' || prayer.resource.split('/')[4] === 'by' ||
+        if (prayer.resource.split('/')[3] === 'items' && prayer.resource.split('/')[4] === 'by' &&
             prayer.resource.split('/')[5] === 'category') {
             web.minion.chef.onGetItemsByCategory(req, res, next, prayer);
             return;

@@ -93,7 +93,7 @@
                 boardGuests = cfgboard.db.getData('/cards');
             }
             catch (err) {
-                error = new MinionError(minionName, 'Clerk can not get guest sheets and/or board data from Dbs', 101, err);
+                error = new MinionError(minionName, 'cyborg architect can not get guest sheets and/or board data from Dbs', 101, err);
                 cb(error);
                 return;
             }
@@ -130,7 +130,7 @@
             // Clear the auction rows - will not be used
             cfgsheet.rows = null;
 
-            cb(null, 'Clerk merged trello info into Guest database');
+            cb(null, 'cyborg architect merged trello info into Guest database');
         },
 
         trelloIntoItemDatabase: function trelloIntoItemDatabase(web, minionName, cb) {
@@ -145,7 +145,7 @@
                 boardItems = cfgboard.db.getData('/cards');
             }
             catch (err) {
-                error = new MinionError(minionName, 'Clerk can not get item sheets and/or board data from Dbs', 101, err);
+                error = new MinionError(minionName, 'cyborg architect can not get item sheets and/or board data from Dbs', 101, err);
                 cb(error);
                 return;
             }
@@ -181,7 +181,7 @@
             // Clear the auction rows - will not be used
             cfgsheet.rows = null;
 
-            cb(null, 'Clerk merged trello info into Item database');
+            cb(null, 'cyborg architect merged trello info into Item database');
         },
 
         categoriesIntoItemDatabase: function categoriesIntoItemDatabase(web, minionName, cb) {
@@ -196,7 +196,7 @@
                 itemCards = cfgitem.db.getData('/');
             }
             catch (err) {
-                var error = new MinionError(minionName, 'Clerk can not get category sheet and/or items db', 101, err);
+                var error = new MinionError(minionName, 'cyborg architect can not get category sheet and/or items db', 101, err);
                 cb(error);
                 return;
             }
@@ -212,7 +212,7 @@
             // Clear the auction rows - will not be used
             cfgsheet.rows = null;
 
-            cb(null, 'Clerk merged category info into Item database');
+            cb(null, 'cyborg architect merged category info into Item database');
 
         },
 
@@ -229,7 +229,7 @@
                 boardItems = cfgboard.db.getData('/cards');
             }
             catch (err) {
-                error = new MinionError(minionName, 'Clerk can not get category sheets and/or board data from Dbs', 101, err);
+                error = new MinionError(minionName, 'cyborg architect can not get category sheets and/or board data from Dbs', 101, err);
                 cb(error);
                 return;
             }
@@ -265,7 +265,7 @@
             // Clear the auction rows - will not be used
             cfgsheet.rows = null;
 
-            cb(null, 'Clerk merged trello info into Category database');
+            cb(null, 'cyborg architect merged trello info into Category database');
 
         },
 
@@ -281,7 +281,7 @@
                 guestCards = cfgguest.db.getData('/');
             }
             catch (err) {
-                var error = new MinionError(minionName, 'Clerk can not get auction sheet and/or guest db', 101, err);
+                var error = new MinionError(minionName, 'cyborg architect can not get auction sheet and/or guest db', 101, err);
                 cb(error);
                 return;
             }
@@ -294,11 +294,10 @@
             cfgguest.auctionColumns = cfgsheet.rows[0];
             cfgguest.db.push('/', guestCards);
 
-            // Place the sheet rows into the auctioneer database
+            // Clear the auctioneer database - no longer needed
             cfgsheet.db.push('/', {});
-            cfgsheet.db.push('/', cfgsheet.rows);
 
-            cb(null, 'Clerk merged auction info into Guest database');
+            cb(null, 'cyborg architect merged auction info into Guest database');
         },
 
         auctionIntoItemDatabase: function auctionIntoItemDatabase(web, minionName, cb) {
@@ -313,7 +312,7 @@
                 itemCards = cfgitem.db.getData('/');
             }
             catch (err) {
-                var error = new MinionError(minionName, 'Clerk can not get auctioninfo sheet and/or items db', 101, err);
+                var error = new MinionError(minionName, 'cyborg architect can not get auctioninfo sheet and/or items db', 101, err);
                 cb(error);
                 return;
             }
@@ -326,12 +325,10 @@
             cfgitem.auctionColumns = cfgsheet.rows[0];
             cfgitem.db.push('/', itemCards);
 
-            // Place the sheet rows into the auctioneer database
+            // Clear the auctioneer database - no longer needed
             cfgsheet.db.push('/', {});
-            cfgsheet.db.push('/', cfgsheet.rows);
 
-
-            cb(null, 'Clerk merged auction info into Item database');
+            cb(null, 'cyborg architect merged auction info into Item database');
         },
 
         removeDatabases: function removeDatabases(web, minionName, cb) {
@@ -339,12 +336,12 @@
             web.cfg.spreadsheets.sheets.forEach((sheet) => {
                 if (sheet.remove && sheet.remove === true) {
                     removedDbs.push(path.basename(sheet.db.filename));
-                    //fs.unlinkSync(sheet.db.filename);
-                    //sheet.db = null;
+                    fs.unlinkSync(sheet.db.filename);
+                    sheet.db = null;
                 }
             });
 
-            cb(null, 'Clerk deleted merged auction info databases ' + removedDbs.join(', '));
+            cb(null, 'cyborg architect deleted merged auction info databases ' + removedDbs.join(', '));
         }
     };
 

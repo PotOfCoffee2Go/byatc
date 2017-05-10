@@ -13,6 +13,8 @@
 module.exports = {
     kingdom: {}, // [Added at runtime] Credentials/Keys to the kingdom from Her Majesty
 
+    authenticate: false, // Require authorization tokens
+    
     websockets: true, // Enable socket.io
 
     //  Google Spreadsheet Databases - contains guests, items and categories
@@ -24,7 +26,7 @@ module.exports = {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'guests', // Name used in Database, REST, and Websocket requests - must be 'guests'
-                range: 'Guests!A2:I1000', // Sheet and Range of data
+                range: 'Guests!A2:H1000', // Sheet and Range of data
                 boardName: 'Auction Guests', // Name of board on Trello - create if not already on Trello
             }, {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
@@ -51,14 +53,14 @@ module.exports = {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'auction/checkout', // Name used in Database, REST, and Websocket requests - must be 'auction/checkout'
-                range: 'Checkout!A2:K1000', // Sheet and Range of data
+                range: 'Checkout!A2:L1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Guest DB
             }, {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'auction/items', // Name used in Database, REST, and Websocket requests - must be 'auction/items'
-                range: 'Items!F2:S1000', // Sheet and Range of data
+                range: 'Items!F2:U1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
                 remove: true, // Remove database after merging with main Item DB
             }

@@ -44,7 +44,6 @@
             //  Add the RESTful paths that begin with '/ninja/'
             async.series([
                 callback => web.minion.constable.checkCredentials(boss, callback),
-                callback => web.minion.architect.gearAuction(boss, callback),
                 callback => web.minion.angel.gearNinjaRestResources(callback),
             ], (err, results) => cb(err, results));
         }

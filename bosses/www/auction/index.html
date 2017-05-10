@@ -537,12 +537,12 @@
       $('.timeline-title').html(id + ' - ' + items[id].profile.Item);
       // $('#tl-body').html('');
       //$('#tl-date').html(' ' + item.status.timestamp.split('T')[1].split('+')[0]);
-      $('#tl-auction').html('Next bid is at $<b>' + items[id].auction.CurrentBid + '</b> or better');
+      $('#tl-auction').html('Next bid is at $<b>' + items[id].auction.NextBid + '</b> or better');
       $('#tl-buy-now').html('Buy now for $' + items[id].auction.BuyPrice);
-      $('#btn-bid-input').val(items[id].auction.CurrentBid);
+      $('#btn-bid-input').val(items[id].auction.NextBid);
 
       $('#tl-item-status1').html(items[id].auction.Active ? ' Active ' : ' ! Suspended ! ');
-      $('#tl-item-status2').html(' at $' + items[id].auction.CurrentBid);
+      $('#tl-item-status2').html(' at $' + items[id].auction.NextBid);
 
       $('#tl-bid-item-desc').fadeOut('fast', function() {
         $('#tl-bid-item-desc').html('<span style="font-size: 18px;"><b>' + id + ' - ' + items[id].profile.Item + '</b></span>');

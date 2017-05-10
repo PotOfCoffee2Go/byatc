@@ -24,7 +24,6 @@
 
     // Expressjs web server
     var web = null;
-    var guestList, itemList;
 
     function Clerk(Web) {
         web = Web;
@@ -46,18 +45,6 @@
         });
         return arr;
     }
-
-    function buildSheetUpdate(sheetData) {
-        var ids = Object.keys(sheetData);
-
-    }
-
-    Clerk.prototype.setGuestList = function setGuestList(list) {
-        guestList = list;
-    };
-    Clerk.prototype.setItemList = function setItemList(list) {
-        itemList = list;
-    };
 
     Clerk.prototype.onPostToSheetsDb = function onPostToSheetsDb(req, res, next, prayer) {
         var
@@ -97,11 +84,8 @@
         gsheetArr.unshift(sheet.auctionColumns);
         return gsheetArr;
     };
-    
-
 
     Clerk.prototype.onPostToGoogleSheet = function onPostToGoogleSheet(req, res, next, prayer) {
-        
         var updateResults = {checkout: {}, auction: {}};
         async.series([
             callback => {
@@ -159,65 +143,65 @@
 
 
     Clerk.prototype.onBid = function onBid(req, res, next, prayer) {
-        var error, ge, ie;
-        var guestsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/checkout');
-        var itemsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items');
+        var guest, item, error,
+            pathList = prayer.resource.split('/'),
+            guestsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'guests'),
+            itemsheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'items'),
+            bid = req.body.guest;
 
         try {
-            ge = guestsheet.fields; // <-- NO LONGER VALID
-            ie = itemsheet.fields; // <-- NO LONGER VALID
-            var guest = guestsheet.find(g => g[0] === req.body.guestid);
-            var item = itemsheet.find(i => i[0] === req.body.itemid);
-
-            if (!item[ie.Ready]) {
-                error = new MinionError(minionName, 'This item is not open for bidding', 101, null);
-                web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
-                return;
-            }
-
-            if (item[ie.BuyNowOnly]) {
-                error = new MinionError(minionName, 'This item is buy only', 101, null);
-                web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
-                return;
-            }
-
-            if (item[ie.QtyLeft] < 1) {
-                error = new MinionError(minionName, 'This item has already been sold', 101, null);
-                web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
-                return;
-            }
-
-            if (req.body.amount >= (item[ie.CurrentBid] + item[ie.Increment])) {
-                item[ie.CurrentBid] = req.body.amount;
-                item[ie.Bidder] = req.body.guestid;
-                guest[ge.bids]++;
-                web.sendJson(null, res, prayer);
-                return;
-            }
-            else {
-                error = new MinionError(minionName, 'Invalid bid amount - must be current bid + increment (or higher)', 101, null);
-                web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
-                return;
-            }
+            guest = guestsheet.db.getData('/' + bid.guest);
+            item = itemsheet.db.getData('/' + bid.item);
         }
         catch (err) {
-            error = new MinionError(minionName, 'Can not get data from Db', 101, err);
+            error = new MinionError(minionName, 'Can not get data from Db for bid', 101, err);
             web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
             return;
         }
-    };
 
+        if (!guest.checkout.Player) {
+            error = new MinionError(minionName, 'Guest is not an auction player', 101, null);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+        if (!item.auction.Active) {
+            error = new MinionError(minionName, 'Item is currently suspended from auction', 101, null);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+        if (bid.price < item.auction.NextBid) {
+            error = new MinionError(minionName, 'Bid price must be equal or greater than current bid', 101, null);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+        
+        guest.checkout.Bids++;
 
-    Clerk.prototype.gearDatabases = function gearDatabases(cb) {
-        async.series([
-            callback => gearbox.merge.trelloIntoGuestDatabase(web, minionName, callback),
-            callback => gearbox.merge.trelloIntoItemDatabase(web, minionName, callback),
-            callback => gearbox.merge.categoriesIntoItemDatabase(web, minionName, callback),
-            callback => gearbox.merge.trelloIntoCategoriesDatabase(web, minionName, callback),
-            callback => gearbox.merge.auctionIntoGuestDatabase(web, minionName, callback),
-            callback => gearbox.merge.auctionIntoItemDatabase(web, minionName, callback),
-            callback => gearbox.merge.removeDatabases(web, minionName, callback),
-        ], (err, results) => cb(err, results));
+        item.auction.NextBid = bid.price + item.auction.Increment;
+        item.auction.BidDue = bid.price;
+        item.auction.LastBidder = bid.guest;
+        item.auction.Time = new Date();
+        item.auction.Bids++;
+        
+        try {
+            guestsheet.db.push('/' + bid.guest, guest);
+            itemsheet.db.push('/' + bid.item, item);
+        }
+        catch (err) {
+            error = new MinionError(minionName, 'Can not save data to Db for bid', 101, err);
+            web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            return;
+        }
+
+        
+        prayer.data = {bid: bid, checkout: guest.checkout, auction: item.auction};
+        web.sendJson(null, res, prayer);
+/*
+        // Let server send the response before sending to the watchers
+        var resource = prayer.resource;
+        process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
+*/
+
     };
 
 
