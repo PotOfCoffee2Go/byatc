@@ -85,6 +85,16 @@
         return gsheetArr;
     };
 
+    Clerk.prototype.postRowValues = function postRowValues(alias, object, cb) {
+        var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias); // guests,items,categories
+        var values = [];
+        values.push(objectToArray(sheet.auctionColumns, object));
+
+        web.spreadsheets.updateRow(sheet, object.atCell, values, (err, response) => {
+            cb(err, response);
+        });   
+    };
+
     Clerk.prototype.onPostToGoogleSheet = function onPostToGoogleSheet(req, res, next, prayer) {
         var updateResults = {checkout: {}, auction: {}};
         async.series([

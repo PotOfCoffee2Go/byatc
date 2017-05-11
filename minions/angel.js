@@ -216,6 +216,18 @@
 
                 callback(null, boss.name + ' angel added REST method POST ' + restPath +
                     ' which calls constable onPostGuestLogin()');
+            },
+            // Guest registration
+            callback => {
+                var restPath = '/' + boss.name + '/constable/guests/registration';
+                web.routes.restRouter.post(restPath, (req, res, next) => {
+                    var prayer = web.minion.angel.invokePrayer(req, res, next);
+                    //if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
+                        web.minion.constable.onPostGuestRegistration(req, res, next, prayer);
+                });
+
+                callback(null, boss.name + ' angel added REST method POST ' + restPath +
+                    ' which calls constable onPostGuestLogin()');
             }
         ], (err, results) => cb(err, results));
     };

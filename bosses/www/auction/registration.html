@@ -5,11 +5,21 @@
     <style type="text/css">
         body {
             font-family: Arial, Sans-Serif;
+            font-size: .8em;
         }
         
         #container {
             width: 300px;
             margin: 0 auto;
+        }
+        
+        label[info]:hover:after {
+            content: attr(info);
+            position: absolute;
+            padding: 0 0 0 6px;
+            font-size: 1em;
+            border: 1px solid black;
+            background-color: aliceblue;
         }
         /* Nicely lines up the labels. */
         
@@ -37,22 +47,22 @@
 
 <body>
     <div id="container">
-        <form name="registration" action="/cyborg/clerk/registration">
+        <form name="registration" action="/cyborg/constable/guests/registration">
             <h3>Onyx &amp; Breezy Auction Registration</h3>
-            <div class="line"><label for="username">Username *: </label><input type="text" name="username" id="username" /></div>
-            <div class="line"><label for="pwd">Password *: </label><input type="password" name="pwd" id="pwd" /></div>
-            <div class="line"><label for="pwd2">Confirm Password *: </label><input type="password" name="pwd2" id="pwd2" /></div>
+            <div class="line"><label for="username" info="Login name used to identify who you are">Username *: </label><input type="text" name="username" id="username" /></div>
+            <div class="line"><label for="pwd" info="Password associated with the Username">Password *: </label><input type="password" name="pwd" id="pwd" /></div>
+            <div class="line"><label for="pwd2" info="Confirm Password just to be sure">Confirm Password *: </label><input type="password" name="pwd2" id="pwd2" /></div>
             <!-- You may want to consider adding a "confirm" password box also -->
-            <div class="line"><label for="surname">Name on Credit Card *: </label><input type="text" name="surname" id="surname" /></div>
+            <div class="line"><label for="surname" info="Name that will be used to identify you to the auctioneer">Name on Credit Card *: </label><input type="text" name="surname" id="surname" /></div>
             <!-- <div class="line"><label for="other_names">Other Names *: </label><input type="text" id="names" /></div> -->
-            <div class="line"><label for="dob">Date of Birth *: </label><input type="text" name="dob" id="dob" /></div>
-            <div class="line"><label for="email">Email *: </label><input type="email" name="email" id="email" /></div>
+            <div class="line"><label for="email" info="Email for notification of auction information">Email *: </label><input type="email" name="email" id="email" /></div>
             <!-- Valid input types: http://www.w3schools.com/html5/html5_form_input_types.asp -->
-            <div class="line"><label for="tel">Telephone: </label><input type="text" name="tel" id="tel" /></div>
-            <div class="line"><label for="street">Street *: </label><input type="text" name="street" id="street" /></div>
-            <div class="line"><label for="city">City *: </label><input type="text" name="city" id="city" /></div>
-            <div class="line"><label for="state">State *: </label><input type="text" name="state" id="state" /></div>
-            <div class="line"><label for="zip">ZIP *: </label><input type="text" name="zip" id="zip" /></div>
+            <div class="line"><label for="tel" info="Contact phone">Telephone: </label><input type="text" name="tel" id="tel" /></div>
+            <div class="line"><label for="street" info="Street address first line">Street *: </label><input type="text" name="street" id="street" /></div>
+            <div class="line"><label for="street2" info="Street address second line">Street2 *: </label><input type="text" name="street2" id="street2" /></div>
+            <div class="line"><label for="city" info="Shipping City">City *: </label><input type="text" name="city" id="city" /></div>
+            <div class="line"><label for="state" info="Shipping State">State *: </label><input type="text" name="state" id="state" /></div>
+            <div class="line"><label for="zip" info="Shipping Zip">ZIP *: </label><input type="text" name="zip" id="zip" /></div>
             <div class="line submit"><input type="submit" value="Submit" /></div>
 
             <p>Note: Please make sure your details are correct before submitting form and that all fields marked with * are completed!.</p>
@@ -71,8 +81,10 @@
             $('form[name=registration]').submit(function() {
                 var formval = $(this).serializeArray();
                 var registration = {};
-                for (var i=0; i < formval.length; i++)
+                for (var i = 0; i < formval.length; i++)
                     registration[formval[i].name] = formval[i].value;
+
+                registration.password = b2a(registration.username + ':' + registration.pwd);
 
                 $.ajax({
                     type: 'POST',
@@ -80,6 +92,7 @@
                     data: JSON.stringify(registration),
                     success: function(json) {
                         console.log(JSON.stringify(json, null, 2));
+                        /*
                         if (json.status.token) {
                             localStorage.setItem('BYATEC_TOKEN', json.status.token);
                             localStorage.setItem('BYATEC_GUEST', json.status.guest);
@@ -90,17 +103,43 @@
                             localStorage.removeItem('BYATEC_TOKEN');
                             localStorage.removeItem('BYATEC_GUEST');
                         }
+                        */
                     },
                     dataType: 'json',
                     contentType: "application/json; charset=utf-8",
-                    headers: {
-                        'Authorization': 'BYATEC ' + localStorage.getItem('BYATEC_TOKEN')
-                    }
+                    //headers: {
+                    //    'Authorization': 'BYATEC ' + localStorage.getItem('BYATEC_TOKEN')
+                    //}
 
                 });
                 console.log(registration);
                 return false;
             });
+
+            function b2a(a) {
+                var c, d, e, f, g, h, i, j, o, b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+                    k = 0,
+                    l = 0,
+                    m = "",
+                    n = [];
+                if (!a) return a;
+                do c = a.charCodeAt(k++), d = a.charCodeAt(k++), e = a.charCodeAt(k++), j = c << 16 | d << 8 | e,
+                    f = 63 & j >> 18, g = 63 & j >> 12, h = 63 & j >> 6, i = 63 & j, n[l++] = b.charAt(f) + b.charAt(g) + b.charAt(h) + b.charAt(i); while (k < a.length);
+                return m = n.join(""), o = a.length % 3, (o ? m.slice(0, o - 3) : m) + "===".slice(o || 3);
+            }
+
+            function a2b(a) {
+                var b, c, d, e = {},
+                    f = 0,
+                    g = 0,
+                    h = "",
+                    i = String.fromCharCode,
+                    j = a.length;
+                for (b = 0; 64 > b; b++) e["ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(b)] = b;
+                for (c = 0; j > c; c++)
+                    for (b = e[a.charAt(c)], f = (f << 6) + b, g += 6; g >= 8;)((d = 255 & f >>> (g -= 8)) || j - 2 > c) && (h += i(d));
+                return h;
+            }
 
         });
     </script>

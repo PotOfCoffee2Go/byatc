@@ -31,15 +31,25 @@ function setCredentials(sheetKeys) {
     auth = oauth2Client;
 }
 
-function csvToObjects(lines) {
-    var records = {};
-    var columns = lines[0];
+function csvToObjects(range, lines) {
+    var records = {},
+        columns = lines[0];
+
+    // Get the starting row which is the header row containing field names
+    var row = parseInt(range.split(':')[0].match(/\d+$/), 10);
+
+    // Get the starting range without the row number
+    var startrange = range.split(':')[0].replace(/\d+$/, '');
+    var endrange = range.split(':')[1].replace(/\d+$/, '');
+    
     // loop through each line of csv file
     for (let l = 1; l < lines.length; l++) {
         let data = {};
         // builds object based on column headers
         if (lines[l].length > 3) {
-            data.profile = {};
+            data.profile = {
+                atCell: startrange + (l + row) + ':' + endrange + (l + row)
+            };
             for (let c = 0; c < lines[l].length; c++) {
                 var value = lines[l][c];
                 data.profile[columns[c]] = value;
@@ -65,7 +75,7 @@ function gearSheet(sheet, cb) {
             cb(err, 'Princess Sheets error ' + sheet.name + ' unable to create DB ' + sheet.alias + '.json');
         else {
             sheet.rows = response.values;
-            sheet.db.push('/', csvToObjects(response.values));
+            sheet.db.push('/', csvToObjects(sheet.range, response.values));
             cb(err, 'Princess Sheets loaded spreadsheet -' + sheet.name + '- range -' + sheet.range + '- into DB ' + sheet.alias + '.json');
         }
     });
@@ -88,11 +98,29 @@ function updateSheet(sheet, values, cb) {
     });
 }
 
+function updateRow(sheet, range, values, cb) {
+    var sheets = google.sheets('v4');
+    sheets.spreadsheets.values.update({
+        auth: auth,
+        spreadsheetId: sheet.id,
+        range: range,
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+            range: range,
+            majorDimension: 'ROWS',
+            values: values
+        },
+    }, (err, response) => {
+        cb(err, response);
+    });
+}
+
 
 module.exports = {
     setCredentials: setCredentials,
     gearSheet: gearSheet,
-    updateSheet: updateSheet
+    updateSheet: updateSheet,
+    updateRow: updateRow
 };
 
 
