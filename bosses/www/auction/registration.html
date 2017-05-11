@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+
+<head>
+    <style type="text/css">
+        body {
+            font-family: Arial, Sans-Serif;
+        }
+        
+        #container {
+            width: 300px;
+            margin: 0 auto;
+        }
+        /* Nicely lines up the labels. */
+        
+        form label {
+            display: inline-block;
+            width: 140px;
+        }
+        /* You could add a class to all the input boxes instead, if you like. That would be safer, and more backwards-compatible */
+        
+        form input[type="text"],
+        form input[type="password"],
+        form input[type="email"] {
+            width: 160px;
+        }
+        
+        form .line {
+            clear: both;
+        }
+        
+        form .line.submit {
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <form name="registration" action="/cyborg/clerk/registration">
+            <h3>Onyx &amp; Breezy Auction Registration</h3>
+            <div class="line"><label for="username">Username *: </label><input type="text" name="username" id="username" /></div>
+            <div class="line"><label for="pwd">Password *: </label><input type="password" name="pwd" id="pwd" /></div>
+            <div class="line"><label for="pwd2">Confirm Password *: </label><input type="password" name="pwd2" id="pwd2" /></div>
+            <!-- You may want to consider adding a "confirm" password box also -->
+            <div class="line"><label for="surname">Name on Credit Card *: </label><input type="text" name="surname" id="surname" /></div>
+            <!-- <div class="line"><label for="other_names">Other Names *: </label><input type="text" id="names" /></div> -->
+            <div class="line"><label for="dob">Date of Birth *: </label><input type="text" name="dob" id="dob" /></div>
+            <div class="line"><label for="email">Email *: </label><input type="email" name="email" id="email" /></div>
+            <!-- Valid input types: http://www.w3schools.com/html5/html5_form_input_types.asp -->
+            <div class="line"><label for="tel">Telephone: </label><input type="text" name="tel" id="tel" /></div>
+            <div class="line"><label for="street">Street *: </label><input type="text" name="street" id="street" /></div>
+            <div class="line"><label for="city">City *: </label><input type="text" name="city" id="city" /></div>
+            <div class="line"><label for="state">State *: </label><input type="text" name="state" id="state" /></div>
+            <div class="line"><label for="zip">ZIP *: </label><input type="text" name="zip" id="zip" /></div>
+            <div class="line submit"><input type="submit" value="Submit" /></div>
+
+            <p>Note: Please make sure your details are correct before submitting form and that all fields marked with * are completed!.</p>
+        </form>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script>
+        /* global $ localStorage*/
+
+        $(function() {
+            // DOM ready
+
+            $('form[name=registration]').submit(function() {
+                var formval = $(this).serializeArray();
+                var registration = {};
+                for (var i=0; i < formval.length; i++)
+                    registration[formval[i].name] = formval[i].value;
+
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: JSON.stringify(registration),
+                    success: function(json) {
+                        console.log(JSON.stringify(json, null, 2));
+                        if (json.status.token) {
+                            localStorage.setItem('BYATEC_TOKEN', json.status.token);
+                            localStorage.setItem('BYATEC_GUEST', json.status.guest);
+                            window.location.href = "/auction";
+                            return false;
+                        }
+                        else {
+                            localStorage.removeItem('BYATEC_TOKEN');
+                            localStorage.removeItem('BYATEC_GUEST');
+                        }
+                    },
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        'Authorization': 'BYATEC ' + localStorage.getItem('BYATEC_TOKEN')
+                    }
+
+                });
+                console.log(registration);
+                return false;
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>

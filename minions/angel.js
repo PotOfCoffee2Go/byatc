@@ -223,13 +223,13 @@
     Angel.prototype.gearNinjaRestResources = function gearNinjaRestResources(cb) {
         var restPath = '';
         //  Process REST requests from frontends
-        restPath = '/ninja/clerk/bid/*';
+        restPath = '/ninja/clerk/bid*';
         web.routes.restRouter.post(restPath, (req, res, next) => {
             var prayer = web.minion.angel.invokePrayer(req, res, next);
             if (web.minion.constable.isGuestAuthorized(req, res, next, prayer))
                 web.minion.clerk.onBid(req, res, next, prayer);
         });
-        cb(null, 'ninja Angel added REST resource Post ' + restPath +
+        cb(null, 'ninja Angel added REST resource POST ' + restPath +
             ' which calls clerk onBid()');
 
     };
