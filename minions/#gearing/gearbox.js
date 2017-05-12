@@ -204,7 +204,8 @@
             var icards = Object.keys(itemCards);
             icards.forEach(function(idCard) {
                 let itemCategory = itemCards[idCard].profile.Category;
-                itemCards[idCard].category = sheetCategory[itemCategory].profile;
+                if (itemCategory)
+                    itemCards[idCard].category = sheetCategory[itemCategory].profile;
             });
 
             cfgitem.db.push('/', itemCards);
@@ -291,7 +292,6 @@
                 guestCards[idCard].checkout = sheetAuctioneer[idCard].profile;
             });
 
-            cfgguest.auctionColumns = cfgsheet.rows[0];
             cfgguest.db.push('/', guestCards);
 
             // Clear the auctioneer database - no longer needed
@@ -322,7 +322,6 @@
                 itemCards[idCard].auction = sheetAuction[idCard].profile;
             });
 
-            cfgitem.auctionColumns = cfgsheet.rows[0];
             cfgitem.db.push('/', itemCards);
 
             // Clear the auctioneer database - no longer needed
@@ -345,10 +344,53 @@
         }
     };
 
+    var values = {
+
+        comparator: function comparator(a, b) {
+            if (a[0] < b[0]) return -1;
+            if (a[0] > b[0]) return 1;
+            return 0;
+        },
+
+        objectToArray: function objectToArray(columns, obj) {
+            var arr = [];
+            columns.forEach((col) => {
+                arr.push(obj[col]);
+            });
+            return arr;
+        },
+
+        buildRowValues: function buildRowValues(web, alias, object, cb) {
+            var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias); // guests,items,categories
+            var valueArr = [];
+            valueArr.push(values.objectToArray(sheet.auctionColumns, object));
+
+            web.spreadsheets.updateRow(sheet, object.range, valueArr, (err, response) => {
+                cb(err, response);
+            });
+        },
+
+        buildSheetValues: function buildSheetValues(web, alias, objName) {
+            var gsheetArr = [];
+            var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias); // guests,items,categories
+
+            var records = sheet.db.getData('/');
+            Object.keys(records).forEach((recordid) => {
+                gsheetArr.push(values.objectToArray(sheet.auctionColumns, records[recordid][objName]));
+            });
+            gsheetArr = gsheetArr.sort(values.comparator);
+
+            gsheetArr.unshift(sheet.auctionColumns);
+            return gsheetArr;
+        }
+
+    };
+
     module.exports = {
         MinionError: MinionError,
         markdown: markdown,
-        merge: merge
+        merge: merge,
+        values: values
     };
 
 })();

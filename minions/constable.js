@@ -54,23 +54,6 @@
     };
 
     Constable.prototype.onPostGuestLogin = function onPostGuestLogin(req, res, next, prayer) {
-        /*
-        // -----------------------------------------------------------------------
-        // authentication
-        
-        const auth = {login: req.body.username, password: req.body.password};
-        
-        const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-        const [login, password] = new Buffer(b64auth, 'base64').toString().split(':');
-        
-        // Verify login and password are set and correct
-        if (!login || !password || login !== auth.login || password !== auth.password) {
-            res.set('WWW-Authenticate', 'Basic realm="byatec"');
-            res.status(401).send('You shall not pass.');
-            return;
-        }
-        */
-
         var guestsheet = web.cfg.spreadsheets.sheets.find(r => r.alias === 'guests'); // guests,items,auction
         try {
             var guestData = guestsheet.db.getData('/');
@@ -135,8 +118,10 @@
 
     Constable.prototype.onPostGuestRegistration = function onPostGuestRegistration(req, res, next, prayer) {
         var guestsheet = web.cfg.spreadsheets.sheets.find(r => r.alias === 'guests'); // guests,items,auction
+        var checkoutsheet = web.cfg.spreadsheets.sheets.find(r => r.alias === 'auction/checkout'); // guests,items,auction
         try {
             var guestData = guestsheet.db.getData('/');
+            var checkoutData = checkoutsheet.db.getData('/');
             var dbresult = alasql('SELECT * FROM ? AS guest WHERE [1]->profile->UserName = ? and ' +
                 '[1]->profile->Password = ?', [guestData, req.body.username, req.body.password]);
         }
@@ -149,11 +134,11 @@
             web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
             return;
         }
-        
+
         var profile = {
-            atCell: 'Guests!A292:H292',
-            id: 'G0290',
-            Paying: 'G0290',
+            range: guestsheet.nextRecord.range,
+            id: guestsheet.nextRecord.id,
+            Paying: guestsheet.nextRecord.id,
             Seating: 1,
             UserName: req.body.username,
             Password: req.body.password,
@@ -164,13 +149,48 @@
                 req.body.street,
                 req.body.street2,
                 req.body.city, req.body.state, req.body.zip
-            ].join(';'),
+            ].join(';').replace(/;;/g,';'),
             Phone: req.body.tel,
             RSVP: false
         };
-        
-        prayer.data = {'G0290': {profile: profile}};
-        web.sendJson(null, res, prayer);
+
+        var checkout = {
+            range: guestsheet.nextRecord.range,
+            id: guestsheet.nextRecord.id,
+            Paying: guestsheet.nextRecord.id,
+            Seating: 1,
+            UserName: req.body.username,
+            Password: req.body.password,
+            Email: req.body.email,
+            FirstName: req.body.surname.split(' ')[0],
+            LastName: req.body.surname.split(' ')[1],
+            Address: [
+                req.body.street,
+                req.body.street2,
+                req.body.city, req.body.state, req.body.zip
+            ].join(';').replace(/;;/g,';'),
+            Phone: req.body.tel,
+            RSVP: false
+        };
+
+        gearbox.values.buildRowValues(web, guestsheet.alias, profile, (err, response) => {
+            if (err) {
+                error = new MinionError(minionName, 'Unable to update' + guestsheet.alias + 'sheet.', 101, err);
+                web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
+            }
+            else {
+                guestsheet.db.push('/' + profile.id, {profile: profile, checkout: checkout});
+                guestsheet.nextRecord = web.spreadsheets.getNextRecord(guestsheet, guestsheet.db.getData('/'));
+
+                prayer.data = {};
+                prayer.data[profile.id] = {
+                    profile: profile
+                };
+
+                web.sendJson(null, res, prayer);
+            }
+        });
+
     };
 
     module.exports = Constable;

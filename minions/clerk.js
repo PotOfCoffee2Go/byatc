@@ -29,23 +29,6 @@
         web = Web;
     }
 
-
-    function comparator(a, b) {
-        if (a[0] < b[0]) return -1;
-        if (a[0] > b[0]) return 1;
-        return 0;
-    }
-
-    // myArray = myArray.sort(Comparator);
-
-    function objectToArray(columns, obj) {
-        var arr = [];
-        columns.forEach((col) => {
-            arr.push(obj[col]);
-        });
-        return arr;
-    }
-
     Clerk.prototype.onPostToSheetsDb = function onPostToSheetsDb(req, res, next, prayer) {
         var
             data = null,
@@ -71,36 +54,12 @@
         process.nextTick(() => web.minion.crier.broadcast('POST ' + resource));
     };
 
-    Clerk.prototype.buildSheetValues = function buildSheetValues(alias, objName) {
-        var gsheetArr = [];
-        var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias); // guests,items,categories
-
-        var records = sheet.db.getData('/');
-        Object.keys(records).forEach((recordid) => {
-            gsheetArr.push(objectToArray(sheet.auctionColumns, records[recordid][objName]));
-        });
-        gsheetArr = gsheetArr.sort(comparator);
-
-        gsheetArr.unshift(sheet.auctionColumns);
-        return gsheetArr;
-    };
-
-    Clerk.prototype.postRowValues = function postRowValues(alias, object, cb) {
-        var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias); // guests,items,categories
-        var values = [];
-        values.push(objectToArray(sheet.auctionColumns, object));
-
-        web.spreadsheets.updateRow(sheet, object.atCell, values, (err, response) => {
-            cb(err, response);
-        });   
-    };
-
     Clerk.prototype.onPostToGoogleSheet = function onPostToGoogleSheet(req, res, next, prayer) {
         var updateResults = {checkout: {}, auction: {}};
         async.series([
             callback => {
                 var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/checkout');
-                var values = web.minion.clerk.buildSheetValues('guests', 'checkout');
+                var values = gearbox.values.buildSheetValues(web, 'guests', 'checkout');
                 web.spreadsheets.updateSheet(sheet, values, (err, response) => {
                     updateResults.checkout = response;
                     callback(err, response);
@@ -108,7 +67,7 @@
             },
             callback => {
                 var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items');
-                var values = web.minion.clerk.buildSheetValues('items', 'auction');
+                var values = gearbox.values.buildSheetValues(web, 'items', 'auction');
                 web.spreadsheets.updateSheet(sheet, values, (err, response) => {
                     updateResults.auction = response;
                     callback(err, response);
