@@ -59,16 +59,14 @@
         async.series([
             callback => {
                 var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/checkout');
-                var values = gearbox.values.buildSheetValues(web, 'guests', 'checkout');
-                web.spreadsheets.updateSheet(sheet, values, (err, response) => {
+                web.spreadsheets.updateSheetValues(sheet, 'checkout', (err, response) => {
                     updateResults.checkout = response;
                     callback(err, response);
                 });
             },
             callback => {
                 var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === 'auction/items');
-                var values = gearbox.values.buildSheetValues(web, 'items', 'auction');
-                web.spreadsheets.updateSheet(sheet, values, (err, response) => {
+                web.spreadsheets.updateSheetValues(sheet, 'auction', (err, response) => {
                     updateResults.auction = response;
                     callback(err, response);
                 });

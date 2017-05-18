@@ -315,9 +315,9 @@
 
         var cards = Object.keys(sheetcards);
         cards.forEach(function(idCard) {
-            let table = 'Table ' + sheetcards[idCard].profile.Seating;
+            let table = 'Table ' + sheetcards[idCard].profile.Table;
             let list = boardlists.find(l => l.name === table);
-            if (!list && sheetcards[idCard].profile.Seating.length > 0) {
+            if (!list && sheetcards[idCard].profile.Table > 0) {
                 boardlists.push({
                     id: null,
                     name: table

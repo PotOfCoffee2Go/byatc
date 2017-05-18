@@ -344,53 +344,11 @@
         }
     };
 
-    var values = {
-
-        comparator: function comparator(a, b) {
-            if (a[0] < b[0]) return -1;
-            if (a[0] > b[0]) return 1;
-            return 0;
-        },
-
-        objectToArray: function objectToArray(columns, obj) {
-            var arr = [];
-            columns.forEach((col) => {
-                arr.push(obj[col]);
-            });
-            return arr;
-        },
-
-        buildRowValues: function buildRowValues(web, alias, object, cb) {
-            var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias); // guests,items,categories
-            var valueArr = [];
-            valueArr.push(values.objectToArray(sheet.auctionColumns, object));
-
-            web.spreadsheets.updateRow(sheet, object.range, valueArr, (err, response) => {
-                cb(err, response);
-            });
-        },
-
-        buildSheetValues: function buildSheetValues(web, alias, objName) {
-            var gsheetArr = [];
-            var sheet = web.cfg.spreadsheets.sheets.find(s => s.alias === alias); // guests,items,categories
-
-            var records = sheet.db.getData('/');
-            Object.keys(records).forEach((recordid) => {
-                gsheetArr.push(values.objectToArray(sheet.auctionColumns, records[recordid][objName]));
-            });
-            gsheetArr = gsheetArr.sort(values.comparator);
-
-            gsheetArr.unshift(sheet.auctionColumns);
-            return gsheetArr;
-        }
-
-    };
 
     module.exports = {
         MinionError: MinionError,
         markdown: markdown,
         merge: merge,
-        values: values
     };
 
 })();

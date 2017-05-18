@@ -17,6 +17,68 @@ var google = require('googleapis'),
 
 var auth = null;
 
+function comparator(a, b) {
+    if (a[0] < b[0]) return -1;
+    if (a[0] > b[0]) return 1;
+    return 0;
+}
+
+function objectToArray(columns, obj) {
+    var arr = [];
+    columns.forEach((col) => {
+        arr.push(obj[col]);
+    });
+    return arr;
+}
+
+function updateRowValues(sheet, object, cb) {
+    var values = [];
+    values.push(objectToArray(sheet.auctionColumns, object));
+
+    var sheets = google.sheets('v4');
+    sheets.spreadsheets.values.update({
+        auth: auth,
+        spreadsheetId: sheet.id,
+        range: object.range,
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+            range: object.range,
+            majorDimension: 'ROWS',
+            values: values
+        },
+    }, (err, response) => {
+        cb(err, response);
+    });
+}
+
+function updateSheetValues(sheet, objName, cb) {
+    var values = [];
+
+    var records = sheet.db.getData('/');
+    Object.keys(records).forEach((recordid) => {
+        values.push(objectToArray(sheet.auctionColumns, records[recordid][objName]));
+    });
+    values = values.sort(comparator);
+
+    values.unshift(sheet.auctionColumns);
+
+    var sheets = google.sheets('v4');
+    sheets.spreadsheets.values.update({
+        auth: auth,
+        spreadsheetId: sheet.id,
+        range: sheet.range,
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+            range: sheet.range,
+            majorDimension: 'ROWS',
+            values: values
+        },
+    }, (err, response) => {
+        cb(err, response);
+    });
+
+}
+
 function setCredentials(sheetKeys) {
 
     var credentials = JSON.parse(sheetKeys.clientSecret);
@@ -37,12 +99,12 @@ function getNextRecord(sheet, records) {
     var recIds = recIdKeys.sort();
 
     for (var i = 0; i < recIds.length; i++)
-        if (records[recIds[i]].profile[sheet.placeholder].length === 0) {
+        if (sheet.placeholder && records[recIds[i]].profile[sheet.placeholder].toString().length === 0) {
             var lastId = recIds[i];
             break;
         }
 
-    // Get the starting range without the row number
+        // Get the starting range without the row number
     var startrange = sheet.range.split(':')[0].replace(/\d+$/, '');
     var endrange = sheet.range.split(':')[1].replace(/\d+$/, '');
 
@@ -110,45 +172,12 @@ function gearSheet(sheet, cb) {
     });
 }
 
-function updateSheet(sheet, values, cb) {
-    var sheets = google.sheets('v4');
-    sheets.spreadsheets.values.update({
-        auth: auth,
-        spreadsheetId: sheet.id,
-        range: sheet.range,
-        valueInputOption: 'USER_ENTERED',
-        resource: {
-            range: sheet.range,
-            majorDimension: 'ROWS',
-            values: values
-        },
-    }, (err, response) => {
-        cb(err, response);
-    });
-}
-
-function updateRow(sheet, range, values, cb) {
-    var sheets = google.sheets('v4');
-    sheets.spreadsheets.values.update({
-        auth: auth,
-        spreadsheetId: sheet.id,
-        range: range,
-        valueInputOption: 'USER_ENTERED',
-        resource: {
-            range: range,
-            majorDimension: 'ROWS',
-            values: values
-        },
-    }, (err, response) => {
-        cb(err, response);
-    });
-}
 
 
 module.exports = {
     setCredentials: setCredentials,
+    updateRowValues: updateRowValues,
+    updateSheetValues: updateSheetValues,
     gearSheet: gearSheet,
-    updateSheet: updateSheet,
-    updateRow: updateRow,
-    getNextRecord: getNextRecord
+    getNextRecord: getNextRecord,
 };

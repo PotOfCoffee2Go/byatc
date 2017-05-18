@@ -28,28 +28,28 @@ module.exports = {
                 alias: 'guests', // Name used in Database, REST, and Websocket requests - must be 'guests'
                 range: 'Guests!A2:K1000', // Sheet and Range of data
                 boardName: 'Auction Guests', // Name of board on Trello - create if not already on Trello
-                placeholder: 'UserName', // If this field is empty then skip record
+                placeholder: 'UserName', // If field of this name is empty then is a placeholder record
             }, {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'items', // Name used in Database, REST, and Websocket requests - must be 'items'
                 range: 'Items!A2:E1000', // Sheet and Range of data
                 boardName: 'Auction Items', // Name of board on Trello - create if not already on Trello
-                placeholder: 'Item', // If this field is empty then is a placeholder record
+                placeholder: 'Item', // If field of this name is empty then is a placeholder record
             }, {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'categories', // Name used in Database, REST, and Websocket requests - must be 'categories'
                 range: 'Categories!A2:F100', // Sheet and Range of data
                 boardName: 'Auction Categories', // Name of board on Trello
-                placeholder: 'Name', // If this field is empty then is a placeholder record
+                placeholder: 'Name', // If field of this name is empty then is a placeholder record
             }, {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'purchases', // Name used in Database, REST, and Websocket requests - must be 'purchases'
                 range: 'Purchases!A2:I1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
-                placeholder: 'ItemId', // If this field is empty then is a placeholder record
+                placeholder: 'ItemId', // If field of this name is empty then is a placeholder record
             },
 
             // Guest and Item information - used/updated by ninja as auction runs
@@ -57,9 +57,8 @@ module.exports = {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets
                 name: '2016 O&B Auction', // Info only - the id is what google uses to open the sheet
                 alias: 'auction/checkout', // Name used in Database, REST, and Websocket requests - must be 'auction/checkout'
-                range: 'Checkout!A2:L1000', // Sheet and Range of data
+                range: 'Checkout!A2:J1000', // Sheet and Range of data
                 boardName: '', // Name of board on Trello - '' = do not create
-                placeholder: 'Name', // If this field is empty then is a placeholder record
                 remove: true, // Remove database after merging with main Guest DB
             }, {
                 id: '1GOb0ug8CUppms8K7K4ZkFfdkOV4eX71esKTSYa-6SXs', // id of sheet on google sheets

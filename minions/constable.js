@@ -139,7 +139,7 @@
             range: guestsheet.nextRecord.range,
             id: guestsheet.nextRecord.id,
             Paying: guestsheet.nextRecord.id,
-            Seating: 1,
+            Table: 1,
             UserName: req.body.username,
             Password: req.body.password,
             Email: req.body.email,
@@ -153,33 +153,15 @@
             Phone: req.body.tel,
             RSVP: false
         };
-
-        var checkout = {
-            range: guestsheet.nextRecord.range,
-            id: guestsheet.nextRecord.id,
-            Paying: guestsheet.nextRecord.id,
-            Seating: 1,
-            UserName: req.body.username,
-            Password: req.body.password,
-            Email: req.body.email,
-            FirstName: req.body.surname.split(' ')[0],
-            LastName: req.body.surname.split(' ')[1],
-            Address: [
-                req.body.street,
-                req.body.street2,
-                req.body.city, req.body.state, req.body.zip
-            ].join(';').replace(/;;/g,';'),
-            Phone: req.body.tel,
-            RSVP: false
-        };
-
-        gearbox.values.buildRowValues(web, guestsheet.alias, profile, (err, response) => {
+        
+        // Send to worksheet
+        web.spreadsheets.updateRowValues(guestsheet, profile, (err, response) => {
             if (err) {
                 error = new MinionError(minionName, 'Unable to update' + guestsheet.alias + 'sheet.', 101, err);
                 web.sendJson(null, res, web.minion.angel.errorPrayer(error, prayer));
             }
             else {
-                guestsheet.db.push('/' + profile.id, {profile: profile, checkout: checkout});
+                guestsheet.db.push('/' + profile.id + '/profile', profile, false); // false = merge
                 guestsheet.nextRecord = web.spreadsheets.getNextRecord(guestsheet, guestsheet.db.getData('/'));
 
                 prayer.data = {};
@@ -191,6 +173,10 @@
             }
         });
 
+    };
+
+    Constable.prototype.onGetConfig = function onGetConfig(req, res, next, prayer) {
+        
     };
 
     module.exports = Constable;
