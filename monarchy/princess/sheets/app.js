@@ -149,7 +149,6 @@ function csvToObjects(sheet, lines) {
         }
     }
 
-    sheet.nextRecord = getNextRecord(sheet, records);
     return records;
 }
 

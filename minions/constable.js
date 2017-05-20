@@ -118,10 +118,8 @@
 
     Constable.prototype.onPostGuestRegistration = function onPostGuestRegistration(req, res, next, prayer) {
         var guestsheet = web.cfg.spreadsheets.sheets.find(r => r.alias === 'guests'); // guests,items,auction
-        var checkoutsheet = web.cfg.spreadsheets.sheets.find(r => r.alias === 'auction/checkout'); // guests,items,auction
         try {
             var guestData = guestsheet.db.getData('/');
-            var checkoutData = checkoutsheet.db.getData('/');
             var dbresult = alasql('SELECT * FROM ? AS guest WHERE [1]->profile->UserName = ? and ' +
                 '[1]->profile->Password = ?', [guestData, req.body.username, req.body.password]);
         }
@@ -135,10 +133,12 @@
             return;
         }
 
+        var nextRecord = web.spreadsheets.getNextRecord(guestsheet, guestsheet.db.getData('/'));
+
         var profile = {
-            range: guestsheet.nextRecord.range,
-            id: guestsheet.nextRecord.id,
-            Paying: guestsheet.nextRecord.id,
+            range: nextRecord.range,
+            id: nextRecord.id,
+            Paying: nextRecord.id,
             Table: 1,
             UserName: req.body.username,
             Password: req.body.password,
@@ -162,7 +162,6 @@
             }
             else {
                 guestsheet.db.push('/' + profile.id + '/profile', profile, false); // false = merge
-                guestsheet.nextRecord = web.spreadsheets.getNextRecord(guestsheet, guestsheet.db.getData('/'));
 
                 prayer.data = {};
                 prayer.data[profile.id] = {
@@ -173,10 +172,6 @@
             }
         });
 
-    };
-
-    Constable.prototype.onGetConfig = function onGetConfig(req, res, next, prayer) {
-        
     };
 
     module.exports = Constable;
