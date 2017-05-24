@@ -172,7 +172,7 @@
         <span class="label label-primary">story</span>
         <span class="label label-warning">Favorites</span>  -->
       <span class="label label-info">Auction</span>
-      <span class="label label-success">Watched</span>
+      <span class="label label-success">Watch List</span>
       <span class="label label-default">Chat Rooms</span>
       <span class="label label-primary">Help</span>
     </div>
@@ -595,7 +595,7 @@
       if (path[3] === 'guests') {
         console.log(msg.data[path[4]]);
         curGuest = msg.data[path[4]];
-        $('#guest-name').html('<b>' + curGuest.checkout.Name + '</b>');
+        $('#guest-name').html('<b>' + curGuest.profile.FirstName + ' ' + curGuest.profile.LastName + '</b>');
       }
       else if (path[3] === 'items') {
         cats = msg.data;

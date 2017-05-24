@@ -29,6 +29,9 @@ described below.
 You might also get other codes, such as 301, 302, etc; but those are not from the auction system but
 normally from network proxies and such implemented between the client and server.
 
+## Viewer
+The [API Viewer](/api/viewer) allows you to submit REST calls and view the results.
+
 # Group Resources
 
 ## Health [/health]
@@ -150,11 +153,11 @@ internet resources such as Google and Trello.
 
 This is an **internal command** - to be used by `/monarchy/queen.js` only.
 
-RESTful requests described below will not be available until Her Majesty starts the servers
+RESTful requests described below will not be available until Her Majesty (queen.js) starts the servers
 
 :::
 
-## Her Majesty Commands [POST]
+## Server Commands [POST]
 
 + Request (application/json)
 
@@ -179,6 +182,283 @@ RESTful requests described below will not be available until Her Majesty starts 
 Any resource request not serviced by the API will be considered a web page request 
 (html, css, js, etc) with the HTTP Status Codes and content appropriate for web browsers.
 
+# Group Most Common
+There are many API calls to create, read, update, and delete auction guests, items, and categories.
+However, most are for adding plugins and features and not required by guest front-end systems.
+
+
+## Get a Guest's Data [/cyborg/chef/guests/{id}]
+Retrieve Guest Data given the id of the guest. If the id is not given will return all guests.
+
+## Get Guests Data [GET]
+
++ Parameters
+    + id (optional, string) ... Id of the guest to retrieve
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "resource": "/cyborg/chef/guests/G0265",
+              "data": {
+                "G0265": {
+                  "profile": {
+                    "range": "Guests!A267:K267",
+                    "id": "G0265",
+                    "Paying": "G0265",
+                    "Table": 28,
+                    "UserName": "terry",
+                    "Password": "gus",
+                    "Email": "",
+                    "FirstName": "Terry",
+                    "LastName": "Keyser",
+                    "Address": "",
+                    "Phone": "",
+                    "RSVP": false
+                  },
+                  "trello": {
+                    "id": "58ebfa7328ef4ba6c39add21",
+                    "name": "G0265 - Terry Keyser",
+                    "labels": {
+                      "green": {
+                        "id": "58e9e115ced82109ff1c63a9",
+                        "idBoard": "58e9e11574278c71a4293e0f",
+                        "name": "Player",
+                        "color": "green"
+                      }
+                    },
+                    "attachments": {
+                      
+                    }
+                  },
+                  "checkout": {
+                    "range": "Checkout!A267:J267",
+                    "id": "G0265",
+                    "Player": true,
+                    "Bids": 0,
+                    "Wins": 0,
+                    "Buys": 0,
+                    "Won": 0,
+                    "Bought": 0,
+                    "Shipping": 0,
+                    "Tax": 0,
+                    "Paid": 0
+                  }
+                }
+              },
+              "status": {
+                "code": 200,
+                "text": "200 - OK",
+                "guest": null,
+                "boss": "cyborg",
+                "minion": "chef",
+                "method": "GET",
+                "location": "https://byatc-potofcoffee2go.c9users.io/cyborg/chef/guests/G0265",
+                "timestamp": "2017-05-21T14:24:15.952Z"
+              },
+              "error": null
+            }
+
+
+## Get an Item's Data [/cyborg/chef/items/{id}]
+Retrieve Item Data given the id of the item.  If the id is not given will return all items.
+
+## Get Item Data [GET]
+
++ Parameters
+    + id (optional, string) ... Id of the item to retrieve
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "resource": "/cyborg/chef/items/I0233",
+              "data": {
+                "I0233": {
+                  "profile": {
+                    "range": "Items!A235:E235",
+                    "id": "I0233",
+                    "Category": "C005",
+                    "Code": 1715,
+                    "Item": "Horse Basket",
+                    "Sponsorship": false
+                  },
+                  "trello": {
+                    "id": "58ec065717e7923a14ed5b84",
+                    "name": "I0233 - Horse Basket",
+                    "labels": {
+                      
+                    },
+                    "attachments": {
+                      
+                    }
+                  },
+                  "category": {
+                    "range": "Categories!A7:F7",
+                    "id": "C005",
+                    "Parent": "C005",
+                    "Code": "A",
+                    "Name": "Animal",
+                    "Description": "Animal Desc",
+                    "Active": true
+                  },
+                  "auction": {
+                    "range": "Items!F235:T235",
+                    "id": "I0233",
+                    "Active": true,
+                    "OpenBid": 45,
+                    "Increment": 5,
+                    "BidQty": 1,
+                    "BuyPrice": 135,
+                    "BuyQty": 1,
+                    "NextBid": 45,
+                    "BidQtySold": 0,
+                    "BuyQtySold": 0,
+                    "BidDue": 0,
+                    "BuyDue": 0,
+                    "LastBidder": "",
+                    "Time": "",
+                    "Bids": 0
+                  }
+                }
+              },
+              "status": {
+                "code": 200,
+                "text": "200 - OK",
+                "guest": null,
+                "boss": "cyborg",
+                "minion": "chef",
+                "method": "GET",
+                "location": "https://byatc-potofcoffee2go.c9users.io/cyborg/chef/items/I0233",
+                "timestamp": "2017-05-21T14:32:26.903Z"
+              },
+              "error": null
+            }
+
+
+
+## Items by category [/cyborg/chef/items/by/category]
+Gets a list of all items by category. This API call is very handy for front-end carousels allowing
+guests to select items that are within a category.
+
+## Items by category [GET]
+Items by category
+
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: token
+
+
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Authorization: token
+
+    + Body
+
+            {
+                "todo": "The requests and responses are described elsewhere"
+            }
+
+
+## Place a bid [/ninja/clerk/bid/{id}]
+Place a bid by a guest on an item
+
+## Post Bid [POST]
+
++ Request (application/json)
+
+    + guest (string) ... Id of the guest placing the bid
+    + item (string) ... Id of the item bid being placed
+    + amount (string) ... Dollar amount of the bid
+
+    + Headers
+
+            Authorization: token
+
+    + Body
+
+            {
+                "guest" : "idGuest",
+                "item" : "idItem",
+                "amount" : 123.00
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "resource": "/ninja/clerk/bid/",
+              "data": {
+                "bid": {
+                  "guest": "G0003",
+                  "item": "I0003",
+                  "price": 35
+                },
+                "checkout": {
+                  "range": "Checkout!A5:J5",
+                  "id": "G0003",
+                  "Player": true,
+                  "Bids": 5,
+                  "Wins": 1,
+                  "Buys": 2,
+                  "Won": 150,
+                  "Bought": 100,
+                  "Shipping": 0,
+                  "Tax": 0,
+                  "Paid": 230
+                },
+                "auction": {
+                  "range": "Items!F5:T5",
+                  "id": "I0003",
+                  "Active": true,
+                  "OpenBid": 35,
+                  "Increment": 5,
+                  "BidQty": 1,
+                  "BuyPrice": 105,
+                  "BuyQty": 1,
+                  "NextBid": null,
+                  "BidQtySold": 0,
+                  "BuyQtySold": 0,
+                  "BuyDue": 0,
+                  "LastBidder": "G0003",
+                  "Time": "2017-05-21T16:27:27.809Z",
+                  "Bids": 4
+                }
+              },
+              "status": {
+                "code": 200,
+                "text": "200 - OK",
+                "guest": null,
+                "boss": "ninja",
+                "minion": "clerk",
+                "method": "POST",
+                "location": "https://byatc-potofcoffee2go.c9users.io:80/ninja/clerk/bid/",
+                "timestamp": "2017-05-21T16:27:27.809Z"
+              },
+              "error": null
+            }
+
 
 
 # Group Cyborg
@@ -193,8 +473,8 @@ minion of Cyborg is the `chef` which accesses the guest, item, and category data
 
 The `clerk` minion allows update and delete of database records.
 
-## Guests [/cyborg/chef/guests/{id}]
-Get guest data from auction Guest Database
+## Guests [/cyborg/chef/guests]
+Get all guest data from auction Guest Database
 
 + id
 
@@ -253,7 +533,7 @@ Remove a guest from to auction Guest Database
             }
 
 
-## Items [/cyborg/chef/items/{id}]
+## Items [/cyborg/chef/items]
 Get item data from auction Item Database
 
 + id

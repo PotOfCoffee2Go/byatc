@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>JSONEditor | Viewer</title>
+    <title>Auction API Viewer</title>
 
     <link href="jsoneditor-min.css" rel="stylesheet" type="text/css">
     <script src="jsoneditor-min.js"></script>
@@ -18,12 +18,11 @@
         #jsoneditor {
             width: 90%;
         }
-
+        
         form input[type="text"] {
             width: 80%;
         }
-
-/*
+        /*
         button[title]:hover:after {
             content: attr(title);
             position: absolute;
@@ -33,8 +32,6 @@
             background-color: aliceblue;
         }
 */
-
-
     </style>
 
     <script type="text/javascript">
@@ -43,12 +40,26 @@
         $(function() {
             // DOM ready
 
+            $('.method').on('click', function (){
+                if ($('#get-method').checked) {
+                    console.log('get checked')
+                }
+                if ($('#post-method').checked) {
+                    console.log('post checked')
+                }
+            });
+    
             $('form[name=viewer]').submit(function() {
                 var formval = $(this).serializeArray();
                 var viewer = {};
                 for (var i = 0; i < formval.length; i++)
                     viewer[formval[i].name] = formval[i].value;
-
+                /*
+                                var hostname = $('<a>').prop('href', viewer.url).prop('hostname');
+                                if (viewer.url.substring(0,5).toUpperCase() !== 'HTTPS') {
+                                    viewer.url = hostname + viewer.url;
+                                }
+                */
                 $.ajax({
                     type: 'GET',
                     url: viewer.url,
@@ -79,18 +90,22 @@
 
 <body>
     <p>
-        This editor is read-only (mode='viewer').
+        This editor is read-only.
     </p>
     <div id="jsoneditor"></div>
 
     <div id="container">
         <form name="viewer" action="">
-            <h3>Onyx &amp; Breezy Auction API Viewer</h3>
-            <div class="line"><label for="url" info="URL of API call">URL: </label><input type="text" name="url" id="url" /></div>
+            <h3>Auction API Viewer</h3>
+            <div class="line">
+                <input type="radio" id="get-method" class="method" name="method" value="GET" checked="checked"> GET
+                <input type="radio" id="post-method" class="method" name="method" value="POST"> POST<br>
+                <label for="url" info="URL of API call">URL: </label><input type="text" name="url" id="url" />
+            </div>
             <div class="line submit"><input type="submit" value="Submit" /></div>
         </form>
     </div>
-    
+
 </body>
 
 </html>

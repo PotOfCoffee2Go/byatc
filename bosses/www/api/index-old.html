@@ -1,0 +1,555 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Byatec Auction API</title><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"><style>@import url('https://fonts.googleapis.com/css?family=Roboto:400,700|Inconsolata|Raleway:200');.hljs-comment,.hljs-title{color:#8e908c}.hljs-variable,.hljs-attribute,.hljs-tag,.hljs-regexp,.ruby .hljs-constant,.xml .hljs-tag .hljs-title,.xml .hljs-pi,.xml .hljs-doctype,.html .hljs-doctype,.css .hljs-id,.css .hljs-class,.css .hljs-pseudo{color:#c82829}.hljs-number,.hljs-preprocessor,.hljs-pragma,.hljs-built_in,.hljs-literal,.hljs-params,.hljs-constant{color:#f5871f}.ruby .hljs-class .hljs-title,.css .hljs-rules .hljs-attribute{color:#eab700}.hljs-string,.hljs-value,.hljs-inheritance,.hljs-header,.ruby .hljs-symbol,.xml .hljs-cdata{color:#718c00}.css .hljs-hexcolor{color:#3e999f}.hljs-function,.python .hljs-decorator,.python .hljs-title,.ruby .hljs-function .hljs-title,.ruby .hljs-title .hljs-keyword,.perl .hljs-sub,.javascript .hljs-title,.coffeescript .hljs-title{color:#4271ae}.hljs-keyword,.javascript .hljs-function{color:#8959a8}.hljs{display:block;background:white;color:#4d4d4c;padding:.5em}.coffeescript .javascript,.javascript .xml,.tex .hljs-formula,.xml .javascript,.xml .vbscript,.xml .css,.xml .hljs-cdata{opacity:.5}.right .hljs-comment{color:#969896}.right .css .hljs-class,.right .css .hljs-id,.right .css .hljs-pseudo,.right .hljs-attribute,.right .hljs-regexp,.right .hljs-tag,.right .hljs-variable,.right .html .hljs-doctype,.right .ruby .hljs-constant,.right .xml .hljs-doctype,.right .xml .hljs-pi,.right .xml .hljs-tag .hljs-title{color:#c66}.right .hljs-built_in,.right .hljs-constant,.right .hljs-literal,.right .hljs-number,.right .hljs-params,.right .hljs-pragma,.right .hljs-preprocessor{color:#de935f}.right .css .hljs-rule .hljs-attribute,.right .ruby .hljs-class .hljs-title{color:#f0c674}.right .hljs-header,.right .hljs-inheritance,.right .hljs-name,.right .hljs-string,.right .hljs-value,.right .ruby .hljs-symbol,.right .xml .hljs-cdata{color:#b5bd68}.right .css .hljs-hexcolor,.right .hljs-title{color:#8abeb7}.right .coffeescript .hljs-title,.right .hljs-function,.right .javascript .hljs-title,.right .perl .hljs-sub,.right .python .hljs-decorator,.right .python .hljs-title,.right .ruby .hljs-function .hljs-title,.right .ruby .hljs-title .hljs-keyword{color:#81a2be}.right .hljs-keyword,.right .javascript .hljs-function{color:#b294bb}.right .hljs{display:block;overflow-x:auto;background:#1d1f21;color:#c5c8c6;padding:.5em;-webkit-text-size-adjust:none}.right .coffeescript .javascript,.right .javascript .xml,.right .tex .hljs-formula,.right .xml .css,.right .xml .hljs-cdata,.right .xml .javascript,.right .xml .vbscript{opacity:.5}body{color:black;background:white;font:400 14px / 1.42 'Roboto',Helvetica,sans-serif}header{border-bottom:1px solid #ededed;margin-bottom:12px}h1,h2,h3,h4,h5{color:black;margin:12px 0}h1 .permalink,h2 .permalink,h3 .permalink,h4 .permalink,h5 .permalink{margin-left:0;opacity:0;transition:opacity .25s ease}h1:hover .permalink,h2:hover .permalink,h3:hover .permalink,h4:hover .permalink,h5:hover .permalink{opacity:1}.triple h1 .permalink,.triple h2 .permalink,.triple h3 .permalink,.triple h4 .permalink,.triple h5 .permalink{opacity:.15}.triple h1:hover .permalink,.triple h2:hover .permalink,.triple h3:hover .permalink,.triple h4:hover .permalink,.triple h5:hover .permalink{opacity:.15}h1{font:200 36px 'Raleway',Helvetica,sans-serif;font-size:36px}h2{font:200 36px 'Raleway',Helvetica,sans-serif;font-size:30px}h3{font-size:100%;text-transform:uppercase}h5{font-size:100%;font-weight:normal}p{margin:0 0 10px}p.choices{line-height:1.6}a{color:#18bc9c;text-decoration:none}li p{margin:0}hr.split{border:0;height:1px;width:100%;padding-left:6px;margin:12px auto;background-image:linear-gradient(to right, rgba(0,0,0,0) 20%, rgba(0,0,0,0.2) 51.4%, rgba(255,255,255,0.2) 51.4%, rgba(255,255,255,0) 80%)}dl dt{float:left;width:130px;clear:left;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}dl dd{margin-left:150px}blockquote{color:rgba(0,0,0,0.5);font-size:15.5px;padding:10px 20px;margin:12px 0;border-left:5px solid #e8e8e8}blockquote p:last-child{margin-bottom:0}pre{background-color:#f5f5f5;padding:12px;border:1px solid #cfcfcf;border-radius:6px;overflow:auto}pre code{color:black;background-color:transparent;padding:0;border:none}code{color:#444;background-color:#f5f5f5;font:'Inconsolata',monospace;padding:1px 4px;border:1px solid #cfcfcf;border-radius:3px}ul,ol{padding-left:2em}table{border-collapse:collapse;border-spacing:0;margin-bottom:12px}table tr:nth-child(2n){background-color:#fafafa}table th,table td{padding:6px 12px;border:1px solid #e6e6e6}.text-muted{opacity:.5}.note,.warning{padding:.3em 1em;margin:1em 0;border-radius:2px;font-size:90%}.note h1,.warning h1,.note h2,.warning h2,.note h3,.warning h3,.note h4,.warning h4,.note h5,.warning h5,.note h6,.warning h6{font-family:200 36px 'Raleway',Helvetica,sans-serif;font-size:135%;font-weight:500}.note p,.warning p{margin:.5em 0}.note{color:black;background-color:#eff7fc;border-left:4px solid #3498db}.note h1,.note h2,.note h3,.note h4,.note h5,.note h6{color:#3498db}.warning{color:black;background-color:#fcf0ef;border-left:4px solid #d62c1a}.warning h1,.warning h2,.warning h3,.warning h4,.warning h5,.warning h6{color:#d62c1a}header{margin-top:24px}nav{position:fixed;top:24px;bottom:0;overflow-y:auto}nav .resource-group{padding:0}nav .resource-group .heading{position:relative}nav .resource-group .heading .chevron{position:absolute;top:12px;right:12px;opacity:.5}nav .resource-group .heading a{display:block;color:black;opacity:.7;border-left:2px solid transparent;margin:0}nav .resource-group .heading a:hover{text-decoration:none;background-color:bad-color;border-left:2px solid black}nav ul{list-style-type:none;padding-left:0}nav ul a{display:block;font-size:13px;color:rgba(0,0,0,0.7);padding:8px 12px;border-top:1px solid #ededed;border-left:2px solid transparent;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}nav ul a:hover{text-decoration:none;background-color:bad-color;border-left:2px solid black}nav ul>li{margin:0}nav ul>li:first-child{margin-top:-12px}nav ul>li:last-child{margin-bottom:-12px}nav ul ul a{padding-left:24px}nav ul ul li{margin:0}nav ul ul li:first-child{margin-top:0}nav ul ul li:last-child{margin-bottom:0}nav>div>div>ul>li:first-child>a{border-top:none}.preload *{transition:none !important}.pull-left{float:left}.pull-right{float:right}.badge{display:inline-block;float:right;min-width:10px;min-height:14px;padding:3px 7px;font-size:12px;color:#000;background-color:#ededed;border-radius:10px;margin:-2px 0}.badge.get{color:white;background-color:#3498db}.badge.head{color:white;background-color:#3498db}.badge.options{color:white;background-color:#3498db}.badge.put{color:white;background-color:#f39c12}.badge.patch{color:white;background-color:#f39c12}.badge.post{color:white;background-color:#18bc9c}.badge.delete{color:white;background-color:#e74c3c}.collapse-button{float:right}.collapse-button .close{display:none;color:#18bc9c;cursor:pointer}.collapse-button .open{color:#18bc9c;cursor:pointer}.collapse-button.show .close{display:inline}.collapse-button.show .open{display:none}.collapse-content{max-height:0;overflow:hidden;transition:max-height .3s ease-in-out}nav{width:220px}.container{max-width:940px;margin-left:auto;margin-right:auto}.container .row .content{margin-left:244px;width:696px}.container .row:after{content:'';display:block;clear:both}.container-fluid nav{width:22%}.container-fluid .row .content{margin-left:24%}.container-fluid.triple nav{width:16.5%;padding-right:1px}.container-fluid.triple .row .content{position:relative;margin-left:16.5%;padding-left:24px}.middle:before,.middle:after{content:'';display:table}.middle:after{clear:both}.middle{box-sizing:border-box;width:51.5%;padding-right:12px}.right{box-sizing:border-box;float:right;width:48.5%;padding-left:12px}.right a{color:#18bc9c}.right h1,.right h2,.right h3,.right h4,.right h5,.right p,.right div{color:white}.right pre{background-color:#1d1f21;border:1px solid #1d1f21}.right pre code{color:#c5c8c6}.right .description{margin-top:12px}.triple .resource-heading{font-size:125%}.definition{margin-top:12px;margin-bottom:12px}.definition .method{font-weight:bold}.definition .method.get{color:#2e80b8}.definition .method.head{color:#2e80b8}.definition .method.options{color:#2e80b8}.definition .method.post{color:#2eb89d}.definition .method.put{color:#b8822e}.definition .method.patch{color:#b8822e}.definition .method.delete{color:#b83b2e}.definition .uri{word-break:break-all;word-wrap:break-word}.definition .hostname{opacity:.5}.example-names{background-color:#eee;padding:12px;border-radius:6px}.example-names .tab-button{cursor:pointer;color:black;border:1px solid #ddd;padding:6px;margin-left:12px}.example-names .tab-button.active{background-color:#d5d5d5}.right .example-names{background-color:#444}.right .example-names .tab-button{color:white;border:1px solid #666;border-radius:6px}.right .example-names .tab-button.active{background-color:#5e5e5e}#nav-background{position:fixed;left:0;top:0;bottom:0;width:16.5%;padding-right:14.4px;background-color:#fbfbfb;border-right:1px solid #f0f0f0;z-index:-1}#right-panel-background{position:absolute;right:-12px;top:-12px;bottom:-12px;width:48.6%;background-color:#333;z-index:-1}@media (max-width:1200px){nav{width:198px}.container{max-width:840px}.container .row .content{margin-left:224px;width:606px}}@media (max-width:992px){nav{width:169.4px}.container{max-width:720px}.container .row .content{margin-left:194px;width:526px}}@media (max-width:768px){nav{display:none}.container{width:95%;max-width:none}.container .row .content,.container-fluid .row .content,.container-fluid.triple .row .content{margin-left:auto;margin-right:auto;width:95%}#nav-background{display:none}#right-panel-background{width:48.6%}}.back-to-top{position:fixed;z-index:1;bottom:0;right:24px;padding:4px 8px;color:rgba(0,0,0,0.5);background-color:#ededed;text-decoration:none !important;border-top:1px solid #ededed;border-left:1px solid #ededed;border-right:1px solid #ededed;border-top-left-radius:3px;border-top-right-radius:3px}.resource-group{padding:12px;margin-bottom:12px;background-color:white;border:1px solid #ededed;border-radius:6px}.resource-group h2.group-heading,.resource-group .heading a{padding:12px;margin:-12px -12px 12px -12px;background-color:#ededed;border-bottom:1px solid #ededed;border-top-left-radius:6px;border-top-right-radius:6px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.triple .content .resource-group{padding:0;border:none}.triple .content .resource-group h2.group-heading,.triple .content .resource-group .heading a{margin:0 0 12px 0;border:1px solid #ededed}nav .resource-group .heading a{padding:12px;margin-bottom:0}nav .resource-group .collapse-content{padding:0}.action{margin-bottom:12px;padding:12px 12px 0 12px;overflow:hidden;border:1px solid transparent;border-radius:6px}.action h4.action-heading{padding:6px 12px;margin:-12px -12px 12px -12px;border-bottom:1px solid transparent;border-top-left-radius:6px;border-top-right-radius:6px;overflow:hidden}.action h4.action-heading .name{float:right;font-weight:normal;padding:6px 0}.action h4.action-heading .method{padding:6px 12px;margin-right:12px;border-radius:3px;display:inline-block}.action h4.action-heading .method.get{color:#000;background-color:white}.action h4.action-heading .method.head{color:#000;background-color:white}.action h4.action-heading .method.options{color:#000;background-color:white}.action h4.action-heading .method.put{color:#000;background-color:white}.action h4.action-heading .method.patch{color:#000;background-color:white}.action h4.action-heading .method.post{color:#000;background-color:white}.action h4.action-heading .method.delete{color:#000;background-color:white}.action h4.action-heading code{color:#444;background-color:rgba(255,255,255,0.7);border-color:transparent;font-weight:normal;word-break:break-all;display:inline-block;margin-top:2px}.action dl.inner{padding-bottom:2px}.action .title{border-bottom:1px solid white;margin:0 -12px -1px -12px;padding:12px}.action.get{border-color:#3498db}.action.get h4.action-heading{color:white;background:#3498db;border-bottom-color:#3498db}.action.head{border-color:#3498db}.action.head h4.action-heading{color:white;background:#3498db;border-bottom-color:#3498db}.action.options{border-color:#3498db}.action.options h4.action-heading{color:white;background:#3498db;border-bottom-color:#3498db}.action.post{border-color:#18bc9c}.action.post h4.action-heading{color:white;background:#18bc9c;border-bottom-color:#18bc9c}.action.put{border-color:#f39c12}.action.put h4.action-heading{color:white;background:#f39c12;border-bottom-color:#f39c12}.action.patch{border-color:#f39c12}.action.patch h4.action-heading{color:white;background:#f39c12;border-bottom-color:#f39c12}.action.delete{border-color:#e74c3c}.action.delete h4.action-heading{color:white;background:#e74c3c;border-bottom-color:#e74c3c}</style></head><body class="preload"><a href="#top" class="text-muted back-to-top"><i class="fa fa-toggle-up"></i>&nbsp;Back to top</a><div class="container"><div class="row"><nav><div class="resource-group"><div class="heading"><div class="chevron"><i class="open fa fa-angle-down"></i></div><a href="#top">Overview</a></div><div class="collapse-content"><ul><li><a href="#header-api">API</a></li><li><a href="#header-structure">Structure</a></li><li><a href="#header-requests">Requests</a></li><li><a href="#header-responses">Responses</a></li></ul></div></div><div class="resource-group"><div class="heading"><div class="chevron"><i class="open fa fa-angle-down"></i></div><a href="#guests">Guests</a></div><div class="collapse-content"><ul><li><a href="#header-important-info">Important Info</a></li><li><a href="#guests-guest-list-get"><span class="badge get"><i class="fa fa-arrow-down"></i></span>List all Guests</a></li></ul></div></div><p style="text-align: center; word-wrap: break-word;"><a href="https://byatc-potofcoffee2go.c9users.io">https://byatc-potofcoffee2go.c9users.io</a></p></nav><div class="content"><header><h1 id="top">Byatec Auction API</h1></header><p>byatec - <strong>B</strong>est <strong>Y</strong>ielding <strong>A</strong>uction <strong>T</strong>ool <strong>E</strong>ver <strong>C</strong>reated</p>
+<p>The introductory <a href="https://byatc-potofcoffee2go.rhcloud.com/docs">byatec documentation</a> explains some background in the design of the auction system. Byatec is designed to run a <strong>live</strong> auction hosted by an organization during an event.</p>
+<p>The byatec server(s) are fully functional servers capable of handling HTTP RESTful requests, Websockets, delivery of web sites, upload apps, etc. The servers can run on local machines that have internet access or are just as comfortable running on cloud <a href="https://nodejs.org/en/">nodejs</a> workspaces/VMs available from <a href="https://c9.io/?redirect=0">Cloud9</a>, <a href="https://www.rackspace.com/en-us">rackspace</a>, <a href="https://www.openshift.com/">OpenShift</a>, <a href="https://aws.amazon.com/?nc2=h_lg">AWS</a>, etc. The servers require https protocol for encryption - as all internet activity should be anyway - for free! (like that is ever gonna happen.)</p>
+<p>The server has even run on a <a href="http://beagleboard.org/">BeagleBoard</a> -  albeit with limited number of guests and items 😉</p>
+<hr>
+<h2 id="header-api">API <a class="permalink" href="#header-api" aria-hidden="true">¶</a></h2>
+<p><strong>Client Frontend API</strong></p>
+<p>In most cases the byatec.js script will take care of the underlying details in making RESTful requests to the byatec servers. This documentation is for those wishing to add functionality not included in /js/byatec.js.</p>
+<p>The Client Frontend API is mostly concerned with providing auction guests access to the items up for auction, messaging to other guests, and monitoring items of interest.</p>
+<p><strong>Administrative Frontend API</strong></p>
+<p>The admin API is used by Frontends designed for people that control the auction. These REST requests allow the adding of guests and items to the auction, removing bids, changing passwords, suspending guests from bidding, suspend bidding on an item, modifying categories, and other adminstrative tasks. Most of these requests are processed by to the <em>clerk</em> minion which access is restricted by the <em>constable</em> minion.</p>
+<p><strong>Internal API</strong></p>
+<p>The internal API is used between the bosses of the auction system. This API might be used by add-on software to extend auction system features.</p>
+<p><strong>This document focuses on the Client Frontend API.</strong></p>
+<hr>
+<h2 id="header-structure">Structure <a class="permalink" href="#header-structure" aria-hidden="true">¶</a></h2>
+<p>The structure of the system, code, and API is based on a Victorian era monarchy which organizes the what and where (who?) tasks are performed. Not only has this structure been effective but is fun too! Especially those that get into steampunk!</p>
+<p>All REST request URI paths start with <code>/{boss}/{minion}/...</code></p>
+<p>There are three <em>bosses</em>: <strong>cyborg</strong>, <strong>ninja</strong>, and <strong>pirate</strong>. Each boss can be run as a separate server. They communicate
+via REST requests. They can also run as a single process.</p>
+<p>All REST request paths will start with one of those three. Cyborg is the database administrator, ninja is the auctioneer, while pirate does the checkout processing (don’t ask) with the banks.</p>
+<p>There are six databases maintained by the system, three by cyborg, two by ninja and one by the pirate. The databases are built by reading the data from spreadsheets on <a href="https://www.google.com/sheets/about/">Google Sheets</a>. <a href="https://trello.com/">Trello</a> boards are created using the spreadsheet data which consolidates the spreadsheet ‘tabular’ information into <em>trello cards</em> for easier access by people monitoring the auction.</p>
+<p>The data in ninja and pirate’s databases is <em>compressed</em> as arrays of arrays, thus not all that friendly; although accessable, are of little interest to Client Frontend Sites. Luckily, the same data is readily available in cyborg’s JSON databases. Plus, cyborg’s databases are monitored by the town <em>crier</em> minion which broadcasts updates whenever a change occurs.</p>
+<p>Cyborg is the main Administrator of the auction system. All REST requests from Client Frontend Sites will inevitably begin with <code>/cyborg/</code>. Cyborg will direct requests to other bosses when necessary.</p>
+<p>Under the bosses are seven minions which perform the tasks required of the bosses. The most common minions for requests from Client Frontend Sites are the <strong>constable</strong> which authenticates guests, the <strong>chef</strong> has commonly used queries into the databases, and the town <strong>crier</strong> who broadcasts the news when a change occurs to a guest or item.</p>
+<p>The other minions <em>angel</em>, <em>nurse</em>, and <em>architect</em> are not directly accessable via REST request. The only command allowed by auction Guests to <em>clerk</em> is to POST a bid on an item.</p>
+<p>Since most of the time Client Frontend Sites are accessing data stored in cyborg’s databases, the most commonly used requests will begin with <code>/cyborg/chef/...</code>.</p>
+<div class="warning">
+<p>There is a major difference between the <em>chef</em> and <em>clerk</em>. The <em>clerk</em> is capable of updating and deleting database records and objects. The <em>constable</em> will not allow requests GET, POST or DELETE to the <em>clerk</em> from auction <strong>Guests</strong> other than to post a bid. The <em>chef</em> however NEVER modifies any database regardless of the request method GET, POST, DELETE, PATCH, … whatever! So all requests to the <em>chef</em> are safe. Client Frontend systems should always use the <em>chef</em> minion when accessing databases.</p>
+</div>
+<hr>
+<h2 id="header-requests">Requests <a class="permalink" href="#header-requests" aria-hidden="true">¶</a></h2>
+<p>The three cyborg databases are <em>guests</em>, <em>items</em>, and <em>categories</em>. Guests contains information about each guest registered to bid in the auction. Items contains the items up for bid and/or purchase. Categories are the list of categories which an item is assigned.</p>
+<p>Though the auction system is pretty good at figuring it out, if responses (especially errors) come back in other than JSON format, is probably because your <strong>Accept:</strong> header is not <code>application/json</code> or Accept has multiple mime types. Since the servers deliver web sites, html, css, js, images, text, json, etc. it can sometimes get lost in the vast array of default mime types. Specifying <strong>Accept: application/json</strong> header (with just the single application/json mime type) on REST requests will eliminate most of the issues.</p>
+<p>The unique identifier for guests begin with <strong>G</strong> - G0123, Items begin with <strong>I</strong> - I0123, while categories begin with <strong>C</strong> - C001. These are case sensitive and required to be uppercase if used in requests.</p>
+<p>To access data in the databases, do something like <code>/cyborg/chef/guests</code>, replacing ‘guests’ with ‘items’ or ‘categories’ as required. Note that this request will respond with <em>all</em> guests!</p>
+<div class="warning">
+<p>The auction system does NOT fragment responses into <em>pages</em> that are so popular with other APIs. This is because paging through results is a PITA for both the Server and Frontend. If a request for all <strong>Items</strong> is requested - then be prepared to swallow the response containing <strong>all data for all items from the Items database</strong>. Probably not wise to make such a request if running your Frontend on a cell phone. 😭  Enlist the <em>chef</em> to query the databases for what you need.</p>
+</div>
+<p>The querystring portion of the request (stuff after the optional ‘?’) is not used and ignored by the auction system. Some REST requests are sensitive to a trailing ‘/’ (slash) at the end of the request. If you get an error on a request that looks valid, insure it does not have a trailing slash. The <em>chef</em> is particularly touchy about having everything perfect. That being said, in a majority of cases URLs will work with or without a trailing slash.</p>
+<hr>
+<p><strong>Constable Minion</strong></p>
+<p>The <em>constable</em> is an old crusty character who has been on the force for quite some time and takes his job very seriously. He would never forgive me if I did not mention that all GET requests are NOT secure - never use a key, token, secret on on a GET request! Access to the system requires username/password login credentials which generate an authorization token issued by the constable. The token is required to establish a WebSocket connection and must be in the Authorization: header of all RESTful requests.</p>
+<p>Access to the web sites hosted by the auction system do not require authentication (much to the chagrin of the constable).</p>
+<p>All requests (other than the login request) require an <strong>Authorization:</strong> header value in the HTTPS request.  Both authorized guest <em>id</em> and <em>Authorization</em> token are returned in the response to a successsful guest login request <code>/cyborg/constable/guests/login</code>.</p>
+<div class="note">
+<p>That being said, the authentication for WebSockets differs and is performed during the socket connection phase. Once a WebSocket <em>socket</em> is authorized, data transfer will be considered authorized until that <em>socket</em> disconnects. Socket reconnects (in the event of network issues) are considered already authorized. Possible security issue?</p>
+</div>
+<p>The response to <code>/cyborg/constable/guests/login</code> upon successful login will contain the value to place in the Authorization: header for all future requests. That Guest’s id is also returned which is associated with the Authorization token.</p>
+<p>Note that Her Majesty the Queen can turn off authentication checks - which can be handy for debugging and testing.</p>
+<hr>
+<p><strong>Chef Minion</strong></p>
+<p>The request <code>/cyborg/chef/guests/G0253</code> will return (removed some of the fields for briefness sake) the following in the response <em>data</em> field (see <a href="#header-responses">Responses</a> below for more info about the response layout) :</p>
+<pre><code class="language-json">{
+    "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">google</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"G0253"</span></span>,
+          "<span class="hljs-attribute">starting_table</span>": <span class="hljs-value"><span class="hljs-number">27</span></span>,
+          "<span class="hljs-attribute">checkout_id</span>": <span class="hljs-value"><span class="hljs-string">"G0254"</span></span>,
+          "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"James"</span></span>,
+          "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Kauffman"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">trello</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"58ebfa70484b63ff47b5fa69"</span></span>,
+          "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"G0253 - James Kauffman"</span></span>,
+          "<span class="hljs-attribute">labels</span>": <span class="hljs-value">{
+            "<span class="hljs-attribute">green</span>": <span class="hljs-value">{
+              "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"58e9e115ced82109ff1c63a9"</span></span>,
+              "<span class="hljs-attribute">idBoard</span>": <span class="hljs-value"><span class="hljs-string">"58e9e11574278c71a4293e0f"</span></span>,
+              "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"Player"</span></span>,
+              "<span class="hljs-attribute">color</span>": <span class="hljs-value"><span class="hljs-string">"green"</span>
+            </span>}
+          </span>}</span>,
+          "<span class="hljs-attribute">attached</span>": <span class="hljs-value">{
+            "<span class="hljs-attribute">Golf.png</span>": <span class="hljs-value">{
+              "<span class="hljs-attribute">url</span>": <span class="hljs-value"><span class="hljs-string">"https://trello-attachments.s3...6d1053/Golf.png"</span></span>,
+              "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"Golf.png"</span></span>,
+              "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"58f5dc6538d33a17cd8ff7a9"</span>
+            </span>}
+          </span>}
+        </span>}</span>,
+        "<span class="hljs-attribute">auction</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"G0253"</span></span>,
+          "<span class="hljs-attribute">fullname</span>": <span class="hljs-value"><span class="hljs-string">"James Kauffman"</span></span>,
+          "<span class="hljs-attribute">table</span>": <span class="hljs-value"><span class="hljs-number">27</span></span>,
+          "<span class="hljs-attribute">bids</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+          "<span class="hljs-attribute">won</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+          "<span class="hljs-attribute">due</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">checkout</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"G0253"</span></span>,
+          "<span class="hljs-attribute">provider</span>": <span class="hljs-value"><span class="hljs-string">"PayPal"</span></span>,
+          "<span class="hljs-attribute">reference</span>": <span class="hljs-value"><span class="hljs-string">"E45-RE42-TX"</span></span>,
+          "<span class="hljs-attribute">amount</span>": <span class="hljs-value"><span class="hljs-number">310</span></span>,
+          "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span>
+        </span>}
+    </span>}
+</span>}</code></pre>
+<p>This request resulted in all the data for guest G0253; in this case James Kauffman. Notice that there are four main objects for a guest - <em>google</em>, <em>trello</em>, <em>auction</em>, and <em>checkout</em>. The <em>google</em> object contains the information from the google ‘guests’ spreadsheet; the <em>trello</em> object contains data of interest on James’ trello ‘card’, <em>auction</em> contains current auction related information from ninja, while <em>checkout</em> contains payment information from pirate.</p>
+<p>A request can be sent to the <em>chef</em> asking for more specific information by drilling down into the database. For example the request <code>/cyborg/chef/guests/G0253/google</code> is similar to the one above, but is asking for only the <em>google</em> object for guest G0253.</p>
+<pre><code class="language-json">{
+  "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"G0253"</span></span>,
+    "<span class="hljs-attribute">starting_table</span>": <span class="hljs-value"><span class="hljs-number">27</span></span>,
+    "<span class="hljs-attribute">checkout_id</span>": <span class="hljs-value"><span class="hljs-string">"G0254"</span></span>,
+    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"James"</span></span>,
+    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Kauffman"</span>
+  </span>}
+</span>}</code></pre>
+<p>You can drill down to a specific field if you wish - <code>/cyborg/chef/guests/G0253/google/last_name</code></p>
+<pre><code class="language-json">{
+    "<span class="hljs-attribute">data</span>": <span class="hljs-value"><span class="hljs-string">"Kauffman"</span>
+</span>}</code></pre>
+<p>The Items database works the similarly - <code>/cyborg/chef/items/I0290</code> - (again, edited some fields out for briefness).</p>
+<pre><code class="language-json">{
+  "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">google</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"I0290"</span></span>,
+      "<span class="hljs-attribute">Category</span>": <span class="hljs-value"><span class="hljs-string">"C009"</span></span>,
+      "<span class="hljs-attribute">Item</span>": <span class="hljs-value"><span class="hljs-number">2100</span></span>,
+      "<span class="hljs-attribute">Donation</span>": <span class="hljs-value"><span class="hljs-string">"Signed Jack Nicklaus Masters Golf Tournament Scorecard"</span></span>,
+      "<span class="hljs-attribute">Sponsorship</span>": <span class="hljs-value"><span class="hljs-literal">false</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">trello</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"58ec066572db15e60ef82d4b"</span></span>,
+      "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"I0290 - Signed Jack Nicklaus Masters Golf Tournament Scorecard"</span></span>,
+      "<span class="hljs-attribute">labels</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">green</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">color</span>": <span class="hljs-value"><span class="hljs-string">"green"</span></span>,
+          "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"Ready"</span></span>,
+          "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"58ea51fbced82109ff1cfb1a"</span></span>,
+        }
+      </span>}</span>,
+      "<span class="hljs-attribute">attached</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">Golf.png</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">url</span>": <span class="hljs-value"><span class="hljs-string">"https://trello-attachments.s3...Golf.png"</span></span>,
+          "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"Golf.png"</span></span>,
+          "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"58f5f34675a01307b4da041e"</span></span>,
+        }
+      </span>}
+    </span>}</span>,
+    "<span class="hljs-attribute">category</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"C009"</span></span>,
+      "<span class="hljs-attribute">Parent</span>": <span class="hljs-value"><span class="hljs-string">"C009"</span></span>,
+      "<span class="hljs-attribute">Code</span>": <span class="hljs-value"><span class="hljs-string">"F"</span></span>,
+      "<span class="hljs-attribute">Name</span>": <span class="hljs-value"><span class="hljs-string">"Famous"</span></span>,
+      "<span class="hljs-attribute">Description</span>": <span class="hljs-value"><span class="hljs-string">"Famous Desc"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">auction</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"I0290"</span></span>,
+      "<span class="hljs-attribute">OpenBid</span>": <span class="hljs-value"><span class="hljs-number">600</span></span>,
+      "<span class="hljs-attribute">Increment</span>": <span class="hljs-value"><span class="hljs-number">50</span></span>,
+      "<span class="hljs-attribute">BuyPrice</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+      "<span class="hljs-attribute">BuyOnly?</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+      "<span class="hljs-attribute">Active?</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+    }
+  </span>}
+</span>}</code></pre>
+<p>The Items record is very similar to the Guests record with the exception of a <em>category</em> object - which as you can imagine, is the category of this item. Also like the Guest database, the request can drill down to get specific information <code>/cyborg/chef/items/I0290/category</code></p>
+<pre><code class="language-json">{
+  "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">category</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"C009"</span></span>,
+      "<span class="hljs-attribute">Parent</span>": <span class="hljs-value"><span class="hljs-string">"C009"</span></span>,
+      "<span class="hljs-attribute">Code</span>": <span class="hljs-value"><span class="hljs-string">"F"</span></span>,
+      "<span class="hljs-attribute">Name</span>": <span class="hljs-value"><span class="hljs-string">"Famous"</span></span>,
+      "<span class="hljs-attribute">Description</span>": <span class="hljs-value"><span class="hljs-string">"Famous Desc"</span>
+    </span>}
+</span>}
+
+</span></code></pre>
+<p>The <em>chef</em> can perform simple queries based on the URL. By replacing the item id (‘I0290’ in our example above) with either the word ‘find’ or ‘select’, <em>chef</em> will return all records that match the rest of the fields in the URL. ‘Find’ returns the complete record that matches the request, while ‘select’ returns only the field requested. Examples are worth a thousand words …</p>
+<p>This time we will query the <strong>items</strong> database for all items that are in category C006, like so: <code>/cyborg/chef/items/find/category/id/C006</code></p>
+<pre><code class="language-json">{
+  "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">I0235</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">google</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"... google stuff ..."</span>
+      </span>}</span>,
+      "<span class="hljs-attribute">trello</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"... trello stuff ..."</span>
+      </span>}</span>,
+      "<span class="hljs-attribute">category</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"C006"</span></span>,
+        "<span class="hljs-attribute">Parent</span>": <span class="hljs-value"><span class="hljs-string">"C006"</span></span>,
+        "<span class="hljs-attribute">Code</span>": <span class="hljs-value"><span class="hljs-string">"E"</span></span>,
+        "<span class="hljs-attribute">Name</span>": <span class="hljs-value"><span class="hljs-string">"Electronics"</span></span>,
+        "<span class="hljs-attribute">Description</span>": <span class="hljs-value"><span class="hljs-string">"Electronics Desc"</span>
+      </span>}</span>,
+      "<span class="hljs-attribute">auction</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"... auction stuff ..."</span>
+       </span>}
+    </span>}</span>,
+    "<span class="hljs-attribute">I0236</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">google</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"... google stuff ..."</span>
+      </span>}</span>,
+      "<span class="hljs-attribute">trello</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"... trello stuff ..."</span>
+      </span>}</span>,
+      "<span class="hljs-attribute">category</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"C006"</span></span>,
+        "<span class="hljs-attribute">Parent</span>": <span class="hljs-value"><span class="hljs-string">"C006"</span></span>,
+        "<span class="hljs-attribute">Code</span>": <span class="hljs-value"><span class="hljs-string">"E"</span></span>,
+        "<span class="hljs-attribute">Name</span>": <span class="hljs-value"><span class="hljs-string">"Electronics"</span></span>,
+        "<span class="hljs-attribute">Description</span>": <span class="hljs-value"><span class="hljs-string">"Electronics Desc"</span>
+      </span>}</span>,
+      "<span class="hljs-attribute">auction</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"... auction stuff ..."</span>
+      </span>}
+    </span>}
+</span>}
+
+</span></code></pre>
+<p>The result is two item records that are in category C006. Because ‘find’ was used the complete matching records were returned. Instead of ‘find’ the word ‘select’ can be used which only returns the item id and fields selected :
+<code>/cyborg/chef/items/select/category/id/C006</code></p>
+<pre><code class="language-json">{
+  "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">I0235</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">category</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"C006"</span>
+      </span>}
+    </span>}</span>,
+    "<span class="hljs-attribute">I0236</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">category</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"C006"</span>
+      </span>}
+    </span>}
+</span>}
+
+</span></code></pre>
+<p>These results can be POSTed to <em>chef</em> to perform further queries on these two items.</p>
+<p>The categories database works in a similar fashion. So that is pretty much how to use <em>cyborg’s chef</em> minion. In a nutshell, <em>chef</em> allows access to cyborg’s databases.</p>
+<hr>
+<p><strong>Cyborg’s Chef Minion</strong></p>
+<p>The <em>chef</em> minion is similar to <em>clerk</em>. While <em>clerk</em> provides direct access to the databases, <em>chef</em> performs commonly used summation, consolidation, and reporting of the data that is in cyborg’s databases. For example, to get the list of all items under a category, the Client Frontend would have to request all items from the Items database and select the items with that category. Requesting a complete list of items from <em>clerk</em> would not be network friendly. Instead, the Frontend can ask the <em>chef</em> to serve up the list of items in that category.</p>
+<p>There are a set of common reports that the <em>chef</em> can process. See the API details below for the reports currently available.</p>
+<hr>
+<p><strong>Cyborg’s Town Crier Minion</strong></p>
+<p>The town <em>crier</em> minion watches for changes that occur in Guests and Items databases. The Frontend can request to watch for updates to guests and/or items. When a change happens, the data relating to that change is broadcast to the Frontend. The easiest way to watch/unwatch for changes is to use the /js/byatec.js script which handles the ugly details of the websocket connection required to watch for updates.</p>
+<hr>
+<h2 id="header-responses">Responses <a class="permalink" href="#header-responses" aria-hidden="true">¶</a></h2>
+<p>The server responds with the same layout for all resource requests - regardless if responding via HTTP or Websockets. The layout is designed to be both HTTP and Websockets friendly.</p>
+<p>All JSON responses have the following layout:</p>
+<pre><code class="language-json">{
+  "<span class="hljs-attribute">boss</span>": <span class="hljs-value"><span class="hljs-string">"cyborg"</span></span>,
+  "<span class="hljs-attribute">minion</span>": <span class="hljs-value"><span class="hljs-string">"clerk"</span></span>,
+  "<span class="hljs-attribute">resource</span>": <span class="hljs-value"><span class="hljs-string">"/cyborg/clerk/guests/G0001"</span></span>,
+  "<span class="hljs-attribute">data</span>": <span class="hljs-value">{}</span>,
+  "<span class="hljs-attribute">location</span>": <span class="hljs-value"><span class="hljs-string">"https://byatc-potofcoffee2go.c9users.io:80/..."</span></span>,
+  "<span class="hljs-attribute">status</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-number">200</span></span>,
+    "<span class="hljs-attribute">text</span>": <span class="hljs-value"><span class="hljs-string">"200 - OK"</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">error</span>": <span class="hljs-value"><span class="hljs-literal">null</span>
+</span>}</code></pre>
+<p><strong>boss</strong> and <strong>minion</strong> are self explainatory.</p>
+<p><strong>resource</strong> is the path of the resource that was requested.</p>
+<p><strong>data</strong> contains the resulting content of the resource requested or null if error encountered.</p>
+<p><strong>location</strong> is the full URI address of the resource including protocol://domain/resource path/…</p>
+<p><strong>status</strong> is a HTTP status code.</p>
+<p><strong>error</strong> contains error information or null if no error encountered.</p>
+<div class="note">
+<p>The <strong>actual</strong> HTTP Response Status Code for RESTful responses will always be 200 OK - even if an error is encountered. So let’s say a resource is Not Found. The HTTP Response Status Code will NOT be 404 - Not Found! The server always responds with 200 - OK. To check for errors, query the <em>“error”</em> field in the response body.</p>
+<p>For example :</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">if</span> (response.body.error !== <span class="hljs-literal">null</span>) {
+        <span class="hljs-comment">// look into contents of response.body.error for error details</span>
+    }</code></pre>
+<p>It is possible to get network related HTTP Response Status Codes. For example, between the client and server are a bunch of network gearing like proxies, load balancers, etc.  They may response with 301 or 302 (redirects) or possibly 503 (service unavailable) 😭  These are outside of the byatec servers’ control.</p>
+</div>
+<pre><code class="language-json">{
+  "<span class="hljs-attribute">boss</span>": <span class="hljs-value"><span class="hljs-string">"cyborg"</span></span>,
+  "<span class="hljs-attribute">minion</span>": <span class="hljs-value"><span class="hljs-string">"clerk"</span></span>,
+  "<span class="hljs-attribute">resource</span>": <span class="hljs-value"><span class="hljs-string">"/cyborg/clerk/guest/G01"</span></span>,
+  "<span class="hljs-attribute">data</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+  "<span class="hljs-attribute">location</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+  "<span class="hljs-attribute">status</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-number">418</span></span>,
+    "<span class="hljs-attribute">text</span>": <span class="hljs-value"><span class="hljs-string">"418 - I'm a teapot"</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">error</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"MinionError"</span></span>,
+    "<span class="hljs-attribute">minion</span>": <span class="hljs-value"><span class="hljs-string">"nurse"</span></span>,
+    "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Resource not found"</span></span>,
+    "<span class="hljs-attribute">inner</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+    "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">210</span>
+  </span>}
+</span>}</code></pre>
+<section id="guests" class="resource-group"><h2 class="group-heading">Guests <a href="#guests" class="permalink">&para;</a></h2><p>Guests are the people that bid for items up for auction.</p>
+<h2 id="header-important-info">Important Info <a class="permalink" href="#header-important-info" aria-hidden="true">¶</a></h2>
+<p>Descriptions may also contain sub-headings and <strong>more Markdown</strong>.</p>
+<div id="guests-guest-list" class="resource"><h3 class="resource-heading">Guest List <a href="#guests-guest-list" class="permalink">&nbsp;&para;</a></h3><p>Guest list description</p>
+<div id="guests-guest-list-get" class="action get"><h4 class="action-heading"><div class="name">List all Guests</div><a href="#guests-guest-list-get" class="method get">GET</a><code class="uri">/cyborg/chef/guests</code></h4><p>Get a list of all guests.</p>
+<h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname">https://byatc-potofcoffee2go.c9users.io</span>/cyborg/chef/guests</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">Authorization</span>: <span class="hljs-string">auth-token</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">Authorization</span>: <span class="hljs-string">auth-token</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">boss</span>": <span class="hljs-value"><span class="hljs-string">"cyborg"</span></span>,
+  "<span class="hljs-attribute">minion</span>": <span class="hljs-value"><span class="hljs-string">"clerk"</span></span>,
+  "<span class="hljs-attribute">resource</span>": <span class="hljs-value"><span class="hljs-string">"/cyborg/clerk/guests/G0001"</span></span>,
+  "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">google</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"G0001"</span></span>,
+      "<span class="hljs-attribute">starting_table</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
+      "<span class="hljs-attribute">checkout_id</span>": <span class="hljs-value"><span class="hljs-string">"G0001"</span></span>,
+      "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Neil"</span></span>,
+      "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Herbsman"</span></span>,
+      "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"fred@farkle"</span></span>,
+      "<span class="hljs-attribute">username</span>": <span class="hljs-value"><span class="hljs-string">"neil"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">trello</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"58ec2bf3f6fa03a612a08f3d"</span></span>,
+      "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"G0001 - Neil Herbsman"</span></span>,
+      "<span class="hljs-attribute">labels</span>": <span class="hljs-value">{}</span>,
+      "<span class="hljs-attribute">attached</span>": <span class="hljs-value">{}
+    </span>}</span>,
+    "<span class="hljs-attribute">auction</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"G0001"</span></span>,
+      "<span class="hljs-attribute">fullname</span>": <span class="hljs-value"><span class="hljs-string">"Neil Herbsman"</span></span>,
+      "<span class="hljs-attribute">table</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
+      "<span class="hljs-attribute">bids</span>": <span class="hljs-value"><span class="hljs-number">12</span></span>,
+      "<span class="hljs-attribute">won</span>": <span class="hljs-value"><span class="hljs-number">4</span></span>,
+      "<span class="hljs-attribute">due</span>": <span class="hljs-value"><span class="hljs-number">4</span></span>,
+      "<span class="hljs-attribute">shipping</span>": <span class="hljs-value"><span class="hljs-number">2</span></span>,
+      "<span class="hljs-attribute">tax</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
+      "<span class="hljs-attribute">paid</span>": <span class="hljs-value"><span class="hljs-number">2</span>
+    </span>}
+  </span>}</span>,
+  "<span class="hljs-attribute">location</span>": <span class="hljs-value"><span class="hljs-string">"https://byatc-potofcoffee2go.c9users.io:80/cyborg/clerk/guests/G0001"</span></span>,
+  "<span class="hljs-attribute">status</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-number">200</span></span>,
+    "<span class="hljs-attribute">text</span>": <span class="hljs-value"><span class="hljs-string">"200 - OK"</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">error</span>": <span class="hljs-value"><span class="hljs-literal">null</span>
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 20 May 2017</p><script>/* eslint-env browser */
+/* eslint quotes: [2, "single"] */
+'use strict';
+
+/*
+  Determine if a string ends with another string.
+*/
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+/*
+  Get a list of direct child elements by class name.
+*/
+function childrenByClass(element, name) {
+  var filtered = [];
+
+  for (var i = 0; i < element.children.length; i++) {
+    var child = element.children[i];
+    var classNames = child.className.split(' ');
+    if (classNames.indexOf(name) !== -1) {
+      filtered.push(child);
+    }
+  }
+
+  return filtered;
+}
+
+/*
+  Get an array [width, height] of the window.
+*/
+function getWindowDimensions() {
+  var w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.body,
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight || e.clientHeight || g.clientHeight;
+
+  return [x, y];
+}
+
+/*
+  Collapse or show a request/response example.
+*/
+function toggleCollapseButton(event) {
+    var button = event.target.parentNode;
+    var content = button.parentNode.nextSibling;
+    var inner = content.children[0];
+
+    if (button.className.indexOf('collapse-button') === -1) {
+      // Clicked without hitting the right element?
+      return;
+    }
+
+    if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+        // Currently showing, so let's hide it
+        button.className = 'collapse-button';
+        content.style.maxHeight = '0px';
+    } else {
+        // Currently hidden, so let's show it
+        button.className = 'collapse-button show';
+        content.style.maxHeight = inner.offsetHeight + 12 + 'px';
+    }
+}
+
+function toggleTabButton(event) {
+    var i, index;
+    var button = event.target;
+
+    // Get index of the current button.
+    var buttons = childrenByClass(button.parentNode, 'tab-button');
+    for (i = 0; i < buttons.length; i++) {
+        if (buttons[i] === button) {
+            index = i;
+            button.className = 'tab-button active';
+        } else {
+            buttons[i].className = 'tab-button';
+        }
+    }
+
+    // Hide other tabs and show this one.
+    var tabs = childrenByClass(button.parentNode.parentNode, 'tab');
+    for (i = 0; i < tabs.length; i++) {
+        if (i === index) {
+            tabs[i].style.display = 'block';
+        } else {
+            tabs[i].style.display = 'none';
+        }
+    }
+}
+
+/*
+  Collapse or show a navigation menu. It will not be hidden unless it
+  is currently selected or `force` has been passed.
+*/
+function toggleCollapseNav(event, force) {
+    var heading = event.target.parentNode;
+    var content = heading.nextSibling;
+    var inner = content.children[0];
+
+    if (heading.className.indexOf('heading') === -1) {
+      // Clicked without hitting the right element?
+      return;
+    }
+
+    if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+      // Currently showing, so let's hide it, but only if this nav item
+      // is already selected. This prevents newly selected items from
+      // collapsing in an annoying fashion.
+      if (force || window.location.hash && endsWith(event.target.href, window.location.hash)) {
+        content.style.maxHeight = '0px';
+      }
+    } else {
+      // Currently hidden, so let's show it
+      content.style.maxHeight = inner.offsetHeight + 12 + 'px';
+    }
+}
+
+/*
+  Refresh the page after a live update from the server. This only
+  works in live preview mode (using the `--server` parameter).
+*/
+function refresh(body) {
+    document.querySelector('body').className = 'preload';
+    document.body.innerHTML = body;
+
+    // Re-initialize the page
+    init();
+    autoCollapse();
+
+    document.querySelector('body').className = '';
+}
+
+/*
+  Determine which navigation items should be auto-collapsed to show as many
+  as possible on the screen, based on the current window height. This also
+  collapses them.
+*/
+function autoCollapse() {
+  var windowHeight = getWindowDimensions()[1];
+  var itemsHeight = 64; /* Account for some padding */
+  var itemsArray = Array.prototype.slice.call(
+    document.querySelectorAll('nav .resource-group .heading'));
+
+  // Get the total height of the navigation items
+  itemsArray.forEach(function (item) {
+    itemsHeight += item.parentNode.offsetHeight;
+  });
+
+  // Should we auto-collapse any nav items? Try to find the smallest item
+  // that can be collapsed to show all items on the screen. If not possible,
+  // then collapse the largest item and do it again. First, sort the items
+  // by height from smallest to largest.
+  var sortedItems = itemsArray.sort(function (a, b) {
+    return a.parentNode.offsetHeight - b.parentNode.offsetHeight;
+  });
+
+  while (sortedItems.length && itemsHeight > windowHeight) {
+    for (var i = 0; i < sortedItems.length; i++) {
+      // Will collapsing this item help?
+      var itemHeight = sortedItems[i].nextSibling.offsetHeight;
+      if ((itemsHeight - itemHeight <= windowHeight) || i === sortedItems.length - 1) {
+        // It will, so let's collapse it, remove its content height from
+        // our total and then remove it from our list of candidates
+        // that can be collapsed.
+        itemsHeight -= itemHeight;
+        toggleCollapseNav({target: sortedItems[i].children[0]}, true);
+        sortedItems.splice(i, 1);
+        break;
+      }
+    }
+  }
+}
+
+/*
+  Initialize the interactive functionality of the page.
+*/
+function init() {
+    var i, j;
+
+    // Make collapse buttons clickable
+    var buttons = document.querySelectorAll('.collapse-button');
+    for (i = 0; i < buttons.length; i++) {
+        buttons[i].onclick = toggleCollapseButton;
+
+        // Show by default? Then toggle now.
+        if (buttons[i].className.indexOf('show') !== -1) {
+            toggleCollapseButton({target: buttons[i].children[0]});
+        }
+    }
+
+    var responseCodes = document.querySelectorAll('.example-names');
+    for (i = 0; i < responseCodes.length; i++) {
+        var tabButtons = childrenByClass(responseCodes[i], 'tab-button');
+        for (j = 0; j < tabButtons.length; j++) {
+            tabButtons[j].onclick = toggleTabButton;
+
+            // Show by default?
+            if (j === 0) {
+                toggleTabButton({target: tabButtons[j]});
+            }
+        }
+    }
+
+    // Make nav items clickable to collapse/expand their content.
+    var navItems = document.querySelectorAll('nav .resource-group .heading');
+    for (i = 0; i < navItems.length; i++) {
+        navItems[i].onclick = toggleCollapseNav;
+
+        // Show all by default
+        toggleCollapseNav({target: navItems[i].children[0]});
+    }
+}
+
+// Initial call to set up buttons
+init();
+
+window.onload = function () {
+    autoCollapse();
+    // Remove the `preload` class to enable animations
+    document.querySelector('body').className = '';
+};
+</script></body></html>
