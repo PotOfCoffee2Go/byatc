@@ -202,13 +202,13 @@
         try {
             var msgs = room.db.getData('/' + room.alias);
             if (idfrom === '*' && idto)
-                result = alasql('SELECT * FROM ? AS msgs WHERE crierIndexOf(idsTo,?) >= 0', [msgs, idto]);
+                result = alasql('SELECT * FROM ? AS msgs WHERE crierIndexOf(idTo,?) >= 0 ORDER BY time DESC', [msgs, idto]);
             else if (idfrom && idto)
-                result = alasql('SELECT * FROM ? AS msgs WHERE idFrom = ? AND crierIndexOf(idsTo,?) >= 0', [msgs, idfrom, idto]);
+                result = alasql('SELECT * FROM ? AS msgs WHERE idFrom = ? AND crierIndexOf(idTo,?) >= 0 ORDER BY time DESC', [msgs, idfrom, idto]);
             else if (idfrom)
-                result = alasql('SELECT * FROM ? AS msgs WHERE idFrom = ?', [msgs, idfrom]);
+                result = alasql('SELECT * FROM ? AS msgs WHERE idFrom = ? ORDER BY time DESC', [msgs, idfrom]);
             else
-                result = msgs;
+                result = alasql('SELECT * FROM ? AS msgs ORDER BY time DESC', [msgs]);
 
         }
         catch (err) {
@@ -222,9 +222,9 @@
 
     Crier.prototype.onPostToRoomsDb = function onPostToRoomsDb(req, res, next, prayer) {
         var
-            msg = req.body.data,
+            msg = req.body,
             newData = {
-                idsTo: msg.to,
+                idTo: msg.to,
                 idFrom: msg.from,
                 msg: msg.msg,
                 time: new Date()
