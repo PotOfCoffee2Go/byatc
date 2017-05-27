@@ -29,6 +29,40 @@ described below.
 You might also get other codes, such as 301, 302, etc; but those are not from the auction system but
 normally from network proxies and such implemented between the client and server.
 
+## Responses
+
+The server responds with the same layout for all resource requests - regardless if responding via HTTP or WSS.
+The layout is designed to be both HTTP and Websockets friendly.
+
+All JSON responses have the same layout as this Guest Id G0001 request:
+
+
+```json
+{
+  "resource": "/cyborg/chef/guests/G0001",
+  "data": {...},
+  "location": "https://byatc-potofcoffee2go.c9users.io:80/...",
+  "status": {
+    "code": 200,
+    "text": "200 - OK",
+    "boss": "cyborg",
+    "minion": "chef",
+    "guest": "G0278"
+  },
+  "error": null
+}
+
+```
+The `resource` is the resource requested, `data` contains the result of the request,
+`location` is the fully qualified resource name on the internet, `status` contains meta data
+pertaining to the result of the request, and `error` is null or indicates any errors
+that resulted from the request.
+
+If the HTTP Status Code is 200 - OK - then the `error` will be null. When the Status
+Code is 418 - I'm a teapot, the `error` property will contain information about the
+error which occured.
+
+
 ## Viewer
 The [API Viewer](/api/viewer) allows you to submit REST calls and view the results.
 
@@ -459,3 +493,50 @@ Place a bid by a guest on an item
               "error": null
             }
 
+## Items purchased [/cyborg/chef/purchases/{id}]
+List of guest purchases
+
+## Purchases [GET]
+
++ id (string) ... Id of the purchase
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "resource": "/cyborg/chef/purchases/P0001",
+              "data": {
+                "P0001": {
+                  "profile": {
+                    "range": "Purchases!A3:I3",
+                    "id": "P0001",
+                    "GuestId": "G0001",
+                    "ItemId": "I0001",
+                    "TransactionId": "T2345-567",
+                    "Provider": "PayPal",
+                    "BuyOrWon": "Buy",
+                    "Time": "2017-05-07T00:36:22.798Z",
+                    "Total": 250,
+                    "Paid": 250
+                  }
+                }
+              },
+              "status": {
+                "code": 200,
+                "text": "200 - OK",
+                "guest": null,
+                "boss": "cyborg",
+                "minion": "chef",
+                "method": "GET",
+                "location": "https://byatc-potofcoffee2go.c9users.io/cyborg/chef/purchases/P0001",
+                "timestamp": "2017-05-27T19:55:39.032Z"
+              },
+              "error": null
+            }

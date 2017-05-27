@@ -131,8 +131,6 @@
                 results.forEach((result) => {
                     prayer.data[result[0]] = result[1];
                 });
-
-                //prayer.data = sheet.db.getData('/' + dataPath);
         }
         catch (err) {
             var error = new MinionError(minionName, 'Can not get data from Db', 101, err);
