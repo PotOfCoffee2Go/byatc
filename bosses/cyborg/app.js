@@ -28,8 +28,8 @@
             name: BOSS,
             app: path.join(__dirname, '../'),
             dir: path.join(__dirname, ''),
-            www: path.join(__dirname, '../www'),
-            dbdir: path.join(__dirname, '../www/docs/' + BOSS + '/db')
+            www: path.join(__dirname, '../../realms'),
+            dbdir: path.join(__dirname, '../../realms/docs/' + BOSS + '/db')
         };
 
     module.exports = {

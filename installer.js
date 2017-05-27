@@ -50,9 +50,9 @@ function checkErr(err) {
 };
 
 console.log('');
-console.log('Copy readme.md files to byatec server bosses/www directory with overwrite');
+console.log('Copy readme.md files to byatec server realms directory with overwrite');
 console.log('');
-fs.copySync('./readme.md', './bosses/www/docs/index.md', {
+fs.copySync('./readme.md', './realms/docs/index.md', {
   overwrite: true
 }, checkErr);
 console.log('');

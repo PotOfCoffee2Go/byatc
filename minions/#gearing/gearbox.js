@@ -44,7 +44,7 @@
 
     // Given a valid path to .md file - converts it to HTML and sends to requester
     var markdown = function(req, res, next) {
-        var siteDir = path.join(__dirname, '/../../bosses/www');
+        var siteDir = path.join(__dirname, '/../../../realms');
 
         var mdfile = siteDir + '/docs' + req.url;
         var ext = path.extname(req.url);
