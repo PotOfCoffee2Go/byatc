@@ -16,7 +16,6 @@
     const
         BOSS = 'ninja',
 
-        fs = require('fs-extra'),
         path = require('path'),
         async = require('async'),
 
@@ -26,7 +25,7 @@
             app: path.join(__dirname, '../'),
             dir: path.join(__dirname, ''),
             www: path.join(__dirname, '../../realms'),
-            dbdir: path.join(__dirname, '../../realms/docs/' + BOSS + '/db')
+            dbdir: path.join(__dirname, '../../realms/db')
         };
 
     module.exports = {
@@ -36,9 +35,6 @@
         //   about the order of said routes
         gearBoss: (web, bossName, cb) => {
             web.bosses[bossName] = boss;
-
-            // Clear the boss working database directory
-            fs.emptyDirSync(boss.dbdir);
 
             // Setup the app auction system
             //  Add the RESTful paths that begin with '/ninja/'

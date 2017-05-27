@@ -3,8 +3,3 @@
 **/node_modules
 **/.flotsam
 **/db
-**/bosses/config.js
-**/bosses/www/docs/index.md
-**/bosses/www/docs/cyborg/index.md
-**/bosses/www/docs/ninja/index.md
-**/bosses/www/docs/pirate/index.md

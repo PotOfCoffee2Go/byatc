@@ -67,7 +67,7 @@
     web.logger.info('Web Server created');
 
     // Gear up paths to Web Sites and Error handling 
-    web.minion.angel.gearTrailingRoutes(path.resolve(__dirname + '../realms'));
+    web.minion.angel.gearTrailingRoutes(path.resolve(__dirname, '../realms'));
     web.logger.info('Default routes are active');
 
     // Listen for requests

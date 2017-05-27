@@ -32,7 +32,7 @@
 
         if (req.accepts('html')) {
             // Get this boss directory and Web Site root directory
-            res.status(404).sendFile(path.resolve(__dirname, '../../realms/pages/notfound.html'));
+            res.status(404).sendFile(path.resolve(__dirname, '../realms/pages/notfound.html'));
             return;
         }
         if (req.accepts('json')) {
@@ -44,7 +44,7 @@
             return;
         }
         else {
-            res.status(404).sendFile(__dirname, '../../realms/pages/notfound.html');
+            res.status(404).sendFile(__dirname, '../realms/pages/notfound.html');
         }
     }
 

@@ -52,9 +52,6 @@
 
     Architect.prototype.loadFromSources = function loadFromSources(boss, cb) {
         if (web.cfg.kingdom.reload) {
-            // Clear the boss working database directory
-            fs.emptyDirSync(boss.dbdir);
-
             // Start up tasks which this boss is responible
             async.series([
                 callback => web.minion.architect.rousePrincessTrello(callback),

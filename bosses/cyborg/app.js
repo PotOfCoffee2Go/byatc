@@ -20,6 +20,7 @@
     const
         BOSS = 'cyborg',
 
+        fs = require('fs-extra'),
         path = require('path'),
         async = require('async'),
 
@@ -29,7 +30,7 @@
             app: path.join(__dirname, '../'),
             dir: path.join(__dirname, ''),
             www: path.join(__dirname, '../../realms'),
-            dbdir: path.join(__dirname, '../../realms/docs/' + BOSS + '/db')
+            dbdir: path.join(__dirname, '../../realms/db')
         };
 
     module.exports = {
@@ -39,6 +40,11 @@
         //   about the order of said routes
         gearBoss: (web, bossName, cb) => {
             web.bosses[bossName] = boss;
+
+            if (web.cfg.kingdom.reload) {
+                // Clear the  working database directory
+                fs.emptyDirSync(boss.dbdir);
+            }
 
             // Start up tasks for this app
             //  Get data from Google Sheets and sync with Trello
