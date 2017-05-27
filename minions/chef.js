@@ -126,7 +126,13 @@
             if (recid)
                 prayer.data[recid] = sheet.db.getData('/' + dataPath);
             else
-                prayer.data = sheet.db.getData('/' + dataPath);
+                prayer.data = {};
+                var results = alasql('SELECT * FROM ? AS data WHERE [1]->profile->' + sheet.placeholder + ' <> ""', [sheet.db.getData('/' + dataPath)]);
+                results.forEach((result) => {
+                    prayer.data[result[0]] = result[1];
+                });
+
+                //prayer.data = sheet.db.getData('/' + dataPath);
         }
         catch (err) {
             var error = new MinionError(minionName, 'Can not get data from Db', 101, err);
