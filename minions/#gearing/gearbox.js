@@ -340,6 +340,7 @@
                 }
             });
 
+
             cb(null, 'cyborg architect deleted merged auction info databases ' + removedDbs.join(', '));
         }
     };

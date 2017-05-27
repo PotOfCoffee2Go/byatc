@@ -29,8 +29,7 @@
             name: BOSS,
             app: path.join(__dirname, '../'),
             dir: path.join(__dirname, ''),
-            www: path.join(__dirname, '../../realms'),
-            dbdir: path.join(__dirname, '../../realms/db')
+            www: path.join(__dirname, '../../realms')
         };
 
     module.exports = {
@@ -42,8 +41,8 @@
             web.bosses[bossName] = boss;
 
             if (web.cfg.kingdom.reload) {
-                // Clear the  working database directory
-                fs.emptyDirSync(boss.dbdir);
+                // Clear the working database directory
+                fs.emptyDirSync(web.dbdir);
             }
 
             // Start up tasks for this app

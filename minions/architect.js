@@ -41,7 +41,7 @@
         // Array of sheets to collect data from
         async.mapSeries(web.cfg.spreadsheets.sheets, function(sheet, callback) {
             // dbname, true = auto save, true = pretty
-            sheet.db = new JsonDB(boss.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
+            sheet.db = new JsonDB(web.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
 
             web.spreadsheets.gearSheet(sheet, callback);
 
@@ -65,7 +65,7 @@
             var assigned = [];
             // assign existing databases
             web.cfg.spreadsheets.sheets.forEach((sheet) => {
-                sheet.db = new JsonDB(boss.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
+                sheet.db = new JsonDB(web.dbdir + '/' + web.cfg.spreadsheets.database + sheet.alias, true, true);
                 assigned.push(boss.name + ' assigned database ' + web.cfg.spreadsheets.database + sheet.alias + '.json');
             });
 
@@ -86,7 +86,7 @@
         // Array of boards to collect data from
         async.mapSeries(web.cfg.trello.boards, function(board, callback) {
             // dbname, true = auto save, true = pretty
-            board.db = new JsonDB(boss.dbdir + '/' + web.cfg.trello.database + board.alias, true, true);
+            board.db = new JsonDB(web.dbdir + '/' + web.cfg.trello.database + board.alias, true, true);
 
             // Add the paths that will be used by the Trello WebHooks
             whresults = whresults.concat(web.minion.angel.gearTrelloWebhook(boss, board));
@@ -127,7 +127,7 @@
             callback =>
             async.mapSeries(web.cfg.chat.rooms, function(room, callbackmap) {
                 // dbname, true = auto save, true = pretty
-                room.db = new JsonDB(boss.dbdir + '/' + web.cfg.chat.database + room.alias, true, true);
+                room.db = new JsonDB(web.dbdir + '/' + web.cfg.chat.database + room.alias, true, true);
 
                 web.minion.crier.gearChatRoom(room, callbackmap);
 

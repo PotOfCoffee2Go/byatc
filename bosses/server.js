@@ -132,6 +132,7 @@
             listen: listen, // Initiate listening for routes/paths
             ios: ios, // Server side Socket.io
             logger: logger, // Winston loggers
+            dbdir: path.join(__dirname, '../realms/db'), // Databases directory
             webhook: webhook, // Trello webhook processing
             trello: trello, // Trello and Google Sheets interface
             spreadsheets: spreadsheets,
