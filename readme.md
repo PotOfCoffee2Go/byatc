@@ -205,8 +205,30 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 
 -------
 
+### The Realms
+The Monarchy Empire is divided into Realms. There is an API, auction, docs, pages, etc. realms which have the
+job of producing information to patrons of the empire.
 
+#### Auction Realm
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/auction.png" height="45" width="64" align="left">
+The `auction` realm contains pages which patrons or guests can register, authenticate, and make bids on
+items up for auction. Most patrons create their own pages, but the built-in pages are used for
+testing the auction system.
 
+#### Api Realm
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/api.jpg" height="45" width="64" align="left">
+The API informs patrons how to get auction data if they wish to create their own pages.
+
+#### Docs Realm
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/documents.png" height="57" width="64" align="left">
+The codexes and scrolls of the empire are contained in the Docs realm.
+
+#### Db Realm
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/databases.png" height="55" width="64" align="left">
+Data about the auction are contained in the DB realm, which is dynamically created
+from information provided by Princess Sheets.
+
+----
 
 A thumbs-up to [Pixabay: Free Images](https://pixabay.com/) for providing [CC0 1.0 Universal Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) images - donate if you can!
 

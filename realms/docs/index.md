@@ -11,18 +11,24 @@ item categories and uploading of item and category images.
 
 The hierarchy of the system is designed based on a Victorian Era Monarchy. Although
 on first look, seems silly - it does organize the different tasks required by the
-auction system.
+auction system. Not only effective but is fun too! Especially those that get into 
+steampunk!
 
 For technical info goto the documentation on the sample 
 [byatec system api](https://byatc-potofcoffee2go.c9users.io/api).
 
 -----
 
-**Introduction stuff aside!**. Now, for some real SteamPunk fun! The auction takes place in the Victorian era
-- back in the age of gears, wheels, wires, sprockets, and such. The auction operation (and code itself) is organized
-As commanded by Her Majesty, the Queen :
+Install by `npm install byatec -g`. This will install a default configuraton which
+will run using data from sample Google spreadsheets. The system is functional but
+can not update the spreadsheets or build the Trello boards until the configuraton
+is updated with credentials, keys, and secrets allowing access to your Google and
+Trello accounts.
+
+
 
 -----
+
 
 ### 'Monarchy'
 
@@ -36,10 +42,7 @@ As commanded by Her Majesty, the Queen :
  
 The Queen also has the keys to the Kingdom - credentials needed by Princesses Trello, Sheets, Twitter, Facebook, etc. to
 do as the Queen commands. The Queen is also intimately involved with sending out the RSVPs to guests, procuring of auction
-items, guest seating arrangements, etc.
-
-“Give my people plenty of beer, good beer, and cheap beer, and you will have no revolution among them.” — Queen Victoria, English Monarch, 1819-1901
-<br /><br />
+items, guest seating arrangements, etc.<br /><br />
 
 -------
 
@@ -202,8 +205,30 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 
 -------
 
+### The Realms
+The Monarchy Empire is divided into Realms. There is an API, auction, docs, pages, etc. realms which have the
+job of producing information to patrons of the empire.
 
+#### Auction Realm
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/auction.png" height="45" width="64" align="left">
+The `auction` realm contains pages which patrons or guests can register, authenticate, and make bids on
+items up for auction. Most patrons create their own pages, but the built-in pages are used for
+testing the auction system.
 
+#### Api Realm
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/api.jpg" height="45" width="64" align="left">
+The API informs patrons how to get auction data if they wish to create their own pages.
+
+#### Docs Realm
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/documents.png" height="57" width="64" align="left">
+The codexes and scrolls of the empire are contained in the Docs realm.
+
+#### Db Realm
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/databases.png" height="55" width="64" align="left">
+Data about the auction are contained in the DB realm, which is dynamically created
+from information provided by Princess Sheets.
+
+----
 
 A thumbs-up to [Pixabay: Free Images](https://pixabay.com/) for providing [CC0 1.0 Universal Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) images - donate if you can!
 
