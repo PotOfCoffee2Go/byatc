@@ -221,7 +221,7 @@ The API informs patrons how to get auction data if they wish to create their own
 
 #### Docs Realm
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/documents.png" height="57" width="64" align="left">
-The codexes and scrolls of the empire are contained in the Docs realm.<br>
+The codexes and scrolls of the empire are contained in the Docs realm.<br><br><br>
 
 #### Db Realm
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/databases.png" height="55" width="64" align="left">
