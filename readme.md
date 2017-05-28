@@ -206,8 +206,9 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 -------
 
 ### The Realms
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/realms.png" height="128" width="122" align="left">
 The Monarchy Empire is divided into Realms. There is an API, auction, docs, pages, etc. realms which have the
-job of producing information to patrons of the empire.
+job of producing information to patrons of the empire.<br /><br /><br /><br /><br /><br /><br /><br />
 
 #### Auction Realm
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/auction.png" height="45" width="64" align="left">

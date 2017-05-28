@@ -206,8 +206,9 @@ minion. So each minion performs the basic tasks required, but are custom coded f
 -------
 
 ### The Realms
+<img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/realms.png" height="128" width="122" align="left">
 The Monarchy Empire is divided into Realms. There is an API, auction, docs, pages, etc. realms which have the
-job of producing information to patrons of the empire.
+job of producing information to patrons of the empire.<br /><br /><br /><br /><br /><br /><br /><br />
 
 #### Auction Realm
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/auction.png" height="45" width="64" align="left">
@@ -221,12 +222,13 @@ The API informs patrons how to get auction data if they wish to create their own
 
 #### Docs Realm
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/documents.png" height="57" width="64" align="left">
-The codexes and scrolls of the empire are contained in the Docs realm.
+The codexes and scrolls of the empire are contained in the Docs realm.<br><br><br>
 
 #### Db Realm
 <img src="https://s3.amazonaws.com/potofcoffee2go/byatec/images/databases.png" height="55" width="64" align="left">
 Data about the auction are contained in the DB realm, which is dynamically created
 from information provided by Princess Sheets.
+<br /><br /><br />
 
 ----
 
